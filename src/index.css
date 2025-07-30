@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Esconde a barra de rolagem para browsers baseados em WebKit (Chrome, Safari, etc.) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Esconde a barra de rolagem para o Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
+/* O container cinza ao redor da página */
+.a4-container {
+  background-color: #f0f2f5;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  border-radius: 0.5rem;
+}
+
+/* A "folha" branca que simula o papel A4 */
+.a4-sheet {
+  background-image: url('/src/assets/background-certidao.jpg');
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-size: 8pt;
+  line-height: 1.6;
+  font-family: 'Arial', sans-serif;
+  width: 794px;
+  height: 1123px;
+}
+
+.a4-sheet-verso {
+  background-image: url('/src/assets/verso-certidao.jpg');
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-size: 8pt;
+  line-height: 1.6;
+  font-family: 'Arial', sans-serif;
+  width: 794px;
+  height: 1123px;
+}
+
+/* Ajustes específicos para o editor Quill */
+.a4-sheet .ql-container.ql-snow {
+  border: none;
+  /* Remove a borda padrão do Quill */
+  height: 100%;
+}
+
+.a4-sheet .ql-editor {
+  min-height: 950px;
+  /* Garante que a área de texto ocupe a altura da página */
+  font-family: 'Times New Roman', serif;
+  /* Fonte clássica de documentos */
+  font-size: 12pt;
+  color: #000;
+}
+
+/* Adicione este código ao seu arquivo CSS principal */
+
+@media print {
+  /* Regra para forçar a impressão de imagens e cores de fundo */
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Esconde tudo na página, exceto o que queremos imprimir */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Torna o contêiner da certidão e tudo dentro dele visível */
+  .print-container, .print-container * {
+    visibility: visible;
+  }
+
+  /* Garante que o contêiner da certidão ocupe toda a página de impressão */
+  .print-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0cm;
+  }
+
+  /* Garante que a folha A4 não tenha bordas indesejadas */
+  .a4-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0cm;
+  }
+}
+
+/* Define o tamanho da página de impressão para A4 */
+@page {
+  size: A4;
+  margin: 0cm;
+}
