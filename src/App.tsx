@@ -30,6 +30,10 @@ import GerenciamentoCargos from './pages/Civil/Config/Users/Role-Permissions/Ger
 import CadastroCargoPage from './pages/Civil/Config/Users/Role-Permissions/CadastroCargoPage'
 import GerenciamentoUsuarios from './pages/Civil/Config/Users/GerenciamentoUsuarios'
 import CadastroUsuarioPage from './pages/Civil/Config/Users/UsuarioPage'
+import GerenciamentoTemplates from './pages/Civil/Config/Cabecalho-Rodape/GerenciamentoTemplates'
+import CadastroTemplatePage from './pages/Civil/Config/Cabecalho-Rodape/CadastroTemplatePage'
+import GerenciamentoCertidoes from './pages/Civil/Config/Certidao/GerenciamentoCertidoes'
+import CadastroCertidaoPage from './pages/Civil/Config/Certidao/CadastroCertidaoPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -117,8 +121,10 @@ function App() {
 
           {/* Rotas de Configuração */}
           <Route path="config/cartorio" element={<ConfiguracaoCartorio/>} />
-          <Route path="config/certidao" element={<PlaceholderPage title="Averbação" />} />
-          <Route path="config/averbacao" element={<PlaceholderPage title="Averbação" />} />
+          <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
+          <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
+          <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
+          <Route path="config/averbacao" element={<PlaceholderPage title="Configuração de Averbação" />} />
 
           <Route path="config/pessoas" element={<GerenciamentoPessoasPage/>} />
           <Route path="config/pessoas/cadastrar" element={<CadastroPessoaPage/>} />
@@ -131,6 +137,10 @@ function App() {
           <Route path="config/roles-permissions" element={<GerenciamentoCargos/>} />
           <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage/>} />
           <Route path="config/roles-permissions/:id" element={<CadastroCargoPage/>} />
+
+          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates/>} />
+          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage/>} />
+          <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
         </Route>
 
         {/* Rotas dos sistemas Registro de Pessoas Físicas */}

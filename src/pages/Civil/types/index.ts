@@ -611,3 +611,53 @@ export interface ILogAtividade {
     acao: string;
     detalhes: string;
 }
+
+export interface ITemplate {
+  id: number;
+  nome: string; // Ex: "Cabeçalho Padrão com Brasão"
+  tipo: 'cabecalho' | 'rodape';
+  conteudo: string; // O HTML gerado pelo MainEditor
+  isPadrao: boolean; // Indica se este é o template default para seu tipo
+  dataModificacao: string;
+}
+
+export type TipoAto = "Nascimento" | "Casamento" | "Óbito" | "Natimorto" | "Livro E";
+
+// Esta seria a nossa "entidade" para um Tipo de Certidão
+export interface ITipoCertidao {
+  id: number;
+  titulo: string; // Ex: "Certidão de Inteiro Teor de Nascimento"
+  descricao: string; // "Modelo completo com todas as informações do registro."
+  
+  // Para qual ato principal esta certidão se aplica?
+  atoOriginal: 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E';
+
+  // Chave para a tabela de emolumentos/custas
+  codigoEmolumento: number | null;
+
+  // Vinculação com os templates que criamos anteriormente
+  templateCabecalhoPadraoId: number | null; // ID do template de cabeçalho default
+  templateRodapePadraoId: number | null;   // ID do template de rodapé default
+
+  // O corpo/modelo principal da certidão
+  modeloConteudo: string; // HTML que será editado no MainEditor
+
+  // (Recurso Avançado) Quais variáveis dinâmicas este modelo pode usar?
+  camposDisponiveis: string[]; // Ex: ['{{nome_registrando}}', '{{cpf_registrando}}', etc.]
+}
+
+export interface CertidaoTemplate {
+    id: string;
+    tipoAto: TipoAto;
+    titulo: string;
+    descricao: string;
+    cabecalhoPadraoId: string | null;
+    rodapePadraoId: string | null;
+    conteudo: string;
+    margins: {
+        top: string;
+        right: string;
+        bottom: string;
+        left: string;
+    };
+}

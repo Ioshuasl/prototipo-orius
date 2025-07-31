@@ -39,7 +39,26 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                     'quickbars link', 'quickbars image editimage', 'pagebreak', 'nonbreaking', 'advlist', 'autolink'
                 ],
                 autosave_ask_before_unload: true,
-                toolbar: 'undo redo formatselect fontfamily fontsize forecolor link quickimage bold italic underline align bullist numlist outdent indent removeformat preview fullscreen searchreplace help code codesample quicktable pagebreak nonbreaking charmap customTemplates',
+                toolbar: 'undo redo styles removeformat  formatselect fontfamily fontsize forecolor link quickimage bold italic underline align bullist numlist outdent indent removeformat preview fullscreen searchreplace help code codesample quicktable pagebreak nonbreaking charmap customTemplates',
+                formats: {
+                    linhatopo: {
+                        selector: 'div',
+                        classes: 'borda-superior',
+                    },
+                    linhainferior: {
+                        selector: 'div',
+                        classes: 'borda-inferior',
+                    }
+                },
+
+                style_formats: [
+                    {
+                        title: 'Estilos de Borda', items: [
+                            { title: 'Linha Superior', format: 'linhatopo' },
+                            { title: 'Linha Inferior', format: 'linhainferior' }
+                        ]
+                    }
+                ],
                 setup: (editor: any) => {
                     const customTemplates = [
                         {
@@ -91,6 +110,17 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                     width: 100%;
                     margin-top: 15px;
                     cursor: default;
+                  }
+
+                  .borda-superior {
+                    border-top: 1px solid #000;
+                    padding-top: 5px;
+                    margin-top: 5px;
+                  }
+                  .borda-inferior {
+                    border-bottom: 1px solid #000;
+                    padding-bottom: 5px;
+                    margin-bottom: 5px;
                   }
                 `
             }}

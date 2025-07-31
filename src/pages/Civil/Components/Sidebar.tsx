@@ -83,7 +83,7 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Pessoas Cadastradas', path: 'config/pessoas'},
             { label: 'Usuários', path: 'config/users'},
             { label: 'Cargo e Permissões', path: 'config/roles-permissions'},
-            { label: 'Cabeçalhos e Rodapés', path: 'config/cabecalhos-rodapes'}
+            { label: 'Cabeçalhos e Rodapés', path: 'config/templates-cabecalho-rodape'}
         ]
     }
 ];

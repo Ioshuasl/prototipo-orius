@@ -1,4 +1,5 @@
-import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade} from "../types";
+import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade, type ITemplate, type CertidaoTemplate } from "../types";
+import { certidaoCasamentoHTML, certidaoInteiroTeorHTML, certidaoNascimentoHTML, certidaoObitoHTML } from '../Certidao/ModeloCertidao/templates';
 
 export const ufs = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
 export const regimesDeBens = ['Comunhão Parcial de Bens', 'Comunhão Universal de Bens', 'Separação Total de Bens', 'Separação Obrigatória de Bens', 'Participação Final nos Aquestos', 'Não se aplica'];
@@ -64,7 +65,7 @@ export const mockPessoasCadastradas: TPessoaTipo[] = [
         nacionalidade: 'Brasileira',
         naturalidadeCidade: 'Curitiba',
         naturalidadeUF: 'PR',
-        endereco: { cep: `80000-00${i}`, tipoLogradouro: 'Rua', logradouro: `Rua de Teste, ${i+1}`, numero: `${i+1}`, bairro: 'Centro', cidade: 'Curitiba', uf: 'PR' }
+        endereco: { cep: `80000-00${i}`, tipoLogradouro: 'Rua', logradouro: `Rua de Teste, ${i + 1}`, numero: `${i + 1}`, bairro: 'Centro', cidade: 'Curitiba', uf: 'PR' }
     } as IPessoaFisica | IPessoaJuridica))
 ];
 
@@ -353,14 +354,14 @@ export const mockPermissoes: IPermissao[] = [
     // Módulo de Pessoas
     { chave: 'pessoas:visualizar', nome: 'Visualizar Pessoas', modulo: 'Gerenciamento de Pessoas' },
     { chave: 'pessoas:criar', nome: 'Criar/Editar Pessoas', modulo: 'Gerenciamento de Pessoas' },
-    
+
     // Módulo de Atos Civis
     { chave: 'atos:nascimento:criar', nome: 'Criar Registro de Nascimento', modulo: 'Registros Civis' },
     { chave: 'atos:casamento:criar', nome: 'Criar Registro de Casamento', modulo: 'Registros Civis' },
     { chave: 'atos:obito:criar', nome: 'Criar Registro de Óbito', modulo: 'Registros Civis' },
     { chave: 'atos:livro-e:criar', nome: 'Criar Registro do Livro E', modulo: 'Registros Civis' },
     { chave: 'atos:certidao:emitir', nome: 'Emitir Certidões', modulo: 'Registros Civis' },
-    
+
     // Módulo de Administração
     { chave: 'admin:usuarios:visualizar', nome: 'Visualizar Usuários', modulo: 'Administração do Sistema' },
     { chave: 'admin:usuarios:gerenciar', nome: 'Criar/Editar/Excluir Usuários', modulo: 'Administração do Sistema' },
@@ -382,7 +383,7 @@ export const mockCargos: ICargo[] = [
         descricao: 'Gerencia todos os atos civis e pode gerenciar pessoas.',
         permissoes: [
             'pessoas:visualizar', 'pessoas:criar',
-            'atos:nascimento:criar', 'atos:casamento:criar', 'atos:obito:criar', 
+            'atos:nascimento:criar', 'atos:casamento:criar', 'atos:obito:criar',
             'atos:livro-e:criar', 'atos:certidao:emitir'
         ],
     },
@@ -434,4 +435,84 @@ export const mockLogsDatabase: ILogAtividade[] = [
     { id: 2, userId: 102, dataHora: '2025-07-30 10:05:40', acao: 'CRIAÇÃO DE ATO', detalhes: 'Criou o registro de nascimento, protocolo N-12345.' },
     { id: 3, userId: 102, dataHora: '2025-07-30 09:30:11', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 200.10.20.30' },
     { id: 4, userId: 101, dataHora: '2025-07-29 18:00:00', acao: 'ATUALIZAÇÃO DE CARGO', detalhes: 'Editou as permissões do cargo "Escrevente Auxiliar".' },
+];
+
+export const mockHeaderFooterTemplates: ITemplate[] = [
+    {
+        id: 1,
+        nome: 'Cabeçalho Padrão com Brasão',
+        tipo: 'cabecalho',
+        conteudo: `<div style="text-align: center; padding-bottom: 5px;"><img src="https://www.gov.br/planalto/pt-br/conheca-a-presidencia/acervo/simbolos-nacionais/brasao-da-republica/brasao.png" alt="Brasão da República" width="50" /><p style="margin: 0; font-size: 10pt;"><strong>REPÚBLICA FEDERATIVA DO BRASIL</strong><br/>ESTADO DE GOIÁS</p></div>`,
+        isPadrao: true,
+        dataModificacao: '2025-07-25',
+    },
+    {
+        id: 2,
+        nome: 'Cabeçalho Simplificado',
+        tipo: 'cabecalho',
+        conteudo: `<div style="text-align: center; padding-bottom: 5px;"><p style="margin: 0; font-size: 12pt;"><strong>CARTÓRIO DE REGISTRO CIVIL</strong><br/>Comarca de Goiânia</p></div>`,
+        isPadrao: false,
+        dataModificacao: '2025-07-20',
+    },
+    {
+        id: 3,
+        nome: 'Rodapé Padrão com Endereço',
+        tipo: 'rodape',
+        conteudo: `<div style="text-align: center; border-top: 1px solid #000; padding-top: 5px; font-size: 9pt;"><p style="margin: 0;">Av. Anhanguera, Qd. 1, Lt. 2, Centro - Goiânia, GO - CEP: 74013-010</p><p style="margin: 0;">Página {{numero_pagina}}</p></div>`,
+        isPadrao: true,
+        dataModificacao: '2025-07-28',
+    },
+    {
+        id: 4,
+        nome: 'Rodapé Apenas com Selo',
+        tipo: 'rodape',
+        conteudo: `<div style="text-align: right; font-size: 10pt;"><p>Selo Digital: {{selo_digital}}</p></div>`,
+        isPadrao: false,
+        dataModificacao: '2025-06-15',
+    }
+];
+
+export const mockCertidaoTemplates: CertidaoTemplate[] = [
+    {
+        id: "CERT-NASC-001",
+        tipoAto: "Nascimento",
+        titulo: "Certidão de Nascimento - Segunda Via",
+        descricao: "Modelo padrão para emissão de segundas vias de certidões de nascimento.",
+        cabecalhoPadraoId: "CAB-001",
+        rodapePadraoId: "ROD-001",
+        conteudo: certidaoNascimentoHTML,
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+    },
+    {
+        id: "CERT-NASC-002",
+        tipoAto: "Nascimento",
+        titulo: "Certidão de Nascimento - Inteiro Teor",
+        descricao: "Modelo completo com todas as informações e averbações do registro.",
+        cabecalhoPadraoId: "CAB-001",
+        rodapePadraoId: "ROD-001",
+        conteudo: certidaoInteiroTeorHTML,
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+    },
+    {
+        id: "CERT-CAS-001",
+        tipoAto: "Casamento",
+        titulo: "Certidão de Casamento - Segunda Via",
+        descricao: "Modelo padrão para segundas vias de certidões de casamento.",
+        cabecalhoPadraoId: "CAB-001",
+        rodapePadraoId: "ROD-001",
+        conteudo: certidaoCasamentoHTML,
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+
+    },
+    {
+        id: "CERT-OBITO-001",
+        tipoAto: "Óbito",
+        titulo: "Certidão de Óbito - Padrão",
+        descricao: "Modelo padrão para emissão de certidões de óbito.",
+        cabecalhoPadraoId: "CAB-001",
+        rodapePadraoId: "ROD-001",
+        conteudo: certidaoObitoHTML,
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+
+    },
 ];
