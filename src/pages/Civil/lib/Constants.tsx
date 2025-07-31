@@ -1,4 +1,4 @@
-import { type IPessoaFisica, type CertidaoOption, type AverbacaoOption } from "../types";
+import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade} from "../types";
 
 export const ufs = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
 export const regimesDeBens = ['Comunhão Parcial de Bens', 'Comunhão Universal de Bens', 'Separação Total de Bens', 'Separação Obrigatória de Bens', 'Participação Final nos Aquestos', 'Não se aplica'];
@@ -9,6 +9,64 @@ export const mockPessoDatabase: { [key: string]: Omit<IPessoaFisica, 'endereco'>
     "11111111111": { tipo: 'fisica', nome: "Fulano de Tal da Silva", cpf: "111.111.111-11", dataNascimento: "1990-01-15", docIdentidadeTipo: "RG", docIdentidadeNum: "1234567", estadoCivil: "Solteiro(a)", regimeBens: "", profissao: "Engenheiro(a)", nacionalidade: "Brasileira", naturalidadeCidade: "São Paulo", naturalidadeUF: "SP", nomePai: "Pai do Fulano", nomeMae: "Mãe do Fulano" },
     "22222222222": { tipo: 'fisica', nome: "Ciclana de Souza Oliveira", cpf: "222.222.222-22", dataNascimento: "1992-05-20", docIdentidadeTipo: "CNH", docIdentidadeNum: "9876543", estadoCivil: "Solteiro(a)", regimeBens: "", profissao: "Advogada", nacionalidade: "Brasileira", naturalidadeCidade: "Rio de Janeiro", naturalidadeUF: "RJ", nomePai: "Pai da Ciclana", nomeMae: "Mãe da Ciclana" }
 };
+
+export const mockPessoasCadastradas: TPessoaTipo[] = [
+    {
+        tipo: 'fisica',
+        nome: "Helena da Silva Santos",
+        cpf: "11122233344",
+        dataNascimento: "1990-01-15",
+        docIdentidadeTipo: "RG",
+        docIdentidadeNum: "1234567",
+        profissao: "Engenheira",
+        nacionalidade: "Brasileira",
+        naturalidadeCidade: "Goiânia",
+        naturalidadeUF: "GO",
+        endereco: { cep: '74000-001', tipoLogradouro: 'Rua', logradouro: 'Rua das Flores', numero: '123', bairro: 'Centro', cidade: 'Goiânia', uf: 'GO' }
+    },
+    {
+        tipo: 'juridica',
+        razaoSocial: "Construtora Alfa Ltda.",
+        nomeFantasia: "Alfa Construções",
+        cnpj: "11222333000144",
+        socioAdministrativo: "Arthur Pereira Rocha",
+        endereco: { cep: '74000-002', tipoLogradouro: 'Avenida', logradouro: 'Avenida Anhanguera', numero: '456', bairro: 'Setor Sul', cidade: 'Goiânia', uf: 'GO' }
+    },
+    {
+        tipo: 'fisica',
+        nome: "Arthur Pereira Rocha",
+        cpf: "44455566677",
+        dataNascimento: "1985-05-20",
+        docIdentidadeTipo: "CNH",
+        docIdentidadeNum: "9876543",
+        profissao: "Empresário",
+        nacionalidade: "Brasileira",
+        naturalidadeCidade: "Rio de Janeiro",
+        naturalidadeUF: "RJ",
+        endereco: { cep: '20000-001', tipoLogradouro: 'Rua', logradouro: 'Rua da Passagem', numero: '789', bairro: 'Botafogo', cidade: 'Rio de Janeiro', uf: 'RJ' }
+    },
+    {
+        tipo: 'juridica',
+        razaoSocial: "Software Solutions S.A.",
+        cnpj: "55666777000188",
+        nomeFantasia: "SoftSol",
+        endereco: { cep: '01000-001', tipoLogradouro: 'Avenida', logradouro: 'Avenida Paulista', numero: '1000', bairro: 'Bela Vista', cidade: 'São Paulo', uf: 'SP' }
+    },
+    // Adicionando mais dados para teste de paginação e filtros
+    ...Array.from({ length: 20 }, (_, i) => ({
+        tipo: i % 2 === 0 ? 'fisica' : 'juridica',
+        nome: `Pessoa Física Teste ${i + 1}`,
+        razaoSocial: `Empresa Teste ${i + 1} S.A.`,
+        cpf: `1234567${String(i).padStart(2, '0')}-00`,
+        cnpj: `123456780001-${String(i).padStart(2, '0')}`,
+        dataNascimento: '2000-01-01',
+        profissao: 'Analista',
+        nacionalidade: 'Brasileira',
+        naturalidadeCidade: 'Curitiba',
+        naturalidadeUF: 'PR',
+        endereco: { cep: `80000-00${i}`, tipoLogradouro: 'Rua', logradouro: `Rua de Teste, ${i+1}`, numero: `${i+1}`, bairro: 'Centro', cidade: 'Curitiba', uf: 'PR' }
+    } as IPessoaFisica | IPessoaJuridica))
+];
 
 export const dataAtualFormatada = () => new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
@@ -290,3 +348,90 @@ export const DADOS_ESCREVENTE = {
     nome: 'Fulana de Souza',
     cargo: 'Escrevente Autorizada',
 };
+
+export const mockPermissoes: IPermissao[] = [
+    // Módulo de Pessoas
+    { chave: 'pessoas:visualizar', nome: 'Visualizar Pessoas', modulo: 'Gerenciamento de Pessoas' },
+    { chave: 'pessoas:criar', nome: 'Criar/Editar Pessoas', modulo: 'Gerenciamento de Pessoas' },
+    
+    // Módulo de Atos Civis
+    { chave: 'atos:nascimento:criar', nome: 'Criar Registro de Nascimento', modulo: 'Registros Civis' },
+    { chave: 'atos:casamento:criar', nome: 'Criar Registro de Casamento', modulo: 'Registros Civis' },
+    { chave: 'atos:obito:criar', nome: 'Criar Registro de Óbito', modulo: 'Registros Civis' },
+    { chave: 'atos:livro-e:criar', nome: 'Criar Registro do Livro E', modulo: 'Registros Civis' },
+    { chave: 'atos:certidao:emitir', nome: 'Emitir Certidões', modulo: 'Registros Civis' },
+    
+    // Módulo de Administração
+    { chave: 'admin:usuarios:visualizar', nome: 'Visualizar Usuários', modulo: 'Administração do Sistema' },
+    { chave: 'admin:usuarios:gerenciar', nome: 'Criar/Editar/Excluir Usuários', modulo: 'Administração do Sistema' },
+    { chave: 'admin:cargos:visualizar', nome: 'Visualizar Cargos e Permissões', modulo: 'Administração do Sistema' },
+    { chave: 'admin:cargos:gerenciar', nome: 'Criar/Editar/Excluir Cargos', modulo: 'Administração do Sistema' },
+];
+
+// Lista de cargos já existentes
+export const mockCargos: ICargo[] = [
+    {
+        id: 1,
+        nome: 'Administrador',
+        descricao: 'Acesso total a todas as funcionalidades do sistema.',
+        permissoes: mockPermissoes.map(p => p.chave), // Todas as permissões
+    },
+    {
+        id: 2,
+        nome: 'Escrevente Chefe',
+        descricao: 'Gerencia todos os atos civis e pode gerenciar pessoas.',
+        permissoes: [
+            'pessoas:visualizar', 'pessoas:criar',
+            'atos:nascimento:criar', 'atos:casamento:criar', 'atos:obito:criar', 
+            'atos:livro-e:criar', 'atos:certidao:emitir'
+        ],
+    },
+    {
+        id: 3,
+        nome: 'Escrevente Auxiliar',
+        descricao: 'Apenas visualiza e emite certidões dos atos existentes.',
+        permissoes: ['pessoas:visualizar', 'atos:certidao:emitir'],
+    },
+];
+
+export const mockUsuarios: IUsuario[] = [
+    {
+        id: 101,
+        nome: 'Alice Admin',
+        email: 'alice.admin@cartorio.com',
+        cargoId: 1, // Administrador
+        status: 'Ativo',
+        senha: '123456'
+    },
+    {
+        id: 102,
+        nome: 'Bruno Chefe',
+        email: 'bruno.chefe@cartorio.com',
+        cargoId: 2, // Escrevente Chefe
+        status: 'Ativo',
+        senha: '12345'
+    },
+    {
+        id: 103,
+        nome: 'Carla Auxiliar',
+        email: 'carla.aux@cartorio.com',
+        cargoId: 3, // Escrevente Auxiliar
+        status: 'Ativo',
+        senha: '1234'
+    },
+    {
+        id: 104,
+        nome: 'Daniel Inativo',
+        email: 'daniel.inativo@cartorio.com',
+        cargoId: 3, // Escrevente Auxiliar
+        status: 'Inativo',
+        senha: '123'
+    },
+];
+
+export const mockLogsDatabase: ILogAtividade[] = [
+    { id: 1, userId: 101, dataHora: '2025-07-30 14:20:15', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 187.55.12.1' },
+    { id: 2, userId: 102, dataHora: '2025-07-30 10:05:40', acao: 'CRIAÇÃO DE ATO', detalhes: 'Criou o registro de nascimento, protocolo N-12345.' },
+    { id: 3, userId: 102, dataHora: '2025-07-30 09:30:11', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 200.10.20.30' },
+    { id: 4, userId: 101, dataHora: '2025-07-29 18:00:00', acao: 'ATUALIZAÇÃO DE CARGO', detalhes: 'Editou as permissões do cargo "Escrevente Auxiliar".' },
+];

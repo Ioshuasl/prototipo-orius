@@ -24,6 +24,12 @@ import GerenciamentoLivrosPage from './pages/Civil/Livro/GerenciamentoLivros'
 import LivroFormPage from './pages/Civil/Livro/Livro'
 import GerenciamentoAverbacoesPage from './pages/Civil/Averbacao/Gerenciamento-Averbacoes'
 import EmissaoAverbacao from './pages/Civil/Averbacao/EmissaoAverbacao'
+import GerenciamentoPessoasPage from './pages/Civil/Config/PessoaCadastradas/Gerenciamento-Pessoas'
+import CadastroPessoaPage from './pages/Civil/Config/PessoaCadastradas/Cadastro-Pessoa'
+import GerenciamentoCargos from './pages/Civil/Config/Users/Role-Permissions/GerenciamentoCargos'
+import CadastroCargoPage from './pages/Civil/Config/Users/Role-Permissions/CadastroCargoPage'
+import GerenciamentoUsuarios from './pages/Civil/Config/Users/GerenciamentoUsuarios'
+import CadastroUsuarioPage from './pages/Civil/Config/Users/UsuarioPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -113,6 +119,18 @@ function App() {
           <Route path="config/cartorio" element={<ConfiguracaoCartorio/>} />
           <Route path="config/certidao" element={<PlaceholderPage title="Averbação" />} />
           <Route path="config/averbacao" element={<PlaceholderPage title="Averbação" />} />
+
+          <Route path="config/pessoas" element={<GerenciamentoPessoasPage/>} />
+          <Route path="config/pessoas/cadastrar" element={<CadastroPessoaPage/>} />
+          <Route path="config/pessoas/:id" element={<CadastroPessoaPage/>} />
+          
+          <Route path="config/users" element={<GerenciamentoUsuarios/>} />
+          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage/>} />
+          <Route path="config/users/:id" element={<CadastroUsuarioPage/>} />
+
+          <Route path="config/roles-permissions" element={<GerenciamentoCargos/>} />
+          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage/>} />
+          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage/>} />
         </Route>
 
         {/* Rotas dos sistemas Registro de Pessoas Físicas */}

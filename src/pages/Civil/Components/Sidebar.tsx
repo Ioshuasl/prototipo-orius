@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Book, BookKey, Settings, User, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon } from 'lucide-react';
+import { Book, BookKey, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon } from 'lucide-react';
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
 
@@ -66,18 +66,6 @@ export const menuConfig: MenuItemConfig[] = [
         roles: ['admin', 'oficial'],
     },
     {
-        title: 'Configurações',
-        icon: Settings,
-        roles: ['admin'],
-        subItems: [
-            { label: 'Cartório', path: 'config/cartorio' },
-            { label: 'Certidão', path: 'config/certidao' },
-            { label: 'Averbação', path: 'config/averbacao' },
-            { label: 'Pessoas Cadastradas', path: 'config/pessoa-cadatrada'},
-            { label: 'Usuários', path: 'config/usuarios', roles: ['admin'] },
-        ]
-    },
-    {
         title: 'Impressões',
         icon: PrinterIcon,
         subItems: [
@@ -85,9 +73,18 @@ export const menuConfig: MenuItemConfig[] = [
         ]
     },
     {
-        title: 'Minha Conta',
-        icon: User,
-        path: '/minha-conta'
+        title: 'Configurações',
+        icon: Settings,
+        roles: ['admin'],
+        subItems: [
+            { label: 'Cartório', path: 'config/cartorio' },
+            { label: 'Certidão', path: 'config/certidao' },
+            { label: 'Averbação', path: 'config/averbacao' },
+            { label: 'Pessoas Cadastradas', path: 'config/pessoas'},
+            { label: 'Usuários', path: 'config/users'},
+            { label: 'Cargo e Permissões', path: 'config/roles-permissions'},
+            { label: 'Cabeçalhos e Rodapés', path: 'config/cabecalhos-rodapes'}
+        ]
     }
 ];
 

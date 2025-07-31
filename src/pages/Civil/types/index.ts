@@ -532,7 +532,7 @@ export interface ILivroEFormData {
 //interfaces e tipos para certidão
 
 export type CertidaoStatus = 'Emitida' | 'Pendente' | 'Retirada' | 'Cancelada';
-export type AtoOriginalTipo = 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E'; 
+export type AtoOriginalTipo = 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E';
 export interface CertidaoRequest {
     id: number;
     protocolo: string;
@@ -579,4 +579,35 @@ export interface PedidoState {
         comprovante: File | null;
     };
     motivoCancelamento?: string;
+}
+
+export interface IPermissao {
+    chave: string;       // Ex: 'usuarios:criar'
+    nome: string;        // Ex: 'Criar Usuários'
+    modulo: string;      // Ex: 'Usuários e Permissões'
+}
+
+// Interface para um Cargo
+export interface ICargo {
+    id: number;
+    nome: string;
+    descricao: string;
+    permissoes: string[]; // Um array com as chaves das permissões associadas
+}
+
+export interface IUsuario {
+    id: number;
+    nome: string;
+    email: string;
+    cargoId: number; // ID do cargo ao qual o usuário pertence
+    status: 'Ativo' | 'Inativo';
+    senha: string
+}
+
+export interface ILogAtividade {
+    id: number;
+    userId: number;
+    dataHora: string;
+    acao: string;
+    detalhes: string;
 }
