@@ -4,11 +4,11 @@ import { BookText, FileSignature, Paperclip, Save, XCircle, History } from 'luci
 
 // Tipos e Interfaces
 import {
-    type ILivroEFormData, type TipoAtoLivroE, type IEmancipacao, type IInterdicao, type IEndereco, type IPersonData, type IAusencia, type IMortePresumida, type ITutela, type IGuarda, type IOpcaoNacionalidade, type IUniaoEstavel, type INascimentoPaisEstrangeiros, type ITrasladoExterior, type ITrasladoNascimentoData, type ITrasladoCasamentoData, type ITrasladoObitoData
+    type ILivroEFormData, type TipoAtoLivroE, type IEmancipacao, type IInterdicao, type IEndereco, type IPessoaFisica, type IAusencia, type IMortePresumida, type ITutela, type IGuarda, type IOpcaoNacionalidade, type IUniaoEstavel, type INascimentoPaisEstrangeiros, type ITrasladoExterior, type ITrasladoNascimentoData, type ITrasladoCasamentoData, type ITrasladoObitoData
 } from '../../types';
 
 // Constantes e Estados Iniciais
-import { tiposDeAtoLivroE, mockDatabase } from '../../lib/Constants';
+import { tiposDeAtoLivroE, mockPessoDatabase } from '../../lib/Constants';
 
 // Componentes Reutilizáveis e de Formulário
 import ControleAtoLivroE from './Components/ControleAtoLivroE';
@@ -37,7 +37,7 @@ const initialEnderecoState: IEndereco = {
     uf: ''
 };
 
-const initialPersonState: Partial<IPersonData> = {
+const initialPersonState: Partial<IPessoaFisica> = {
     nome: '',
     cpf: '',
     dataNascimento: '',
@@ -265,7 +265,7 @@ export default function CadastrarAtoLivroE() {
         const currentPathKey = pathPrefix.join('.');
         setSearchingCpf(currentPathKey);
         setTimeout(() => {
-            const personFromDb = mockDatabase[cleanCpf];
+            const personFromDb = mockPessoDatabase[cleanCpf];
             if (personFromDb) {
                 setFormData(prev => {
                     const newState = { ...prev };

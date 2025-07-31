@@ -11,7 +11,7 @@ import FiliacaoTab from './tabs/FiliacaoTab';
 import PartesAdicionaisTab from './tabs/PartesAdicionaisTab';
 import DocumentosAnexosTab from './tabs/DocumentosAnexosTab';
 import { livrosDisponiveis } from '../../lib/Constants';
-import { mockDatabase } from '../../lib/Constants';
+import { mockPessoDatabase } from '../../lib/Constants';
 
 
 // --- ESTADO INICIAL (ATUALIZADO) ---
@@ -208,7 +208,7 @@ export default function RegistroCasamentoForm() {
         const currentPathKey = pathPrefix.join('.');
         setSearchingCpf(currentPathKey);
         setTimeout(() => {
-            const personFromDb = mockDatabase[cleanCpf];
+            const personFromDb = mockPessoDatabase[cleanCpf];
             if (personFromDb) {
                 setFormData(prev => {
                     const newState = { ...prev };

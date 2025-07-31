@@ -56,7 +56,7 @@ export interface IPessoaJuridica {
     razaoSocial: string;
     nomeFantasia?: string;
     cnpj: string;
-    socioAdministrativo?: string; 
+    socioAdministrativo?: string;
     qsa?: ISocio[];
     endereco: IEndereco;
 }
@@ -418,7 +418,7 @@ export interface ITrasladoNascimentoData {
         nome: string;
         dataNascimento: string;
         localNascimento: string; // Cidade e país
-        sexo: ''|'Masculino' | 'Feminino' | 'Ignorado';
+        sexo: '' | 'Masculino' | 'Feminino' | 'Ignorado';
     };
     filiacao: {
         nomePai?: string;
@@ -490,11 +490,11 @@ export interface ITrasladoObitoData {
 }
 
 export interface ITrasladoExterior {
-    tipoTraslado: ""|"nascimento" | "casamento" | "obito";
+    tipoTraslado: "" | "nascimento" | "casamento" | "obito";
     requerente: Partial<IPessoaFisica>;
     dadosCertidaoOrigem: {
         tipo: '' | 'consular' | 'estrangeira';
-        detalhes: string; 
+        detalhes: string;
         serventia: string;
         dataEmissao: string;
         matriculaOuReferencia: string;
@@ -529,8 +529,54 @@ export interface ILivroEFormData {
     historico: IHistoricoEntry[];
 }
 
+//interfaces e tipos para certidão
+
+export type CertidaoStatus = 'Emitida' | 'Pendente' | 'Retirada' | 'Cancelada';
+export type AtoOriginalTipo = 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E'; 
+export interface CertidaoRequest {
+    id: number;
+    protocolo: string;
+    tipoAto: AtoOriginalTipo;
+    tipoCertidao: string;
+    formato: 'Física' | 'Digital';
+    atoOriginal: {
+        nomePrincipal: string;
+        matricula: string;
+    };
+    solicitante: string;
+    dataSolicitacao: string;
+    dataEmissao?: string;
+    status: CertidaoStatus;
+}
+
 export type CertidaoOption = {
     id: number;
     tipo_ato: number | null; // Chave (código do ato) para a tabela de emolumentos
     titulo_servico: string;    // Texto exibido para o usuário
 };
+
+export type AverbacaoOption = {
+    id: number;
+    tipo_ato: number | null; // Chave (código do ato) para a tabela de emolumentos
+    titulo_servico: string;    // Texto exibido para o usuário
+};
+
+export type Etapa = 'SOLICITACAO' | 'EMISSAO' | 'PAGAMENTO';
+export type StatusPedido = 'Montagem' | 'Solicitacao' | 'Emitido' | 'Pagamento Pendente' | 'Finalizado' | 'Cancelado';
+
+export interface PedidoState {
+    etapa: Etapa;
+    status: StatusPedido;
+    atoEncontrado: any | null;
+    requerente: { tipo: 'fisica' | 'juridica'; nome?: string; cpf?: string; razaoSocial?: string; cnpj?: string; };
+    configuracao: { tipoCertidao: number | ''; formato: 'Física (Papel de Segurança)' | 'Digital (PDF)'; valores: { emolumentos: number; fundos: number; taxas: number; total: number; }; };
+    textoCertidao: string;
+    textoCertidaoVerso: string;
+    selo: string | null;
+    pagamento: {
+        metodo: 'dinheiro' | 'credito' | 'debito' | 'pix' | 'boleto' | 'caixa' | '';
+        status: 'pendente' | 'pago';
+        comprovante: File | null;
+    };
+    motivoCancelamento?: string;
+}

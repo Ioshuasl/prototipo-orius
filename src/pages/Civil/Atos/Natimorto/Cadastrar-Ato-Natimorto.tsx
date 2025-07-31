@@ -4,7 +4,7 @@ import { BookKey, Feather, Users, HelpCircle, UserCheck, Paperclip, Save, XCircl
 import { type INatimortoFormData, type IPessoaFisica, type IEndereco } from '../../types';
 import PersonFields from '../../Components/PersonFields';
 import HistoricoModal from '../../Components/HistoricoModal';
-import { mockDatabase } from '../../lib/Constants';
+import { mockPessoDatabase } from '../../lib/Constants';
 import InfoModal from '../../Components/InfoModal';
 
 
@@ -102,7 +102,7 @@ export default function CadastrarAtoNatimortoForm() {
         const currentPathKey = pathPrefix.join('.');
         setSearchingCpf(currentPathKey);
         setTimeout(() => {
-            const personFromDb = mockDatabase[cleanCpf];
+            const personFromDb = mockPessoDatabase[cleanCpf];
             if (personFromDb) {
                 setFormData(prev => {
                     const newState = JSON.parse(JSON.stringify(prev));

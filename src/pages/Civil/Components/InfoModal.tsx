@@ -15,7 +15,7 @@ export default function InfoModal({ isOpen, onClose, title, children }: InfoModa
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 animate-fade-in-fast"
+      className="fixed inset-0 z-50 flex justify-center items-center p-4 animate-fade-in-fast bg-gray-900/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 

@@ -160,3 +160,28 @@ export const infoTrasladoExterior = {
         </div>
     )
 };
+
+// 11. Formato da Averbação (Adicionado anteriormente)
+export const infoFormatoAverbacao = {
+    title: 'Formatos de Averbação: Etiqueta ou A4?',
+    content: (
+        <div className="space-y-4">
+            <p className="font-semibold">Em resumo: o termo da averbação é registrado em formato de etiqueta ou digitalmente no livro. A folha A4 é usada para a nova certidão atualizada que se entrega ao cliente.</p>
+            
+            <div>
+                <h3 className="font-bold text-gray-800 mb-2">1. O Ato de Averbar (No Livro do Cartório)</h3>
+                <p>O ato de "averbar" significa anotar uma mudança na margem do registro original. Isso pode ser feito de duas formas principais:</p>
+                <ul className="list-disc list-inside pl-4 mt-2 space-y-1">
+                    <li><strong>Etiqueta Impressa (Livros Físicos):</strong> O texto do termo de averbação é impresso em uma etiqueta de segurança e colado diretamente na margem da folha do livro físico. Esta é a prática moderna mais comum.</li>
+                    <li><strong>Registro Digital (Acervo Eletrônico):</strong> Em sistemas digitais, a averbação é um novo registro de texto vinculado eletronicamente ao registro original, sem alterar o dado antigo.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 className="font-bold text-gray-800 mb-2">2. A Emissão da Certidão (Para o Cliente)</h3>
+                <p>O formato A4 (em papel de segurança) é utilizado para o documento final que é entregue ao cliente: a <strong>Certidão</strong>.</p>
+                <p className="mt-2">Quando um cliente solicita uma 2ª via atualizada, o sistema gera um novo documento A4 que combina os dados do registro original com o texto de todas as averbações existentes, apresentando-as no campo "Anotações e Averbações".</p>
+            </div>
+        </div>
+    )
+};

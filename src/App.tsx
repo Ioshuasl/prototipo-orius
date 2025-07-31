@@ -22,6 +22,8 @@ import GerenciamentoCertidoesPage from './pages/Civil/Certidao/Gerenciamento-Cer
 import ConfiguracaoCartorio from './pages/Civil/Config/DadosCartorio'
 import GerenciamentoLivrosPage from './pages/Civil/Livro/GerenciamentoLivros'
 import LivroFormPage from './pages/Civil/Livro/Livro'
+import GerenciamentoAverbacoesPage from './pages/Civil/Averbacao/Gerenciamento-Averbacoes'
+import EmissaoAverbacao from './pages/Civil/Averbacao/EmissaoAverbacao'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -98,9 +100,9 @@ function App() {
           <Route path="certidoes/:id" element={<EmissaoCertidao />} />
 
           {/* Rotas aninhadas para Averbações */}
-          <Route path="certidoes" element={<PlaceholderPage title="Gerenciamento de Averbações" />} />
-          <Route path="certidoes/emitir" element={<PlaceholderPage title="Emitir averbação" />} />
-          <Route path="certidoes/:id" element={<PlaceholderPage title="Averbação" />} />
+          <Route path="averbacoes" element={<GerenciamentoAverbacoesPage />} />
+          <Route path="averbacoes/emitir" element={<EmissaoAverbacao />} />
+          <Route path="averbacoes/:id" element={<EmissaoAverbacao/>} />
 
           {/* Rotas de Livro */}
           <Route path="livros" element={<GerenciamentoLivrosPage />} />

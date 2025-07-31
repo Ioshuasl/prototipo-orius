@@ -73,6 +73,7 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Cartório', path: 'config/cartorio' },
             { label: 'Certidão', path: 'config/certidao' },
             { label: 'Averbação', path: 'config/averbacao' },
+            { label: 'Pessoas Cadastradas', path: 'config/pessoa-cadatrada'},
             { label: 'Usuários', path: 'config/usuarios', roles: ['admin'] },
         ]
     },

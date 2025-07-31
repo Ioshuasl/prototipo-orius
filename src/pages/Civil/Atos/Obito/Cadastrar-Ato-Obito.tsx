@@ -6,7 +6,7 @@ import {
 
 // Importações ajustadas para o seu projeto. Garanta que os caminhos estejam corretos.
 import { type IObitoFormData, type IPessoaFisica, type IEndereco, type IPessoaJuridica, type TPessoaTipo } from '../../types'
-import { livrosDisponiveis, ufs, mockDatabase } from '../../lib/Constants'
+import { livrosDisponiveis, ufs, mockPessoDatabase } from '../../lib/Constants'
 import HistoricoModal from '../../Components/HistoricoModal';
 import InfoModal from '../../Components/InfoModal'
 import TabControle from './tabs/TabControle'
@@ -231,7 +231,7 @@ export default function AtoObitoForm() {
         const currentPathKey = pathPrefix.join('.');
         setSearchingCpf(currentPathKey);
         setTimeout(() => {
-            const personFromDb = mockDatabase[cleanCpf];
+            const personFromDb = mockPessoDatabase[cleanCpf];
             if (personFromDb) {
                 setFormData(prev => {
                     const newState = { ...prev };

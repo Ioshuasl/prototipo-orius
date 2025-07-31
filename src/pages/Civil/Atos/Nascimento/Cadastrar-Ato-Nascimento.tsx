@@ -3,7 +3,7 @@ import { Baby, UploadCloud, Users, FileText, Save, XCircle, BookKey, Award, Plus
 import PersonFields from '../../Components/PersonFields';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
-import { livrosDisponiveis } from '../../lib/Constants';
+import { livrosDisponiveis, mockPessoDatabase } from '../../lib/Constants';
 import { type INascimentoFormData, type IPessoaFisica, type IEndereco, type TPessoaTipo, type IPessoaJuridica } from '../../types';
 import HistoricoModal from '../../Components/HistoricoModal';
 import SeletorDePessoa from '../../Components/SeletorDePessoa';
@@ -35,12 +35,6 @@ const initialState: INascimentoFormData = {
         { data: '2024-11-19T14:30:00Z', evento: 'Rascunho do ato salvo por Oficial Exemplo.', usuario: 'oficial.exemplo' },
         { data: '2024-11-19T14:00:00Z', evento: 'Rascunho do ato criado no sistema.', usuario: 'oficial.exemplo' },
     ]
-};
-
-// --- BANCO DE DADOS FAKE ---
-const mockDatabase: { [key: string]: Omit<IPessoaFisica, 'endereco'> } = {
-    "11111111111": { tipo: 'fisica', nome: "Fulano de Tal da Silva", cpf: "111.111.111-11", dataNascimento: "1980-01-15", docIdentidadeTipo: "RG", docIdentidadeNum: "1234567", estadoCivil: "Casado(a)", regimeBens: "Comunhão Parcial de Bens", profissao: "Engenheiro(a)", nacionalidade: "Brasileira", naturalidadeCidade: "São Paulo", naturalidadeUF: "SP", nomePai: "Pai do Fulano", nomeMae: "Mãe do Fulano" },
-    "22222222222": { tipo: 'fisica', nome: "Ciclana de Souza", cpf: "222.222.222-22", dataNascimento: "1985-05-20", docIdentidadeTipo: "CNH", docIdentidadeNum: "9876543", estadoCivil: "Solteiro(a)", regimeBens: "Não se aplica", profissao: "Advogada", nacionalidade: "Brasileira", naturalidadeCidade: "Rio de Janeiro", naturalidadeUF: "RJ", nomePai: "Pai da Ciclana", nomeMae: "Mãe da Ciclana" }
 };
 
 // --- DEFINIÇÃO DAS ABAS ---
@@ -314,7 +308,7 @@ export default function RegistroNascimentoForm() {
         const currentPathKey = pathPrefix.join('.');
         setSearchingCpf(currentPathKey);
         setTimeout(() => {
-            const personFromDb = mockDatabase[cleanCpf];
+            const personFromDb = mockPessoDatabase[cleanCpf];
             if (personFromDb) {
                 setFormData(prev => {
                     const newState = JSON.parse(JSON.stringify(prev));
