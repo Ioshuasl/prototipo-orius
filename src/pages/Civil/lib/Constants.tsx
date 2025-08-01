@@ -1,4 +1,4 @@
-import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade, type ITemplate, type CertidaoTemplate } from "../types";
+import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade, type ITemplate, type CertidaoTemplate, type AverbacaoTemplate, type ReciboTemplate, type ISeloAvulsoFormData } from "../types";
 import { certidaoCasamentoHTML, certidaoInteiroTeorHTML, certidaoNascimentoHTML, certidaoObitoHTML } from '../Certidao/ModeloCertidao/templates';
 
 export const ufs = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
@@ -253,7 +253,6 @@ export const mockAtosDatabase: any[] = [
     },
 ];
 
-// ATUALIZAÇÃO: Constante refeita com os novos dados e códigos de tipo_ato
 export const certidaoPorAto: Record<string, CertidaoOption[]> = {
     Nascimento: [
         { id: 1, tipo_ato: 3004, titulo_servico: 'Certidão de 1ª via' },
@@ -435,6 +434,78 @@ export const mockLogsDatabase: ILogAtividade[] = [
     { id: 2, userId: 102, dataHora: '2025-07-30 10:05:40', acao: 'CRIAÇÃO DE ATO', detalhes: 'Criou o registro de nascimento, protocolo N-12345.' },
     { id: 3, userId: 102, dataHora: '2025-07-30 09:30:11', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 200.10.20.30' },
     { id: 4, userId: 101, dataHora: '2025-07-29 18:00:00', acao: 'ATUALIZAÇÃO DE CARGO', detalhes: 'Editou as permissões do cargo "Escrevente Auxiliar".' },
+
+    // NOVOS DADOS ADICIONADOS CONFORME SOLICITADO
+    { 
+        id: 5, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 09:15:00', 
+        acao: 'LAVROU_ATO', 
+        detalhes: 'Lavrou o ato de Casamento, protocolo 2024-C-67890.' 
+    },
+    { 
+        id: 6, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 09:45:30', 
+        acao: 'ALTEROU_ATO', 
+        detalhes: 'Alterou dados (anotações) no registro de Óbito, protocolo 2025-O-54321.' 
+    },
+    { 
+        id: 7, 
+        userId: 103, // Carla Auxiliar
+        dataHora: '2025-08-01 10:30:00', 
+        acao: 'EMITIU_CERTIDAO', 
+        detalhes: 'Emitiu certidão de 2ª via de Nascimento para o protocolo 2025-N-12345.' 
+    },
+    { 
+        id: 8, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 11:05:10', 
+        acao: 'IMPRIMIU_LIVRO_PROTOCOLO', 
+        detalhes: 'Imprimiu o Livro de Protocolo com filtros: Data de 2025-07-15 a 2025-07-21.' 
+    },
+    { 
+        id: 9, 
+        userId: 103, // Carla Auxiliar
+        dataHora: '2025-08-01 14:22:00', 
+        acao: 'EMITIU_SELO_AVULSO', 
+        detalhes: 'Finalizou a solicitação de selo avulso, protocolo SA-2025-00103 (Apostilamento de Haia).' 
+    },
+    { 
+        id: 10, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 15:00:00', 
+        acao: 'ALTEROU_TEMPLATE_CABECALHO', 
+        detalhes: 'Modificou o template de cabeçalho "Cabeçalho Padrão com Brasão" (ID: 1).' 
+    },
+    { 
+        id: 11, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 15:10:25', 
+        acao: 'ALTEROU_TEMPLATE_RODAPE', 
+        detalhes: 'Modificou o template de rodapé "Rodapé Padrão com Endereço" (ID: 3).' 
+    },
+    { 
+        id: 12, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 16:00:00', 
+        acao: 'ALTEROU_CONFIG_AVERBACAO', 
+        detalhes: 'Modificou o modelo de averbação "Divórcio Consensual (Padrão)" (ID: AVRB-CAS-001).' 
+    },
+    { 
+        id: 13, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 16:30:00', 
+        acao: 'ALTEROU_CONFIG_CERTIDAO', 
+        detalhes: 'Modificou o modelo de certidão "Certidão de Casamento - Segunda Via" (ID: CERT-CAS-001).' 
+    },
+    { 
+        id: 14, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 17:00:00', 
+        acao: 'ALTEROU_DADOS_SERVENTIA', 
+        detalhes: 'Alterou os dados da serventia (CNS, Endereço e CEP).'
+    }
 ];
 
 export const mockHeaderFooterTemplates: ITemplate[] = [
@@ -478,41 +549,300 @@ export const mockCertidaoTemplates: CertidaoTemplate[] = [
         tipoAto: "Nascimento",
         titulo: "Certidão de Nascimento - Segunda Via",
         descricao: "Modelo padrão para emissão de segundas vias de certidões de nascimento.",
+        id_selo: 3001,
         cabecalhoPadraoId: "CAB-001",
         rodapePadraoId: "ROD-001",
         conteudo: certidaoNascimentoHTML,
-        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 297 }
     },
     {
         id: "CERT-NASC-002",
         tipoAto: "Nascimento",
         titulo: "Certidão de Nascimento - Inteiro Teor",
         descricao: "Modelo completo com todas as informações e averbações do registro.",
+        id_selo: 3004,
         cabecalhoPadraoId: "CAB-001",
         rodapePadraoId: "ROD-001",
         conteudo: certidaoInteiroTeorHTML,
-        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 297 }
     },
     {
         id: "CERT-CAS-001",
         tipoAto: "Casamento",
         titulo: "Certidão de Casamento - Segunda Via",
         descricao: "Modelo padrão para segundas vias de certidões de casamento.",
+        id_selo: 3001,
         cabecalhoPadraoId: "CAB-001",
         rodapePadraoId: "ROD-001",
         conteudo: certidaoCasamentoHTML,
-        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
-
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 297 }
     },
     {
         id: "CERT-OBITO-001",
         tipoAto: "Óbito",
         titulo: "Certidão de Óbito - Padrão",
         descricao: "Modelo padrão para emissão de certidões de óbito.",
+        id_selo: 3005,
         cabecalhoPadraoId: "CAB-001",
         rodapePadraoId: "ROD-001",
         conteudo: certidaoObitoHTML,
-        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' }
-
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 297 }
     },
+];
+
+export const mockAverbacaoTemplates: AverbacaoTemplate[] = [
+    {
+        id: "AVRB-NASC-001",
+        tipoAto: "Nascimento",
+        averbacaoOptionId: 1,
+        titulo: "Reconhecimento de Paternidade (Padrão)",
+        descricao: "Modelo padrão para averbar o reconhecimento de paternidade/maternidade em registros de nascimento.",
+        id_selo: 2999, // Averbação de Retificação, de separação, de divórcio, etc.
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        conteudo: "<p>Texto padrão para reconhecimento de paternidade...</p>",
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 150 }
+    },
+    {
+        id: "AVRB-NASC-002",
+        tipoAto: "Nascimento",
+        averbacaoOptionId: 4,
+        titulo: "Adoção Simples (Sentença Judicial)",
+        descricao: "Modelo para averbação de adoção com base em sentença judicial.",
+        id_selo: 2997, // Registro de adoção e de emancipação...
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        conteudo: "<p>Modelo para averbação de adoção...</p>",
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 150 }
+    },
+    {
+        id: "AVRB-CAS-001",
+        tipoAto: "Casamento",
+        averbacaoOptionId: 10,
+        titulo: "Divórcio Consensual (Padrão)",
+        descricao: "Modelo padrão para averbação de divórcio em registros de casamento.",
+        id_selo: 2999, // Averbação de Retificação, de separação, de divórcio, etc.
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        conteudo: "<p>Texto padrão para averbação de divórcio...</p>",
+        margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
+        layout: { largura_mm: 210, altura_mm: 150 }
+    },
+];
+
+export const mockReciboTemplates: ReciboTemplate[] = [
+    {
+        id: 'REC-1',
+        titulo: 'Recibo Padrão - 2ª Via de Nascimento',
+        descricao: 'Modelo de recibo para emissão de segundas vias de certidões de nascimento.',
+        tipoRecibo: 'Segunda Via',
+        id_selo: 1001,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: 'ROD-1',
+        conteudo: '<p>Recibo referente à segunda via da certidão de nascimento de {{ NOME_REGISTRADO }}.</p>',
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    },
+    {
+        id: 'REC-2',
+        titulo: 'Recibo para Averbação de Divórcio',
+        descricao: 'Recibo específico para os emolumentos cobrados na averbação de divórcio.',
+        tipoRecibo: 'Averbação',
+        id_selo: 2050,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: null,
+        conteudo: '<p>Recibo dos serviços de averbação de divórcio na matrícula {{ MATRICULA_CERTIDAO }}.</p>',
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    },
+    {
+        id: 'REC-3',
+        titulo: 'Recibo - 2ª Via de Casamento',
+        descricao: 'Modelo de recibo para emissão de segundas vias de certidões de casamento.',
+        tipoRecibo: 'Segunda Via',
+        id_selo: 1002,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: 'ROD-1',
+        conteudo: '<p>Recibo referente à segunda via da certidão de casamento de {{ NOME_REGISTRADO }}.</p>',
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    },
+     {
+        id: 'REC-4',
+        titulo: 'Recibo para Busca de Registro',
+        descricao: 'Recibo para o serviço de busca de registros nos livros do cartório.',
+        tipoRecibo: 'Busca de Registro',
+        id_selo: 4001,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: 'ROD-1',
+        conteudo: '<p>Recibo referente ao serviço de busca de atos de registro civil.</p>',
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    }
+];
+
+
+export const mockSelosAvulsos: ISeloAvulsoFormData[] = [
+    {
+        protocolo: 'SA-2025-00101',
+        dataSolicitacao: '2025-07-28',
+        status: 'Finalizado',
+        requerente: {
+            tipo: 'fisica',
+            nome: 'Carlos Mendes de Oliveira',
+            cpf: '123.456.789-00',
+        },
+        referenciaAto: {
+            nomePartePrincipal: 'Carlos Mendes de Oliveira e Juliana Paes de Almeida',
+            tipoAto: 'Casamento',
+            dataRegistro: '2010-05-15',
+        },
+        selosSolicitados: [
+            {
+                id: 1,
+                id_selo: 2999,
+                descricao: 'Averbação de Divórcio',
+                quantidade: 1,
+                valorUnitario: 181.21,
+                valorTotal: 181.21,
+                numeroSeloGerado: '03132412025883621400123',
+            }
+        ],
+        observacaoGeral: 'Referente à averbação de divórcio consensual conforme sentença.',
+        valores: {
+            emolumentos: 181.21,
+            fundos: 0.00, 
+            taxas: 0.00, 
+            total: 181.21,
+        },
+        pagamento: {
+            metodo: 'pix',
+            status: 'pago',
+        },
+    },
+    {
+        protocolo: 'SA-2025-00102',
+        dataSolicitacao: '2025-07-29',
+        status: 'Em Aberto',
+        requerente: {
+            tipo: 'juridica',
+            razaoSocial: 'Construtora Alfa Ltda.',
+            cnpj: '11.222.333/0001-44',
+        },
+        referenciaAto: {
+            nomePartePrincipal: 'Contrato Social da Construtora Alfa Ltda.',
+            tipoAto: 'Nascimento',
+            dataRegistro: '2018-01-20',
+        },
+        selosSolicitados: [
+            {
+                id: 1,
+                id_selo: 2430,
+                descricao: 'Reconhecimento de Firma por Autenticidade',
+                quantidade: 3,
+                valorUnitario: 7.11, 
+                valorTotal: 21.33,
+            },
+            {
+                id: 2,
+                id_selo: 2433,
+                descricao: 'Autenticação de Cópia de Documento',
+                quantidade: 5,
+                valorUnitario: 5.32, 
+                valorTotal: 26.60,
+            }
+        ],
+        observacaoGeral: 'Reconhecimento de firma dos sócios e autenticação de cópias do contrato social e do alvará.',
+        valores: {
+            emolumentos: 47.93,
+            fundos: 0.00,
+            taxas: 0.00,
+            total: 47.93,
+        },
+        pagamento: {
+            metodo: '',
+            status: 'pendente',
+        },
+    },
+    {
+        protocolo: 'SA-2025-00103',
+        dataSolicitacao: '2025-07-30',
+        status: 'Finalizado',
+        requerente: {
+            tipo: 'fisica',
+            nome: 'Mariana Costa e Silva',
+            cpf: '987.654.321-00',
+        },
+        referenciaAto: {
+            nomePartePrincipal: 'Helena da Silva Santos',
+            tipoAto: 'Nascimento',
+            dataRegistro: '2025-03-18',
+        },
+        selosSolicitados: [
+            {
+                id: 1,
+                // CORREÇÃO: id_selo alterado de 3006 para 3007 (Apostilamento no Registro Civil)
+                id_selo: 3007,
+                descricao: 'Apostilamento de Haia em Certidão de Nascimento',
+                quantidade: 1,
+                valorUnitario: 71.04, 
+                valorTotal: 71.04,
+                numeroSeloGerado: '03132412025883621400456',
+            }
+        ],
+        observacaoGeral: 'Apostilamento para fins de dupla cidadania (Itália).',
+        valores: {
+            emolumentos: 71.04,
+            fundos: 0.00,
+            taxas: 0.00,
+            total: 71.04,
+        },
+        pagamento: {
+            metodo: 'credito',
+            status: 'pago',
+        },
+    },
+    {
+        protocolo: 'SA-2025-00104',
+        dataSolicitacao: '2025-07-31',
+        status: 'Cancelado',
+        requerente: {
+            tipo: 'fisica',
+            nome: 'Ricardo Pereira Gomes',
+            cpf: '555.444.333-22',
+        },
+        referenciaAto: {
+            nomePartePrincipal: 'Roberto Almeida',
+            tipoAto: 'Óbito',
+            dataRegistro: '2025-07-21',
+        },
+        selosSolicitados: [
+            {
+                id: 1,
+                // CORREÇÃO: id_selo alterado de 4001 para 3072 (Busca em livros)
+                id_selo: 3072,
+                descricao: 'Busca de Registro de Óbito',
+                quantidade: 1,
+                valorUnitario: 17.77, 
+                valorTotal: 17.77,
+            }
+        ],
+        observacaoGeral: 'Pedido cancelado a pedido do solicitante. Informou que já localizou o registro em outra serventia.',
+        valores: {
+            emolumentos: 17.77,
+            fundos: 0.00,
+            taxas: 0.00,
+            total: 17.77,
+        },
+        pagamento: {
+            metodo: '',
+            status: 'pendente',
+        },
+    }
 ];

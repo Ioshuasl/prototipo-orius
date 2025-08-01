@@ -12,14 +12,12 @@ export interface Colunas {
     folha: boolean;
 }
 
-// Define a estrutura para as margens (em cm)
 export interface Margens {
     top: string;
     bottom: string;
     left: string;
     right: string;
 }
-
 
 // Define a estrutura da configuração completa, agora com o template do cabeçalho
 export interface Configuracao {

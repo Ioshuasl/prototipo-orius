@@ -52,6 +52,7 @@ export default function LivroFormPage() {
             folha: true,
         },
         templateCabecalho: 'modelo1',
+        margens: { top: '1.5', bottom: '1.5', left: '1', right: '1' },
     });
 
     const dadosCartorio = {
@@ -290,7 +291,7 @@ export default function LivroFormPage() {
                             @media print {
                                 @page {
                                     size: A4;
-                                    margin: 0cm 0.5cm 1cm 0.5cm;
+                                    margin: ${configuracaoImpressao.margens.top}cm ${configuracaoImpressao.margens.right}cm ${configuracaoImpressao.margens.bottom}cm ${configuracaoImpressao.margens.left}cm;
 
                                     @bottom-center {
                                         content: "Página " counter(page) " de " counter(pages);

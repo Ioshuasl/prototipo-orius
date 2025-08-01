@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Book, BookKey, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon } from 'lucide-react';
+import { Book, BookKey, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon } from 'lucide-react';
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
 
@@ -32,7 +32,7 @@ export const menuConfig: MenuItemConfig[] = [
     {
         title: 'Dashboard',
         icon: BarChart2,
-        path: '/registro-civil/dashboard',
+        path: 'dashboard',
         roles: ['admin', 'oficial']
     },
     {
@@ -40,36 +40,50 @@ export const menuConfig: MenuItemConfig[] = [
         icon: Book,
         roles: ['admin', 'oficial', 'escrevente'],
         subItems: [
-            { label: 'Nascimento', path: '/registro-civil/nascimento' },
-            { label: 'Casamento', path: '/registro-civil/casamento' },
-            { label: 'Óbito', path: '/registro-civil/obito' },
-            { label: 'Natimorto', path: '/registro-civil/natimorto' },
-            { label: 'Livro E', path: '/registro-civil/livro-e', roles: ['admin', 'oficial'] },
+            { label: 'Nascimento', path: 'nascimento' },
+            { label: 'Casamento', path: 'casamento' },
+            { label: 'Óbito', path: 'obito' },
+            { label: 'Natimorto', path: 'natimorto' },
+            { label: 'Livro E', path: 'livro-e', roles: ['admin', 'oficial'] },
         ]
     },
     {
         title: 'Certidões',
         icon: FileText,
-        path: '/registro-civil/certidoes',
+        path: 'certidoes',
         roles: ['admin', 'oficial', 'escrevente']
     },
     {
         title: 'Averbações',
         icon: FilePlus2,
-        path: '/registro-civil/averbacoes',
+        path: 'averbacoes',
         roles: ['admin', 'oficial', 'escrevente']
+    },
+    {
+        title: 'Selo Avulso',
+        icon: StampIcon,
+        path:'selo-avulso'
     },
     {
         title: 'Livros',
         icon: BookOpen,
-        path: '/registro-civil/livros',
+        path: 'livros',
         roles: ['admin', 'oficial'],
+    },
+    {
+        title: 'Integrações',
+        icon: FolderSyncIcon,
+        subItems: [
+            { label: 'CRC', path: 'integracoes/crc'},
+            { label: 'SIRC', path: 'integracoes/sirc'}
+        ]
     },
     {
         title: 'Impressões',
         icon: PrinterIcon,
         subItems: [
-            { label: 'Livro de Protocolo', path: '/registro-civil/livro-protocolo'},
+            { label: 'Livro de Protocolo', path: 'impressao/livro-protocolo'},
+            { label: 'Relatório de Atividades', path: 'impressao/relatorio-atividades'}
         ]
     },
     {
@@ -83,7 +97,9 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Pessoas Cadastradas', path: 'config/pessoas'},
             { label: 'Usuários', path: 'config/users'},
             { label: 'Cargo e Permissões', path: 'config/roles-permissions'},
-            { label: 'Cabeçalhos e Rodapés', path: 'config/templates-cabecalho-rodape'}
+            { label: 'Cabeçalhos e Rodapés', path: 'config/templates-cabecalho-rodape'},
+            { label: 'Recibo', path: 'config/recibo'},
+            { label: 'Emolumentos', path: 'config/emolumentos'}
         ]
     }
 ];
@@ -169,7 +185,7 @@ function AccordionMenuItem({ item, isOpen, isCollapsed, onToggle }: AccordionMen
                                 <NavLink
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                        `relative block p-2 text-sm rounded-md transition-colors ${isActive ? activeSubItemClass : defaultSubItemClass}`
+                                        `relative font-semibold block p-2 text-sm rounded-md transition-colors ${isActive ? activeSubItemClass : defaultSubItemClass}`
                                     }
                                 >
                                     {subItem.label}
@@ -280,7 +296,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 </ul>
             </nav>
 
-            <div className="pt-4 mt-4 border-t border-gray-700">
+            <div className="pt-4 mt-4">
                 <button 
                     onClick={onToggle}
                     className="w-full flex items-center p-3 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"

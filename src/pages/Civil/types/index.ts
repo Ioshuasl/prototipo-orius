@@ -613,37 +613,37 @@ export interface ILogAtividade {
 }
 
 export interface ITemplate {
-  id: number;
-  nome: string; // Ex: "Cabeçalho Padrão com Brasão"
-  tipo: 'cabecalho' | 'rodape';
-  conteudo: string; // O HTML gerado pelo MainEditor
-  isPadrao: boolean; // Indica se este é o template default para seu tipo
-  dataModificacao: string;
+    id: number;
+    nome: string; // Ex: "Cabeçalho Padrão com Brasão"
+    tipo: 'cabecalho' | 'rodape';
+    conteudo: string; // O HTML gerado pelo MainEditor
+    isPadrao: boolean; // Indica se este é o template default para seu tipo
+    dataModificacao: string;
 }
 
 export type TipoAto = "Nascimento" | "Casamento" | "Óbito" | "Natimorto" | "Livro E";
 
 // Esta seria a nossa "entidade" para um Tipo de Certidão
 export interface ITipoCertidao {
-  id: number;
-  titulo: string; // Ex: "Certidão de Inteiro Teor de Nascimento"
-  descricao: string; // "Modelo completo com todas as informações do registro."
-  
-  // Para qual ato principal esta certidão se aplica?
-  atoOriginal: 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E';
+    id: number;
+    titulo: string; // Ex: "Certidão de Inteiro Teor de Nascimento"
+    descricao: string; // "Modelo completo com todas as informações do registro."
 
-  // Chave para a tabela de emolumentos/custas
-  codigoEmolumento: number | null;
+    // Para qual ato principal esta certidão se aplica?
+    atoOriginal: 'Nascimento' | 'Casamento' | 'Óbito' | 'Natimorto' | 'Livro E';
 
-  // Vinculação com os templates que criamos anteriormente
-  templateCabecalhoPadraoId: number | null; // ID do template de cabeçalho default
-  templateRodapePadraoId: number | null;   // ID do template de rodapé default
+    // Chave para a tabela de emolumentos/custas
+    codigoEmolumento: number | null;
 
-  // O corpo/modelo principal da certidão
-  modeloConteudo: string; // HTML que será editado no MainEditor
+    // Vinculação com os templates que criamos anteriormente
+    templateCabecalhoPadraoId: number | null; // ID do template de cabeçalho default
+    templateRodapePadraoId: number | null;   // ID do template de rodapé default
 
-  // (Recurso Avançado) Quais variáveis dinâmicas este modelo pode usar?
-  camposDisponiveis: string[]; // Ex: ['{{nome_registrando}}', '{{cpf_registrando}}', etc.]
+    // O corpo/modelo principal da certidão
+    modeloConteudo: string; // HTML que será editado no MainEditor
+
+    // (Recurso Avançado) Quais variáveis dinâmicas este modelo pode usar?
+    camposDisponiveis: string[]; // Ex: ['{{nome_registrando}}', '{{cpf_registrando}}', etc.]
 }
 
 export interface CertidaoTemplate {
@@ -651,6 +651,7 @@ export interface CertidaoTemplate {
     tipoAto: TipoAto;
     titulo: string;
     descricao: string;
+    id_selo: number | null;
     cabecalhoPadraoId: string | null;
     rodapePadraoId: string | null;
     conteudo: string;
@@ -659,5 +660,107 @@ export interface CertidaoTemplate {
         right: string;
         bottom: string;
         left: string;
+    };
+    layout: {
+        largura_mm: number;
+        altura_mm: number;
+    };
+}
+
+export interface AverbacaoTemplate {
+    id: string;
+    tipoAto: TipoAto;
+    averbacaoOptionId: number;
+    titulo: string;
+    descricao: string;
+    id_selo: number | null;
+    cabecalhoPadraoId: string | null;
+    rodapePadraoId: string | null;
+    conteudo: string;
+    margins: {
+        top: string;
+        right: string;
+        bottom: string;
+        left: string;
+    };
+    layout: {
+        largura_mm: number;
+        altura_mm: number;
+    };
+}
+
+export type TipoRecibo =
+    "Segunda Via" |
+    "Averbação" |
+    "Habilitação de Casamento" |
+    "Busca de Registro" |
+    "Apostilamento" |
+    "Outros";
+
+// A estrutura principal do modelo de recibo
+export type ReciboTemplate = {
+    id: string;
+    titulo: string;
+    descricao: string;
+    tipoRecibo: TipoRecibo;
+    id_selo: number | null;
+    cabecalhoPadraoId: string | null;
+    rodapePadraoId: string | null;
+    conteudo: string;
+    margins: {
+        top: string;
+        right: string;
+        bottom: string;
+        left: string;
+    };
+    layout: {
+        largura_mm: number;
+        altura_mm: number;
+    };
+};
+
+export type SeloAvulsoStatus = 'Em Aberto' | 'Finalizado' | 'Cancelado';
+
+export interface ISeloAvulsoItem {
+    id: number; // ID único para o item na lista (para controle de UI)
+    id_selo: number; // O código do ato/selo na tabela de emolumentos
+    descricao: string; // Descrição do serviço (ex: "Averbação de Divórcio")
+    quantidade: number;
+    valorUnitario: number; // O valor de um único selo
+    valorTotal: number; // quantidade * valorUnitario
+    numeroSeloGerado?: string; // O número do selo digital gerado após a emissão
+}
+
+export interface ISeloAvulsoFormData {
+    // --- Controle do Pedido ---
+    protocolo: string; // Protocolo gerado para este pedido de selo avulso
+    dataSolicitacao: string; // Data em que o pedido foi criado
+    status: SeloAvulsoStatus;
+
+    // --- Dados do Solicitante (Requerente) ---
+    requerente: { tipo: 'fisica' | 'juridica'; nome?: string; cpf?: string; razaoSocial?: string; cnpj?: string; };
+
+    // --- Dados de Referência do Ato Original ---
+    referenciaAto: {
+        nomePartePrincipal: string; // Nome da pessoa a quem o ato se refere (ex: nome do nascido, cônjuges, etc.)
+        tipoAto: AtoOriginalTipo | ''; // Tipo de ato do registro original
+        dataRegistro: string; // Data em que o ato original foi lavrado
+    };
+
+    // --- Lista de Selos Solicitados ---
+    // Estruturado como um array para permitir múltiplos selos em um único pedido
+    selosSolicitados: ISeloAvulsoItem[];
+
+    // --- Informações Adicionais e Financeiras ---
+    observacaoGeral?: string; // Um campo de observação geral para o pedido
+    valores: {
+        emolumentos: number;
+        fundos: number;
+        taxas: number;
+        total: number;
+    };
+    pagamento: {
+        metodo: 'dinheiro' | 'credito' | 'debito' | 'pix' | 'boleto' | '';
+        status: 'pendente' | 'pago';
     };
 }

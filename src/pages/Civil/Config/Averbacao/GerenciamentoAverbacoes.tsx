@@ -1,32 +1,38 @@
-// Salve como src/pages/GerenciamentoCertidoes.tsx
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { PlusCircle, Edit, Trash2, FileText } from 'lucide-react';
-import { mockCertidaoTemplates } from '../../lib/Constants';
-import { type TipoAto, type CertidaoTemplate } from '../../types';
-
+import { mockAverbacaoTemplates, averbacaoPorAto } from '../../lib/Constants';
+import { type TipoAto, type AverbacaoTemplate } from '../../types';
 
 // --- SUBCOMPONENTE CARD ---
-const CertidaoCard = ({ template, onDelete }: {
-    template: CertidaoTemplate,
+const AverbacaoCard = ({ template, onDelete }: {
+    template: AverbacaoTemplate,
     onDelete: (id: string) => void
 }) => {
+    // Encontra o nome do serviço de averbação para exibição no card
+    const tipoServico = averbacaoPorAto[template.tipoAto]?.find(
+        opt => opt.id === template.averbacaoOptionId
+    )?.titulo_servico;
+
     return (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col transition-all hover:shadow-xl hover:border-blue-300">
             <Link to={`${template.id}`}>
+
                 <div className="p-5 flex-grow">
                     <div className="flex justify-between items-start">
                         <h2 className="text-lg font-bold text-gray-800 pr-4">{template.titulo}</h2>
                     </div>
+                    {tipoServico && (
+                        <p className="text-xs text-blue-600 bg-blue-50 rounded-full px-2 py-1 inline-block mt-2">
+                            {tipoServico}
+                        </p>
+                    )}
                     <p className="text-sm text-gray-500 mt-2 h-12">{template.descricao}</p>
-
-                    <div className="mt-4 space-y-2 text-sm">
-                    </div>
                 </div>
             </Link>
 
-            <div className="mt-4 p-4 border-t bg-gray-50/50 flex justify-end items-center gap-3">
+            <div className="mt-auto p-4 border-t bg-gray-50/50 flex justify-end items-center gap-3">
                 <Link to={`${template.id}`} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full">
                     <Edit size={20} />
                 </Link>
@@ -38,14 +44,13 @@ const CertidaoCard = ({ template, onDelete }: {
     );
 };
 
-
 // --- COMPONENTE PRINCIPAL DA PÁGINA ---
-const GerenciamentoCertidoes: React.FC = () => {
-    const [templates, setTemplates] = useState<CertidaoTemplate[]>(mockCertidaoTemplates);
+const GerenciamentoAverbacoes: React.FC = () => {
+    const [templates, setTemplates] = useState<AverbacaoTemplate[]>(mockAverbacaoTemplates);
     const [activeTab, setActiveTab] = useState<TipoAto>('Nascimento');
 
     const handleDelete = (id: string) => {
-        if (window.confirm("Tem certeza que deseja excluir este modelo de certidão?")) {
+        if (window.confirm("Tem certeza que deseja excluir este modelo de averbação?")) {
             setTemplates(prev => prev.filter(t => t.id !== id));
             toast.success("Modelo excluído com sucesso.");
         }
@@ -64,8 +69,8 @@ const GerenciamentoCertidoes: React.FC = () => {
         <div className="max-w-7xl mx-auto p-6">
             <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-800">Modelos de Certidão</h1>
-                    <p className="text-md text-gray-500 mt-1">Gerencie os modelos utilizados para a emissão de certidões.</p>
+                    <h1 className="text-3xl font-bold text-gray-800">Modelos de Averbação</h1>
+                    <p className="text-md text-gray-500 mt-1">Gerencie os textos padrão utilizados para as averbações nos registros.</p>
                 </div>
                 <Link to="cadastrar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 mt-4 md:mt-0">
                     <PlusCircle className="h-5 w-5" />
@@ -90,7 +95,7 @@ const GerenciamentoCertidoes: React.FC = () => {
             {filteredTemplates.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredTemplates.map(template => (
-                        <CertidaoCard
+                        <AverbacaoCard
                             key={template.id}
                             template={template}
                             onDelete={handleDelete}
@@ -101,11 +106,11 @@ const GerenciamentoCertidoes: React.FC = () => {
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
                     <FileText size={48} className="mx-auto text-gray-400" />
                     <h3 className="mt-4 text-lg font-semibold text-gray-700">Nenhum modelo encontrado</h3>
-                    <p className="mt-1 text-sm text-gray-500">Não há modelos de certidão para o tipo de ato "{activeTab}".</p>
+                    <p className="mt-1 text-sm text-gray-500">Não há modelos de averbação para o tipo de ato "{activeTab}".</p>
                 </div>
             )}
         </div>
     );
 };
 
-export default GerenciamentoCertidoes;
+export default GerenciamentoAverbacoes;

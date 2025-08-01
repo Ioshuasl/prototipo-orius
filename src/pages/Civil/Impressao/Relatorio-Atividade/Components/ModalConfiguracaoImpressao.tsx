@@ -12,20 +12,10 @@ export interface Colunas {
     folha: boolean;
 }
 
-// Define a estrutura para as margens (em cm)
-export interface Margens {
-    top: string;
-    bottom: string;
-    left: string;
-    right: string;
-}
-
-
 // Define a estrutura da configuração completa, agora com o template do cabeçalho
 export interface Configuracao {
     colunas: Colunas;
     templateCabecalho: TemplateCabecalhoId;
-    margens: Margens;
 }
 
 // Define as props que o modal receberá
@@ -68,17 +58,6 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
         }));
     };
 
-    const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setTempConfig(prev => ({
-            ...prev,
-            margens: {
-                ...prev.margens,
-                [name]: value,
-            }
-        }));
-    };
-
     const handleSaveClick = () => {
         onSave(tempConfig);
     };
@@ -109,61 +88,6 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
                             <option value="modelo3">Modelo 3: Completo (com brasão)</option>
                             <option value="modelo4">Modelo 4: Completo (Brasão por cima)</option>
                         </select>
-                    </div>
-                </fieldset>
-
-                {/* --- NOVO: Seção de Configuração de Margens --- */}
-                <fieldset className="border border-gray-200 rounded-lg p-4">
-                    <legend className="text-sm font-medium text-gray-700 px-2">Margens da Página (em cm)</legend>
-                    <div className="grid grid-cols-4 gap-4 mt-2">
-                        <div>
-                            <label htmlFor="top" className="block text-xs text-gray-600 mb-1">Superior</label>
-                            <input
-                                type="number"
-                                id="top"
-                                name="top"
-                                value={tempConfig.margens.top}
-                                onChange={handleMarginChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm"
-                                step="0.1"
-                            />
-                        </div>
-                         <div>
-                            <label htmlFor="bottom" className="block text-xs text-gray-600 mb-1">Inferior</label>
-                            <input
-                                type="number"
-                                id="bottom"
-                                name="bottom"
-                                value={tempConfig.margens.bottom}
-                                onChange={handleMarginChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm"
-                                step="0.1"
-                            />
-                        </div>
-                         <div>
-                            <label htmlFor="left" className="block text-xs text-gray-600 mb-1">Esquerda</label>
-                            <input
-                                type="number"
-                                id="left"
-                                name="left"
-                                value={tempConfig.margens.left}
-                                onChange={handleMarginChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm"
-                                step="0.1"
-                            />
-                        </div>
-                         <div>
-                            <label htmlFor="right" className="block text-xs text-gray-600 mb-1">Direita</label>
-                            <input
-                                type="number"
-                                id="right"
-                                name="right"
-                                value={tempConfig.margens.right}
-                                onChange={handleMarginChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm"
-                                step="0.1"
-                            />
-                        </div>
                     </div>
                 </fieldset>
 

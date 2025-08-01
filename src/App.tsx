@@ -34,6 +34,15 @@ import GerenciamentoTemplates from './pages/Civil/Config/Cabecalho-Rodape/Gerenc
 import CadastroTemplatePage from './pages/Civil/Config/Cabecalho-Rodape/CadastroTemplatePage'
 import GerenciamentoCertidoes from './pages/Civil/Config/Certidao/GerenciamentoCertidoes'
 import CadastroCertidaoPage from './pages/Civil/Config/Certidao/CadastroCertidaoPage'
+import GerenciamentoAverbacoes from './pages/Civil/Config/Averbacao/GerenciamentoAverbacoes'
+import CadastroAverbacaoPage from './pages/Civil/Config/Averbacao/CadastroAverbacaoPage'
+import TabelaEmolumentosPage from './pages/Civil/Config/Emolumentos/TabelaEmolumentosPage'
+import GerenciamentoRecibos from './pages/Civil/Config/Recibo/GerenciamentoRecibos'
+import CadastroReciboPage from './pages/Civil/Config/Recibo/CadastroReciboPage'
+import GerenciamentoSelosAvulsosPage from './pages/Civil/Selo-Avulso/Gerenciamento-Selos-Avulsos'
+import EmissaoSeloAvulso from './pages/Civil/Selo-Avulso/Emissao-Selo-Avulso'
+import LivroProtocoloPage from './pages/Civil/Impressao/Livro-Protocolo/LivroProtocoloPage'
+import RelatorioAtividadesPage from './pages/Civil/Impressao/Relatorio-Atividade/RelatorioAtividadesPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -109,6 +118,10 @@ function App() {
           <Route path="certidoes/emitir" element={<EmissaoCertidao />} />
           <Route path="certidoes/:id" element={<EmissaoCertidao />} />
 
+          <Route path="selo-avulso" element={<GerenciamentoSelosAvulsosPage />} />
+          <Route path="selo-avulso/emitir" element={<EmissaoSeloAvulso />} />
+          <Route path="selo-avulso/:id" element={<EmissaoSeloAvulso />} />
+
           {/* Rotas aninhadas para Averbações */}
           <Route path="averbacoes" element={<GerenciamentoAverbacoesPage />} />
           <Route path="averbacoes/emitir" element={<EmissaoAverbacao />} />
@@ -119,12 +132,23 @@ function App() {
           <Route path="livros/cadastrar" element={<LivroFormPage />} />
           <Route path="livros/:id" element={<LivroFormPage/>} />
 
+          {/* Rotas de Integração */}
+          <Route path="integracoes/crc" element={<PlaceholderPage title='CRC' />} />
+          <Route path="integracoes/sirc" element={<PlaceholderPage title='SIRC' />} />
+
+          {/* Rotas de Impressão */}
+          <Route path="impressao/livro-protocolo" element={<LivroProtocoloPage />} />
+          <Route path="impressao/relatorio-atividades" element={<RelatorioAtividadesPage />} />
+
           {/* Rotas de Configuração */}
           <Route path="config/cartorio" element={<ConfiguracaoCartorio/>} />
           <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
           <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
           <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
-          <Route path="config/averbacao" element={<PlaceholderPage title="Configuração de Averbação" />} />
+          
+          <Route path="config/averbacao" element={<GerenciamentoAverbacoes />} />
+          <Route path="config/averbacao/cadastrar" element={<CadastroAverbacaoPage />} />
+          <Route path="config/averbacao/:id" element={<CadastroAverbacaoPage />} />
 
           <Route path="config/pessoas" element={<GerenciamentoPessoasPage/>} />
           <Route path="config/pessoas/cadastrar" element={<CadastroPessoaPage/>} />
@@ -141,6 +165,12 @@ function App() {
           <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates/>} />
           <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage/>} />
           <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
+
+          <Route path="config/recibo" element={<GerenciamentoRecibos />} />
+          <Route path="config/recibo/cadastrar" element={<CadastroReciboPage />} />
+          <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
+
+          <Route path="config/emolumentos" element={<TabelaEmolumentosPage/>} />
         </Route>
 
         {/* Rotas dos sistemas Registro de Pessoas Físicas */}

@@ -14,7 +14,7 @@ const mockCertidaoRequests: CertidaoRequest[] = Array.from({ length: 40 }, (_, i
     const dataSolicitacao = new Date(2025, 3, 20 - i);
     const tipoAto = atoOptions[i % atoOptions.length] as AtoOriginalTipo;
     const tiposDeCertidaoParaOAto = certidaoPorAto[tipoAto] || [];
-    const tipoCertidao = tiposDeCertidaoParaOAto.length > 0 ? tiposDeCertidaoParaOAto[i % tiposDeCertidaoParaOAto.length].titulo_servico : 'Indefinido';
+    const tipoCertidao = tiposDeCertidaoParaOAto.length > 0 ? tiposDeCertidaoParaOAto[i % tiposDeCertidaoParaOAto.length].titulo_servico: '';
 
     return {
         id: i + 1,

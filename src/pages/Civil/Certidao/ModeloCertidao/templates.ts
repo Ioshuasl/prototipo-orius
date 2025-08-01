@@ -196,7 +196,7 @@ export const certidaoNascimentoHTML = `
 `;
 
 export const certidaoCasamentoHTML = `
-<div class="certidao" style="padding: 150px 80px;">
+<div class="certidao">
     <h2 style="text-align: center; font-size: 15pt; margin-bottom: 0px; color: #000;">CERTIDÃO DE CASAMENTO</h2>
 
     <!-- Nome atual dos cônjuges -->
@@ -459,7 +459,7 @@ export const certidaoCasamentoHTML = `
 `;
 
 export const certidaoObitoHTML = `
-<div class="certidao" style="padding: 150px 80px;">
+<div class="certidao">
     <h2 style="text-align: center; font-size: 18pt; margin-bottom: 0px; color: #000;">CERTIDÃO DE ÓBITO</h2>
     <div style="display:flex; flex-direction: column;align-items: center; flex: 1;">
         <p style="margin: 0px;">Nome:</p>
@@ -706,7 +706,7 @@ export const certidaoObitoHTML = `
 `;
 
 export const certidaoInteiroTeorHTML = `
-<div class="certidao" style="padding: 170px 80px;">
+<div class="certidao"">
     <h2 style="text-align: center; font-size: 18pt; margin-bottom: 0px; color: #000;">CERTIDÃO INTEIRO TEOR DE ...
     </h2>
     <div style="display:flex; flex-direction: column;align-items: center; flex: 1;">
@@ -757,7 +757,7 @@ export const certidaoInteiroTeorHTML = `
 `;
 
 export const certidaoVersoHTML = `
-<div class="certidao" style="padding: 150px 80px; font-family: Arial, sans-serif; color: #000;">
+<div class="certidao"font-family: Arial, sans-serif; color: #000;">
     <h2 style="text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 20px;">
         VERSO - ANOTAÇÕES E AVERBAÇÕES
     </h2>
