@@ -1,8 +1,6 @@
-// Salve como: src/pages/configuracoes/ConfiguracaoIntegracoes.tsx
-
 import { useState } from 'react';
 import { Save, KeyRound, Clock, Power } from 'lucide-react';
-import { toast } from 'react-toastify'; // Supondo que você use react-toastify para notificações
+import { toast } from 'react-toastify';
 
 // Componente de Card para agrupar as configurações
 const SettingsCard = ({ title, icon: Icon, children }: { title: string, icon: React.ElementType, children: React.ReactNode }) => (
