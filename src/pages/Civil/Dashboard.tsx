@@ -51,9 +51,9 @@ export default function CivilRegistryDashboard() {
       <title>Dashboard | Registro Civil</title>
       {/* Layout principal */}
 
-      <div className="flex bg-gray-50 min-h-screen font-sans">
+      <div className="flex bg-gray-50 font-sans">
         <main className="flex-1">
-          <div className="max-w-7xl mx-auto space-y-8">
+          <div className="mx-auto space-y-8">
             <header>
               <h1 className="text-4xl font-bold text-gray-900">Dashboard | Registro Civil</h1>
               {/* Mensagem de boas-vindas genérica e útil */}

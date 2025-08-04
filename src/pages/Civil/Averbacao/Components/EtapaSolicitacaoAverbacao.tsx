@@ -192,7 +192,7 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
                         <SeletorRequerente requerente={requerente} onRequerenteChange={handleRequerenteChange} />
 
                         {/* Nova seção para os dados da averbação */}
-                        <div className="p-4 bg-gray-50 rounded-lg border">
+                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                             <div className="flex items-center gap-2 mb-3">
                                 <h4 className="font-semibold text-gray-700">3. Dados da Averbação</h4>
                                 {/* BOTÃO DE AJUDA - visível apenas quando um tipo é selecionado */}
@@ -232,7 +232,7 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
                             </div>
                         </div>
 
-                        <div className="flex gap-4 text-right pt-4 border-t justify-between">
+                        <div className="flex gap-4 text-right pt-4 justify-between">
                             <button type="button" onClick={handleDesistirClick} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
                                 <ArrowLeft size={16} /> Desistir
                             </button>

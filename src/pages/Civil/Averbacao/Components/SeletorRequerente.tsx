@@ -20,7 +20,7 @@ export default function SeletorRequerente({ requerente, onRequerenteChange }: Se
     };
 
     return (
-        <div className="p-4 bg-gray-50 rounded-lg border">
+        <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
             <h4 className="font-semibold text-gray-700 mb-3">2. Dados do Requerente</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>

@@ -18,7 +18,7 @@ export default function CivilRegistryLayout() {
       />
 
       <main className={`flex-1 p-8 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'ml-20' : 'ml-[250px]'}`}>
-        <div className="max-w-7xl mx-auto">
+        <div>
           <Outlet />
         </div>
       </main>

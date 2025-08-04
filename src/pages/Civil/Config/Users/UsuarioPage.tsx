@@ -83,7 +83,7 @@ const CadastroUsuarioPage: React.FC = () => {
         }, 1500);
     };
 
-    const pageTitle = id ? 'Editar Usuário' : 'Convidar Novo Usuário';
+    const pageTitle = id ? 'Editar Usuário' : 'Cadastrar Novo Usuário';
 
     if (isLoading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin" size={32} /></div>;
 
@@ -110,7 +110,7 @@ const CadastroUsuarioPage: React.FC = () => {
 
             {/* Renderização condicional do conteúdo da aba */}
             {activeTab === 'dados' ? (
-                <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border">
+                <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border border-gray-300">
                     <div>
                         <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome Completo*</label>
                         <input type="text" id="nome" name="nome" value={usuario.nome} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2" />
@@ -130,7 +130,7 @@ const CadastroUsuarioPage: React.FC = () => {
                     </div>
 
                     {/* 3. CAMPOS DE SENHA ADICIONADOS AO FORMULÁRIO */}
-                    <div className="pt-6 border-t">
+                    <div className="pt-2">
                          <div className="flex items-center gap-2 mb-4">
                             <KeyRound className="text-gray-400" size={20}/>
                             <h3 className="text-lg font-semibold text-gray-700">Credenciais de Acesso</h3>
@@ -176,7 +176,7 @@ const CadastroUsuarioPage: React.FC = () => {
                     </footer>
                 </form>
             ) : (
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     {isLoadingLogs ? <div className="flex justify-center p-4"><Loader2 className="animate-spin" /></div> : (
                         <ul className="space-y-4">
                             {logs.map(log => (

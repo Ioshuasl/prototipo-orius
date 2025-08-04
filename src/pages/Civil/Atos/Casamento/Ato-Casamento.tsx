@@ -473,7 +473,7 @@ export default function RegistroCasamentoForm() {
             <title>Registrar Casamento</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1 p-0">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="mx-auto">
                         <header className="mb-6 flex justify-between items-center">
                             <div>
                                 <h1 className="text-3xl font-bold text-gray-800">Registrar Novo Ato de Casamento</h1>

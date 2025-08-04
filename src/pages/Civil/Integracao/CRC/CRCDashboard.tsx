@@ -174,8 +174,7 @@ export default function CRCDashboard() {
 
 
     return (
-        // Usando max-w-7xl e mx-auto como no seu layout principal
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto">
             {/* CABEÇALHO DA PÁGINA - Padrão de GerenciamentoTemplates.tsx */}
             <header className="mb-8 pb-4 border-b border-gray-200">
                 <h1 className="text-3xl font-bold text-gray-800">Integração CRC Nacional</h1>

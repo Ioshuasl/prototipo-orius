@@ -379,7 +379,7 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     {/* Ações do Documento não muda */}
-                    <div className="p-4 bg-gray-50 rounded-lg border">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                         <h4 className="font-semibold text-gray-700 mb-4">Ações do Documento</h4>
                         <div className="flex flex-col gap-3">
                             <button
@@ -475,7 +475,7 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
                     </div>
                 </div>
 
-                <div className="text-right pt-6 border-t flex items-center justify-end gap-4">
+                <div className="text-right pt-6 flex items-center justify-end gap-4">
                     <button type="button" onClick={onVoltar} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
                         <ArrowLeft size={18} /> Voltar
                     </button>

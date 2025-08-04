@@ -132,9 +132,10 @@ export default function EtapaRegistroAverbacao({ processo, onConcluir, onVoltar 
                                 <HelpCircle size={16} />
                             </button>
                         </div>
+
                         <div
                             id="etiqueta-averbacao-preview"
-                            className="p-2 max-w-none overflow-hidden mx-auto mt-6"
+                            className="flex justify-center"
                         >
                             <MainEditor
                                 initialValue={editorContent}
@@ -306,7 +307,7 @@ export default function EtapaRegistroAverbacao({ processo, onConcluir, onVoltar 
                 </div>
 
                 {/* Navegação */}
-                <div className="text-right pt-6 border-t flex items-center justify-between">
+                <div className="text-right pt-6 flex items-center justify-between">
                     <button type="button" onClick={onVoltar} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-lg hover:bg-gray-300">
                         <ArrowLeft size={18} /> Voltar
                     </button>

@@ -181,7 +181,7 @@ export default function GerenciamentoCertidoesPage() {
     return (
         <>
             <title>Gerenciamento de Certidões</title>
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="mx-auto space-y-6">
                 <header className="flex items-center justify-between">
                     <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Certidões</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie as solicitações de certidões.</p></div>
                     <Link to="/registro-civil/certidoes/emitir" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">
@@ -252,7 +252,7 @@ export default function GerenciamentoCertidoesPage() {
                     {isLoading ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-blue-600 animate-spin" /></div>
                     ) : paginatedRecords.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                             {paginatedRecords.map(record => (
                                 <CertidaoCard key={record.id} record={record} />
                             ))}

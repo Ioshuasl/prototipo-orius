@@ -30,7 +30,7 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
     const commonLabelClass = "block text-sm font-medium text-gray-700";
 
     return (
-        <div className="p-4 bg-gray-50 rounded-lg border">
+        <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
             <h4 className="font-semibold text-gray-700 mb-3">1. Localizar Ato Original</h4>
             
             {/* ALTERAÇÃO: O formulário agora usa 'flex' para alinhar os itens em uma linha */}

@@ -80,7 +80,7 @@ const GerenciamentoUsuarios: React.FC = () => {
                     </div>
                     <Link to="cadastrar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700">
                         <UserPlus className="h-5 w-5" />
-                        Convidar Usuário
+                        Novo Usuário
                     </Link>
                 </header>
 

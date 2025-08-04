@@ -158,9 +158,9 @@ export default function BirthRecordsManagementPage() {
     return (
         <>
             <title>Gerenciamento de Atos de Nascimento</title>
-            <div className="flex bg-gray-50 min-h-screen font-sans">
+            <div className="flex bg-gray-50 font-sans">
                 <main className="flex-1">
-                    <div className="max-w-7xl mx-auto space-y-2">
+                    <div className="mx-auto space-y-2">
                         <header className="flex items-center justify-between">
                             <div>
                                 <h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Nascimentos</h1>

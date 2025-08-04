@@ -10,9 +10,9 @@ const PreviewModal = ({ template, onClose }: { template: ITemplate | null, onClo
     if (!template) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4" onClick={onClose}>
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in" onClick={onClose}>
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
-                <header className="flex justify-between items-center p-4 border-b">
+                <header className="flex justify-between items-center p-4">
                     <h2 className="text-lg font-bold text-gray-800">{template.nome}</h2>
                     <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><X size={24} /></button>
                 </header>
@@ -49,7 +49,7 @@ const TemplateCard = ({ template, onSetDefault, onDelete, onPreview  }: {
                     <p className="text-sm text-gray-500 mt-1">Modificado em: {new Date(template.dataModificacao).toLocaleDateString('pt-BR')}</p>
 
                     {/* Preview Visual */}
-                    <div className="mt-4 border rounded-md p-2 bg-gray-50 h-32 overflow-hidden relative">
+                    <div className="mt-4 border border-gray-300 rounded-md p-2 bg-gray-50 h-32 overflow-hidden relative">
                     <div
                         className="transform scale-[0.5] origin-top"
                         dangerouslySetInnerHTML={{ __html: template.conteudo }}
@@ -116,8 +116,8 @@ const GerenciamentoTemplates: React.FC = () => {
     return (
         <>
         
-            <div className="max-w-7xl mx-auto">
-                <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b">
+            <div className="mx-auto">
+                <header className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800">Cabeçalhos e Rodapés</h1>
                         <p className="text-md text-gray-500 mt-1">Crie e gerencie os modelos de cabeçalho e rodapé para os documentos.</p>

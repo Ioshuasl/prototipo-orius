@@ -142,7 +142,7 @@ const CadastroReciboPage: React.FC = () => {
 
     return (
         <div className="max-w-7xl mx-auto p-6">
-            <header className="mb-6 pb-4 border-b">
+            <header className="mb-6 pb-4">
                 <button onClick={() => navigate('/admin/recibos')} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista
@@ -154,7 +154,7 @@ const CadastroReciboPage: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-8">
 
                 {/* Seção 1: Identificação */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Identificação do Modelo</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -175,7 +175,7 @@ const CadastroReciboPage: React.FC = () => {
                 </div>
 
                 {/* Seção 2: Emolumentos e Valores */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Emolumentos e Valores (Opcional)</h2>
                     <div ref={seloSearchRef}>
                         <label htmlFor="selo" className="block text-sm font-medium text-gray-700">Vincular a um Ato/Selo de Emolumentos</label>
@@ -218,13 +218,13 @@ const CadastroReciboPage: React.FC = () => {
                         <div className="mt-2 pt-4 space-y-3 text-sm">
                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Valor do Emolumento:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_emolumento)}</span></div>
                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Taxa Judiciária:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_taxa_judiciaria)}</span></div>
-                            <div className="pt-3 mt-3 flex justify-between items-center border-t"><span className="font-bold text-gray-800">Total:</span><span className="font-bold font-mono text-blue-600 text-base">{formatCurrency(selectedSelo.valor_emolumento + selectedSelo.valor_taxa_judiciaria)}</span></div>
+                            <div className="pt-3 mt-3 flex justify-between items-center"><span className="font-bold text-gray-800">Total:</span><span className="font-bold font-mono text-blue-600 text-base">{formatCurrency(selectedSelo.valor_emolumento + selectedSelo.valor_taxa_judiciaria)}</span></div>
                         </div>
                     )}
                 </div>
 
                 {/* Seção 3: Templates Padrão */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Templates Padrão</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -245,7 +245,7 @@ const CadastroReciboPage: React.FC = () => {
                 </div>
 
                 {/* Seção 4: Layout e Margens */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Layout e Margens</h2>
                     
                     <div className="grid grid-cols-2 gap-6 mb-2 pb-2">
@@ -295,7 +295,7 @@ const CadastroReciboPage: React.FC = () => {
                 </div>
 
                 {/* Seção 5: Modelo de Conteúdo */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Editor de Conteúdo do Recibo</h2>
                     <div className="flex justify-center">
                         <MainEditor
@@ -311,7 +311,7 @@ const CadastroReciboPage: React.FC = () => {
                 </div>
 
                 {/* Seção 6: Variáveis Dinâmicas */}
-                <div className="bg-white p-5 rounded-lg border">
+                <div className="bg-white p-5 rounded-lg border border-gray-300">
                     <h3 className="text-lg font-semibold text-gray-700 mb-3">Variáveis Dinâmicas para Recibos</h3>
                     <p className="text-sm text-gray-500 mb-4">Clique em uma variável para copiá-la e cole no editor acima.</p>
                     <div className="flex flex-wrap gap-2">
@@ -325,7 +325,7 @@ const CadastroReciboPage: React.FC = () => {
                 </div>
 
                 {/* Ações do Formulário */}
-                <footer className="mt-2 pt-6 border-t flex justify-end gap-4">
+                <footer className="mt-2 pt-6 flex justify-end gap-4">
                     <button type="button" onClick={() => navigate('/admin/recibos')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
                         Cancelar
                     </button>

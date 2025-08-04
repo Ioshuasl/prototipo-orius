@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { BookText, FileSignature, Paperclip, Save, XCircle, History } from 'lucide-react';
-
-// Tipos e Interfaces
 import {
     type ILivroEFormData, type TipoAtoLivroE, type IEmancipacao, type IInterdicao, type IEndereco, type IPessoaFisica, type IAusencia, type IMortePresumida, type ITutela, type IGuarda, type IOpcaoNacionalidade, type IUniaoEstavel, type INascimentoPaisEstrangeiros, type ITrasladoExterior, type ITrasladoNascimentoData, type ITrasladoCasamentoData, type ITrasladoObitoData
 } from '../../types';
-
-// Constantes e Estados Iniciais
 import { tiposDeAtoLivroE, mockPessoDatabase } from '../../lib/Constants';
-
-// Componentes Reutilizáveis e de Formulário
 import ControleAtoLivroE from './Components/ControleAtoLivroE';
 import HistoricoModal from '../../Components/HistoricoModal';
 import InfoModal from '../../Components/InfoModal';
@@ -400,7 +394,7 @@ export default function CadastrarAtoLivroE() {
         <>
             <title>Registrar Ato - Livro E</title>
             <main className="flex-1 p-0">
-                <div className="max-w-7xl mx-auto">
+                <div className="mx-auto">
                     <header className="mb-6 flex justify-between items-center">
                         <div>
                             <h1 className="text-3xl font-bold text-gray-800">Registrar Ato do Livro E</h1>

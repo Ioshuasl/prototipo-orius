@@ -23,7 +23,7 @@ const GerenciamentoCargos: React.FC = () => {
 
     return (
         <div className="mx-auto">
-            <header className="flex items-center justify-between mb-6 pb-4 border-b">
+            <header className="flex items-center justify-between pb-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">Cargos e Permissões</h1>
                     <p className="text-md text-gray-500 mt-1">Gerencie os cargos e o que cada um pode acessar no sistema.</p>
@@ -57,7 +57,7 @@ const GerenciamentoCargos: React.FC = () => {
                                 </div>
                             </div>
                         </Link>
-                        <div className="mt-6 pt-4 border-t flex justify-end gap-3">
+                        <div className="mt-6 flex justify-end gap-3">
                             <Link to={`${cargo.id}`} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-colors">
                                 <Edit size={20} />
                             </Link>

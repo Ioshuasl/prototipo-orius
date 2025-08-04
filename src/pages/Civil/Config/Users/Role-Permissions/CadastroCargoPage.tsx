@@ -75,8 +75,8 @@ const CadastroCargoPage: React.FC = () => {
     if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <header className="mb-6 pb-4 border-b">
+        <div className="mx-auto p-6">
+            <header className="mb-6 pb-4">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista de Cargos
@@ -87,7 +87,7 @@ const CadastroCargoPage: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Seção de Identificação do Cargo */}
-                <div className="p-6 bg-white rounded-lg border">
+                <div className="p-6 bg-white rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Identificação</h2>
                     <div className="space-y-4">
                         <div>
@@ -102,12 +102,12 @@ const CadastroCargoPage: React.FC = () => {
                 </div>
 
                 {/* Seção da Matriz de Permissões */}
-                <div className="p-6 bg-white rounded-lg border">
+                <div className="p-6 bg-white rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Permissões do Cargo</h2>
                     <div className="space-y-6">
                         {Object.entries(permissoesAgrupadas).map(([modulo, permissoes]) => (
                             <div key={modulo}>
-                                <h3 className="font-semibold text-gray-600 border-b pb-2 mb-3">{modulo}</h3>
+                                <h3 className="font-semibold text-gray-600 mb-3">{modulo}</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     {permissoes.map(permissao => (
                                         <label key={permissao.chave} className="flex items-center space-x-3 cursor-pointer">

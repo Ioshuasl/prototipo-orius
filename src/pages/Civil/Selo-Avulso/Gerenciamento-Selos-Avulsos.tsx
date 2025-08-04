@@ -148,7 +148,7 @@ export default function GerenciamentoSelosAvulsosPage() {
     return (
         <>
             <title>Gerenciamento de Selos Avulsos</title>
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="mx-auto space-y-6">
                 <header className="flex items-center justify-between">
                     <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Selos Avulsos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie as emissões de selos avulsos.</p></div>
                     <Link to="emitir" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">

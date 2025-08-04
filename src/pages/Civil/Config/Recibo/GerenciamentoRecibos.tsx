@@ -21,7 +21,7 @@ const ReciboCard = ({ template, onDelete }: {
                 </div>
             </Link>
 
-            <div className="p-4 border-t bg-gray-50/50 flex justify-end items-center gap-3">
+            <div className="p-4 bg-gray-50/50 flex justify-end items-center gap-3">
                 <Link to={`${template.id}`} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full" aria-label={`Editar ${template.titulo}`}>
                     <Edit size={20} />
                 </Link>
@@ -56,8 +56,8 @@ const GerenciamentoRecibos: React.FC = () => {
     const inactiveTabStyle = "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300";
 
     return (
-        <div className="max-w-7xl mx-auto">
-            <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b">
+        <div className="mx-auto">
+            <header className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">Modelos de Recibo</h1>
                     <p className="text-md text-gray-500 mt-1">Gerencie os modelos para emissão de recibos do Registro Civil.</p>

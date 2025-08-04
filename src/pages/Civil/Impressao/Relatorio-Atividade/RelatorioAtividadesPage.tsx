@@ -99,7 +99,7 @@ export default function RelatorioAtividadesPage() {
 
     return (
         <>
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="mx-auto space-y-6">
                 <div className="print:hidden">
                     <h1 className="text-2xl font-bold text-gray-800">Relatório de Atividades</h1>
                     <p className="text-sm text-gray-500">Audite as ações realizadas no sistema.</p>

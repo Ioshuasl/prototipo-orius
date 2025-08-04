@@ -58,7 +58,7 @@ export default function ConfiguracaoIntegracoes() {
 
     return (
         <div className="mx-auto">
-            <header className="flex items-center justify-between mb-6 pb-4 border-b">
+            <header className="flex items-center justify-between mb-6 pb-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">Configuração de Integrações</h1>
                     <p className="text-md text-gray-500 mt-1">Ajuste os parâmetros de comunicação com os serviços externos.</p>

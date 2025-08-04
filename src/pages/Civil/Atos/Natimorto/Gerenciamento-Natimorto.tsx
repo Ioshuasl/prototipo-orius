@@ -158,7 +158,7 @@ export default function StillbornRecordsManagementPage() {
             <title>Gerenciamento de Atos de Natimorto</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1">
-                    <div className="max-w-7xl mx-auto space-y-6">
+                    <div className="mx-auto space-y-6">
                         <header className="flex items-center justify-between">
                             <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Natimortos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os registros de natimorto.</p></div>
                             <Link to="/registro-civil/natimorto/cadastrar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">

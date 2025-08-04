@@ -83,7 +83,7 @@ const TabelaEmolumentosPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto">
             <input
                 type="file"
                 ref={fileInputRef}
@@ -91,7 +91,7 @@ const TabelaEmolumentosPage: React.FC = () => {
                 onChange={handleFileChange}
                 accept=".json"
             />
-            <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4 border-b">
+            <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">Tabela de Emolumentos</h1>
                     <p className="text-md text-gray-500 mt-1">Consulte todos os selos e valores cadastrados no sistema.</p>

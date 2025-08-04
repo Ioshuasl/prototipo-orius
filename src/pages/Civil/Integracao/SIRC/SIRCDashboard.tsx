@@ -167,7 +167,7 @@ export default function SIRCDashboard() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-24">
+        <div className="mx-auto space-y-8 pb-24">
             <header className="pb-4 border-b border-gray-200">
                 <h1 className="text-3xl font-bold text-gray-800">Integração SIRC / INSS</h1>
                 <p className="text-md text-gray-500 mt-1">

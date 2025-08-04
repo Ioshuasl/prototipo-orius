@@ -36,14 +36,14 @@ export default function PreviewModal({ isOpen, onClose, content, isVerso }: Prev
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4 animate-fade-in-fast"
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in"
       onClick={onClose}
     >
       <div
         className="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[95vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-lg">
+        <header className="flex items-center justify-between p-4 bg-gray-50 rounded-t-lg">
           <h2 className="text-lg font-semibold text-gray-700">Visualização da Certidão ({isVerso ? 'Verso' : 'Frente'})</h2>
           <div className="flex items-center gap-2">
             <button

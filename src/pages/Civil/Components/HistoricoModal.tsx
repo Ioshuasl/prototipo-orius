@@ -31,7 +31,7 @@ const HistoricoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose, histor
 
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 animate-fade-in"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in"
             onClick={onClose} // Fecha ao clicar no fundo
         >
             <div

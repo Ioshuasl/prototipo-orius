@@ -81,7 +81,7 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
 
                     <SeletorRequerente requerente={requerente} onRequerenteChange={handleRequerenteChange} />
 
-                    <div className="p-4 bg-gray-50 rounded-lg border">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                         <h4 className="font-semibold text-gray-700 mb-3">3. Configuração da Certidão</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -112,7 +112,7 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
                         </div>
                     </div>
 
-                    <div className="flex gap-4 text-right pt-4 border-t justify-end">
+                    <div className="flex gap-4 text-right pt-4 justify-end">
                         <button
                             type="button"
                             onClick={handleVoltarClick}
