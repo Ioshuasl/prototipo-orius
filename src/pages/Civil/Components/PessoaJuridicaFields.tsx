@@ -79,7 +79,7 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
                 </div>
             </div>
 
-            <div className="md:col-span-4 mt-4 border-t pt-5">
+            <div className="md:col-span-4 mt-4">
                 <h4 className="text-md font-semibold text-gray-800">Quadro de Sócios e Administradores (QSA)</h4>
             </div>
             <div className="space-y-4">
@@ -101,7 +101,7 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
                  <button type="button" onClick={onAddSocio} className="mt-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800"><PlusCircle size={16} />Adicionar Sócio</button>
             </div>
 
-            <div className="md:col-span-4 mt-4 border-t pt-5">
+            <div className="md:col-span-4 mt-4">
                 <h4 className="text-md font-semibold text-gray-800">Endereço da Empresa</h4>
             </div>
 

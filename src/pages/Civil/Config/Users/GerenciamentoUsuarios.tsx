@@ -15,6 +15,8 @@ const UserCard = ({ usuario, getCargoNome, onDelete }: {
 }) => {
     return (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 flex flex-col transition-all hover:shadow-lg hover:border-blue-300">
+            <Link to={`${usuario.id}`}>
+            
             <div className="flex-grow">
                 <div className="flex items-center gap-4">
                     <div className="flex-shrink-0"><UserCircle size={48} className="text-gray-300" /></div>
@@ -28,7 +30,8 @@ const UserCard = ({ usuario, getCargoNome, onDelete }: {
                     <div><span className={`px-2 py-1 text-xs font-semibold rounded-full ${usuario.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}>{usuario.status}</span></div>
                 </div>
             </div>
-            <div className="mt-6 pt-4 border-t flex justify-end gap-3">
+            </Link>
+            <div className="mt-6 pt-4 flex justify-end gap-3">
                 {/* O botão de editar agora é um Link */}
                 <Link to={`${usuario.id}`} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
                     <Edit size={20} />
@@ -69,8 +72,8 @@ const GerenciamentoUsuarios: React.FC = () => {
 
     return (
         <>
-            <div className="max-w-7xl mx-auto p-6">
-                <header className="flex items-center justify-between mb-6 pb-4 border-b">
+            <div className="mx-auto">
+                <header className="flex items-center justify-between mb-6 pb-4">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800">Usuários do Sistema</h1>
                         <p className="text-md text-gray-500 mt-1">Adicione, edite e gerencie os usuários que podem acessar o sistema.</p>

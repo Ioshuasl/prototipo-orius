@@ -88,8 +88,8 @@ const CadastroUsuarioPage: React.FC = () => {
     if (isLoading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin" size={32} /></div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <header className="mb-6 pb-4 border-b">
+        <div className="mx-auto">
+            <header className="pb-4">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} /> Voltar para a Lista
                 </button>

@@ -30,7 +30,7 @@ export default function TabDocumentos({
             <SectionTitle>Documentos Apresentados e Anexos Digitais</SectionTitle>
             <div className="space-y-4">
                 {documentosApresentados.map((doc, index) => (
-                    <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg border">
+                    <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-300">
                         <div className="flex-grow w-full">
                             <label htmlFor={`doc-desc-${index}`} className={commonLabelClass}>Descrição do Documento</label>
                             <input id={`doc-desc-${index}`} name={`documentosApresentados.${index}.descricao`} value={doc.descricao} onChange={handleInputChange} className={commonInputClass} placeholder="Ex: Declaração de Óbito, RG do Falecido..." />

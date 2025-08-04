@@ -151,8 +151,8 @@ const CadastroAverbacaoPage: React.FC = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
-            <header className="mb-6 pb-4 border-b">
+        <div className="mx-auto">
+            <header className="mb-6 pb-4">
                  <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista
@@ -163,7 +163,7 @@ const CadastroAverbacaoPage: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-8">
 
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Identificação</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -184,7 +184,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                 </div>
 
                 {/* --- SEÇÃO DE EMOLUMENTOS REORGANIZADA --- */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Emolumentos e Valores</h2>
                     <div className="md:col-span-2" ref={seloSearchRef}>
                         <label htmlFor="selo" className="block text-sm font-medium text-gray-700">Selo de Emolumentos*</label>
@@ -249,7 +249,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                 </div>
 
                 {/* Seção de Cabeçalho e Rodapé */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Cabeçalho e Rodapé (Opcional)</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -274,7 +274,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                 </div>
                 
                 {/* Seção de Conteúdo e Margens */}
-                <div className="bg-white p-6 rounded-lg border">
+                <div className="bg-white p-6 rounded-lg border border-gray-300">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Texto da Averbação</h2>
                     <div className="flex justify-center">
                         <MainEditor
@@ -290,7 +290,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                 </div>
 
                 {/* Seção 5: Variáveis */}
-                <div className="bg-white p-5 rounded-lg border">
+                <div className="bg-white p-5 rounded-lg border border-gray-300">
                     <h3 className="text-lg font-semibold text-gray-700 mb-3">Variáveis Dinâmicas Disponíveis</h3>
                     <p className="text-sm text-gray-500 mb-4">Clique para copiar e cole no editor acima.</p>
                     <div className="flex flex-wrap gap-2">
@@ -304,7 +304,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                 </div>
                 
                 {/* Ações do Formulário */}
-                 <footer className="mt-2 pt-6 border-t flex justify-end gap-4">
+                 <footer className="pt-6 flex justify-end gap-4">
                     <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold">
                         Cancelar
                     </button>

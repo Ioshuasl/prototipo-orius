@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import AddressFields from '../Components/AddressFields';
-import { type IConfiguracaoCartorio, type IEndereco } from '../types';
+import AddressFields from '../../Components/AddressFields';
+import { type IConfiguracaoCartorio, type IEndereco } from '../../types';
 import { IMaskInput } from 'react-imask';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -98,7 +98,7 @@ const ConfiguracaoCartorio: React.FC = () => {
                 theme="light"
             />
             <div className="mx-auto">
-                <form onSubmit={handleSubmit} className="bg-white p-4 rounded-xl shadow-md space-y-8">
+                <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-md space-y-8">
                     
                     {/* Seção Dados da Serventia */}
                     <div>

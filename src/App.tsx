@@ -19,7 +19,7 @@ import CadastrarAtoNatimortoForm from './pages/Civil/Atos/Natimorto/Cadastrar-At
 import CadastrarAtoLivroE from './pages/Civil/Atos/LivroE/Cadastrar-Ato-LivroE'
 import EmissaoCertidao from './pages/Civil/Certidao/EmissaoCertidao'
 import GerenciamentoCertidoesPage from './pages/Civil/Certidao/Gerenciamento-Certidoes'
-import ConfiguracaoCartorio from './pages/Civil/Config/DadosCartorio'
+import ConfiguracaoCartorio from './pages/Civil/Config/DadosCartorio/DadosCartorio'
 import GerenciamentoLivrosPage from './pages/Civil/Livro/GerenciamentoLivros'
 import LivroFormPage from './pages/Civil/Livro/Livro'
 import GerenciamentoAverbacoesPage from './pages/Civil/Averbacao/Gerenciamento-Averbacoes'
@@ -43,6 +43,9 @@ import GerenciamentoSelosAvulsosPage from './pages/Civil/Selo-Avulso/Gerenciamen
 import EmissaoSeloAvulso from './pages/Civil/Selo-Avulso/Emissao-Selo-Avulso'
 import LivroProtocoloPage from './pages/Civil/Impressao/Livro-Protocolo/LivroProtocoloPage'
 import RelatorioAtividadesPage from './pages/Civil/Impressao/Relatorio-Atividade/RelatorioAtividadesPage'
+import CRCDashboard from './pages/Civil/Integracao/CRC/CRCDashboard'
+import SIRCDashboard from './pages/Civil/Integracao/SIRC/SIRCDashboard'
+import ConfiguracaoIntegracoes from './pages/Civil/Config/Integracoes/ConfiguracaoIntegracoes'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -61,7 +64,7 @@ function App() {
       <Routes>
         <Route
           path='/'
-          element={<Navigate to={'/login'}/>}
+          element={<Navigate to={'/login'} />}
         />
         <Route
           index
@@ -95,7 +98,7 @@ function App() {
 
           {/* Rotas aninhadas para Casamento */}
           <Route path="casamento" element={<MarriageRecordsManagementPage />} />
-          <Route path="casamento/cadastrar" element={<RegistroCasamentoForm/>} />
+          <Route path="casamento/cadastrar" element={<RegistroCasamentoForm />} />
           <Route path="casamento/:id" element={<RegistroCasamentoForm />} />
 
           {/* Rotas aninhadas para Óbito */}
@@ -125,52 +128,55 @@ function App() {
           {/* Rotas aninhadas para Averbações */}
           <Route path="averbacoes" element={<GerenciamentoAverbacoesPage />} />
           <Route path="averbacoes/emitir" element={<EmissaoAverbacao />} />
-          <Route path="averbacoes/:id" element={<EmissaoAverbacao/>} />
+          <Route path="averbacoes/:id" element={<EmissaoAverbacao />} />
 
           {/* Rotas de Livro */}
           <Route path="livros" element={<GerenciamentoLivrosPage />} />
           <Route path="livros/cadastrar" element={<LivroFormPage />} />
-          <Route path="livros/:id" element={<LivroFormPage/>} />
+          <Route path="livros/:id" element={<LivroFormPage />} />
 
           {/* Rotas de Integração */}
-          <Route path="integracoes/crc" element={<PlaceholderPage title='CRC' />} />
-          <Route path="integracoes/sirc" element={<PlaceholderPage title='SIRC' />} />
+          <Route path="integracoes/crc" element={<CRCDashboard />} />
+          <Route path="integracoes/sirc" element={<SIRCDashboard />} />
 
           {/* Rotas de Impressão */}
           <Route path="impressao/livro-protocolo" element={<LivroProtocoloPage />} />
           <Route path="impressao/relatorio-atividades" element={<RelatorioAtividadesPage />} />
 
           {/* Rotas de Configuração */}
-          <Route path="config/cartorio" element={<ConfiguracaoCartorio/>} />
+          <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
           <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
           <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
           <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
-          
+
           <Route path="config/averbacao" element={<GerenciamentoAverbacoes />} />
           <Route path="config/averbacao/cadastrar" element={<CadastroAverbacaoPage />} />
           <Route path="config/averbacao/:id" element={<CadastroAverbacaoPage />} />
 
-          <Route path="config/pessoas" element={<GerenciamentoPessoasPage/>} />
-          <Route path="config/pessoas/cadastrar" element={<CadastroPessoaPage/>} />
-          <Route path="config/pessoas/:id" element={<CadastroPessoaPage/>} />
-          
-          <Route path="config/users" element={<GerenciamentoUsuarios/>} />
-          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage/>} />
-          <Route path="config/users/:id" element={<CadastroUsuarioPage/>} />
+          <Route path="config/pessoas" element={<GerenciamentoPessoasPage />} />
+          <Route path="config/pessoas/cadastrar" element={<CadastroPessoaPage />} />
+          <Route path="config/pessoas/:id" element={<CadastroPessoaPage />} />
 
-          <Route path="config/roles-permissions" element={<GerenciamentoCargos/>} />
-          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage/>} />
-          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage/>} />
+          <Route path="config/users" element={<GerenciamentoUsuarios />} />
+          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage />} />
+          <Route path="config/users/:id" element={<CadastroUsuarioPage />} />
 
-          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates/>} />
-          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage/>} />
+          <Route path="config/roles-permissions" element={<GerenciamentoCargos />} />
+          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage />} />
+          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage />} />
+
+          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates />} />
+          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage />} />
           <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
 
           <Route path="config/recibo" element={<GerenciamentoRecibos />} />
           <Route path="config/recibo/cadastrar" element={<CadastroReciboPage />} />
           <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
 
-          <Route path="config/emolumentos" element={<TabelaEmolumentosPage/>} />
+          <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
+
+          <Route path="config/integracoes" element={<ConfiguracaoIntegracoes />} />
+
         </Route>
 
         {/* Rotas dos sistemas Registro de Pessoas Físicas */}

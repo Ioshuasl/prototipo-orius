@@ -85,7 +85,7 @@ const SeletorDePessoa: React.FC<SeletorDePessoaProps> = ({
     };
 
     return (
-        <div className="p-4 border rounded-lg bg-gray-50">
+        <div className="p-4 border border-gray-200 rounded-lg">
             <div className="mb-4">
                 <label htmlFor="tipoEntidade" className="block text-sm font-medium text-gray-700">
                     Tipo de Pessoa
@@ -105,7 +105,7 @@ const SeletorDePessoa: React.FC<SeletorDePessoaProps> = ({
                 </select>
             </div>
 
-            <div className="border-t pt-4">
+            <div className="pt-4">
                 {tipoEntidade === 'fisica' ? (
                     <PersonFields
                         personData={dados as IPessoaFisica}

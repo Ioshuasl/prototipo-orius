@@ -60,7 +60,7 @@ const AddressFields: React.FC<AddressFieldsProps> = ({ addressData, namePrefix, 
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-x-6 gap-y-5 md:col-span-4 border-t pt-5 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-x-6 gap-y-5 md:col-span-4 mt-4">
             <div className="md:col-span-2">
                 <label htmlFor={`${namePrefix}.cep`} className={commonLabelClass}>CEP</label>
                 <div className="relative">

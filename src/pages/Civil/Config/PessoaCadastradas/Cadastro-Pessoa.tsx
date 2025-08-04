@@ -64,7 +64,7 @@ const getAtoIcon = (tipoAto: string) => {
 const AtoCard = ({ ato }: { ato: any }) => {
     return (
         <Link to={`ato/${ato.protocolo}`} className="block group ">
-            <div className="border bg-white rounded-lg p-3 hover:shadow-md transition-shadow duration-200">
+            <div className="border border-gray-300 bg-white rounded-lg p-3 hover:shadow-md transition-shadow duration-200">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center text-sm">
 
                     {/* Coluna 1: Protocolo */}
@@ -258,22 +258,22 @@ const CadastroPessoaPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-            <header className="mb-6 pb-4 border-b">
+        <div className="mx-auto p-6 bg-white rounded-xl shadow-lg">
+            <header className="mb-6">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4"><ArrowLeft size={16} />Voltar</button>
                 <h1 className="text-3xl font-bold text-gray-800">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Visualizando: {nomePessoaHeader}</p>}
             </header>
 
             {id && (
-                <nav className="flex mb-6 border-b border-gray-200">
+                <nav className="flex mb-2 border-gray-200">
                     <div onClick={() => setActiveTab('dados')} className={`${tabStyle} ${activeTab === 'dados' ? activeTabStyle : inactiveTabStyle}`}>Dados da Pessoa</div>
                     <div onClick={() => setActiveTab('atos')} className={`${tabStyle} ${activeTab === 'atos' ? activeTabStyle : inactiveTabStyle}`}>Atos Vinculados</div>
                 </nav>
             )}
 
             {/* Conteúdo condicional baseado na aba ativa */}
-            <div className="mt-4">
+            <div>
                 {activeTab === 'dados' ? (
                     <form onSubmit={handleSubmit}>
                         <SeletorDePessoa
@@ -289,7 +289,7 @@ const CadastroPessoaPage: React.FC = () => {
                             onAddSocio={onAddSocio}
                             onRemoveSocio={onRemoveSocio}
                         />
-                        <footer className="mt-8 pt-6 border-t flex justify-end gap-4">
+                        <footer className="pt-6 flex justify-end gap-4">
                             <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancelar</button>
                             <button type="submit" disabled={isSaving} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                 {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}

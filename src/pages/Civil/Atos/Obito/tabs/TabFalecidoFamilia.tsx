@@ -79,7 +79,7 @@ export default function TabFalecidoFamilia({
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5 border-t pt-5 mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5 pt-4">
                     <div className="md:col-span-1"><label htmlFor="falecido.idade" className={commonLabelClass}>Idade (declarada){requiredSpan}</label><input type="text" id="falecido.idade" name="falecido.idade" value={falecido.idade} onChange={handleInputChange} className={commonInputClass} placeholder="Ex: 80 anos" /></div>
                     <div className="md:col-span-1"><label htmlFor="falecido.cor" className={commonLabelClass}>Cor{requiredSpan}</label><select id="falecido.cor" name="falecido.cor" value={falecido.cor} onChange={handleInputChange} className={commonInputClass}><option value="Parda">Parda</option><option value="Branca">Branca</option><option value="Preta">Preta</option><option value="Amarela">Amarela</option><option value="Indígena">Indígena</option><option value="Ignorada">Ignorada</option></select></div>
                     <div className="md:col-span-1"><label htmlFor="falecido.sexo" className={commonLabelClass}>Sexo{requiredSpan}</label><select id="falecido.sexo" name="falecido.sexo" value={falecido.sexo} onChange={handleInputChange} className={commonInputClass}><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option><option value="Ignorado">Ignorado</option></select></div>
@@ -94,7 +94,7 @@ export default function TabFalecidoFamilia({
                         {falecido.eraEleitor && (<div><label htmlFor="falecido.documentos.tituloEleitor" className={commonLabelClass}>Título de Eleitor</label><input type="text" id="falecido.documentos.tituloEleitor" name="falecido.documentos.tituloEleitor" value={falecido.documentos.tituloEleitor || ''} onChange={handleInputChange} className={commonInputClass} /></div>)}
                         <div className="lg:col-span-2"><label htmlFor="falecido.documentos.carteiraTrabalho" className={commonLabelClass}>Nº e Série da Carteira de Trabalho</label><input type="text" id="falecido.documentos.carteiraTrabalho" name="falecido.documentos.carteiraTrabalho" value={falecido.documentos.carteiraTrabalho || ''} onChange={handleInputChange} className={commonInputClass} /></div>
                         <div><label htmlFor="falecido.documentos.pisPasep" className={commonLabelClass}>PIS/PASEP</label><input type="text" id="falecido.documentos.pisPasep" name="falecido.documentos.pisPasep" value={falecido.documentos.pisPasep || ''} onChange={handleInputChange} className={commonInputClass} /></div>
-                        <div className="lg:col-span-4 pt-4 border-t"><div className="flex items-center gap-3"><input id="falecido.documentos.eraBeneficiarioInss" type="checkbox" name="falecido.documentos.eraBeneficiarioInss" checked={falecido.documentos.eraBeneficiarioInss} onChange={handleInputChange} className="h-4 w-4" /><label htmlFor="falecido.documentos.eraBeneficiarioInss" className="text-sm font-medium">Era beneficiário da Previdência Social?</label></div></div>
+                        <div className="lg:col-span-4"><div className="flex items-center gap-3"><input id="falecido.documentos.eraBeneficiarioInss" type="checkbox" name="falecido.documentos.eraBeneficiarioInss" checked={falecido.documentos.eraBeneficiarioInss} onChange={handleInputChange} className="h-4 w-4" /><label htmlFor="falecido.documentos.eraBeneficiarioInss" className="text-sm font-medium">Era beneficiário da Previdência Social?</label></div></div>
                         {falecido.documentos.eraBeneficiarioInss && (<><div className="lg:col-span-2"><label htmlFor="falecido.documentos.inscricaoInss" className={commonLabelClass}>Nº Inscrição INSS (Contr. Individual)</label><input type="text" id="falecido.documentos.inscricaoInss" name="falecido.documentos.inscricaoInss" value={falecido.documentos.inscricaoInss || ''} onChange={handleInputChange} className={commonInputClass} /></div><div className="lg:col-span-2"><label htmlFor="falecido.documentos.beneficioInss" className={commonLabelClass}>Nº Benefício INSS (NB)</label><input type="text" id="falecido.documentos.beneficioInss" name="falecido.documentos.beneficioInss" value={falecido.documentos.beneficioInss || ''} onChange={handleInputChange} className={commonInputClass} /></div></>)}
                     </div>
                 </div>
@@ -136,21 +136,21 @@ export default function TabFalecidoFamilia({
                     </div>
 
                     {familia.eraCasado && (
-                        <div className="p-4 border border-gray-300 rounded-md bg-gray-50 space-y-4 animate-fade-in ml-8">
+                        <div className="p-4 border border-gray-300 rounded-md bg-gray-50 space-y-4 animate-fade-in">
                             <div className="flex items-center gap-3"><input id="familia.eraViuvo" type="checkbox" name="familia.eraViuvo" checked={familia.eraViuvo} onChange={handleInputChange} className="h-4 w-4" /> <label htmlFor="familia.eraViuvo">Era viúvo(a)?</label></div>
                             {familia.eraViuvo ? (<div><label className={commonLabelClass}>Nome do Cônjuge Pré-falecido</label><input type="text" name="familia.conjugePreFalecidoNome" value={familia.conjugePreFalecidoNome || ''} onChange={handleInputChange} className={commonInputClass} /></div>) : (<div><label className={commonLabelClass}>Nome do Cônjuge Sobrevivente</label><input type="text" name="familia.conjugeNome" value={familia.conjugeNome} onChange={handleInputChange} className={commonInputClass} /></div>)}
                             <div><label className={commonLabelClass}>Cartório do Casamento</label><input type="text" name="familia.cartorioCasamento" value={familia.cartorioCasamento || ''} onChange={handleInputChange} className={commonInputClass} placeholder="Ex: Cartório de Registro Civil de Goiânia-GO" /></div>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-3 pt-6 mt-6">
+                    <div className="flex items-center gap-3 pt-2">
                         <Baby className="h-5 w-5 text-gray-500" />
                         <label htmlFor="familia.deixouFilhos" className="font-medium text-gray-700">Deixou filhos?</label>
                         <input id="familia.deixouFilhos" type="checkbox" name="familia.deixouFilhos" checked={familia.deixouFilhos} onChange={handleInputChange} className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
                     </div>
 
                     {familia.deixouFilhos && (
-                        <div className="p-4 border border-gray-300 rounded-md bg-gray-50 space-y-2 animate-fade-in ml-8">
+                        <div className="p-4 border border-gray-300 rounded-md bg-gray-50 space-y-2 animate-fade-in">
                             {familia.filhos.map((filho, index) => (
                                 <div key={index} className="flex items-end gap-3 p-2 last:border-b-0">
                                     <div className="flex-grow"><label className={commonLabelClass}>Nome do Filho(a)</label><input type="text" name={`familia.filhos.${index}.nome`} value={filho.nome} onChange={handleInputChange} className={commonInputClass} /></div>

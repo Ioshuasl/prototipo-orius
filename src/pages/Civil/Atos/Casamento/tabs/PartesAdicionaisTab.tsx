@@ -3,7 +3,7 @@ import {
     Globe, FileWarning, BellOff, Siren, HelpingHand, HeartHandshake, UserCheck, Users2,
     PlusCircle, Trash2, History, BookKey, PenSquare, EarOff, Languages, FileBadge
 } from 'lucide-react';
-import { type ICasamentoFormData, type IEndereco, type TPessoaTipo, type IPessoaFisica, type IPessoaJuridica } from '../../../types';
+import { type ICasamentoFormData, type IEndereco, type TPessoaTipo } from '../../../types';
 import PersonFields from '../../../Components/PersonFields';
 import TriagemCasoEspecialCard from '../../../Components/TriagemCasoEspecialCard';
 import SeletorDePessoa from '../../../Components/SeletorDePessoa';
@@ -72,7 +72,7 @@ export default function PartesAdicionaisTab({
     ];
 
     return (
-        <fieldset className="space-y-8">
+        <fieldset className="space-y-4">
             <SectionTitle>Partes Adicionais e Situações Específicas</SectionTitle>
 
             {/* Seção de Testemunhas */}
@@ -100,13 +100,13 @@ export default function PartesAdicionaisTab({
                         />
                     </div>
                 ))}
-                <button type="button" onClick={handleAddTestemunha} className="mt-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800">
+                <button type="button" onClick={handleAddTestemunha} className="mt-2 ml-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800">
                     <PlusCircle size={16} /> Adicionar Testemunha
                 </button>
             </div>
 
             {/* Seção de Triagem de Casos Específicos */}
-            <div className="pt-8 border-t border-gray-200">
+            <div className="border-t border-gray-200">
                 <SubSectionTitle>Situações Específicas</SubSectionTitle>
                 <p className="text-sm text-gray-500 mb-4">Selecione abaixo todas as situações que se aplicam a este ato de casamento. Os campos necessários aparecerão conforme a seleção.</p>
 
@@ -233,10 +233,10 @@ export default function PartesAdicionaisTab({
                     )}
 
                     {formData.casosEspeciais.temFilhosEmComum && (
-                        <div className="p-5 bg-gray-50 border rounded-lg animate-fade-in">
+                        <div className="p-5 bg-gray-50 border border-gray-300 rounded-lg animate-fade-in">
                             <h4 className="font-bold text-gray-700 mb-3">Filhos em Comum</h4>
                             {formData.casosEspeciais.filhosEmComum.map((filho, index) => (
-                                <div key={index} className="flex items-end gap-3 p-2 border-b last:border-b-0">
+                                <div key={index} className="flex items-end gap-3 p-2 last:border-b-0">
                                     <div className="flex-grow">
                                         <label htmlFor={`casosEspeciais.filhosEmComum.${index}.nome`} className={commonLabelClass}>Nome do Filho(a)</label>
                                         <input type="text" name={`casosEspeciais.filhosEmComum.${index}.nome`} value={filho.nome} onChange={handleInputChange} className={commonInputClass} />
@@ -255,7 +255,7 @@ export default function PartesAdicionaisTab({
                     )}
 
                     {formData.casosEspeciais.afastamentoCausaSuspensiva && (
-                        <div className="p-5 bg-gray-50 border rounded-lg animate-fade-in">
+                        <div className="p-5 bg-gray-50 border border-gray-300 rounded-lg animate-fade-in">
                             <h4 className="font-bold text-gray-700 mb-3">Detalhes do Afastamento de Causa Suspensiva</h4>
                             <label htmlFor="casosEspeciais.justificativaAfastamentoCS" className={commonLabelClass}>Justificativa / Documento Comprobatório</label>
                             <input type="text" name="casosEspeciais.justificativaAfastamentoCS" id="casosEspeciais.justificativaAfastamentoCS" value={formData.casosEspeciais.justificativaAfastamentoCS || ''} onChange={handleInputChange} className={commonInputClass} placeholder="Ex: Inventário negativo processo nº..." />
@@ -263,7 +263,7 @@ export default function PartesAdicionaisTab({
                     )}
 
                     {formData.casosEspeciais.nubenteNaoAssina && (
-                        <div className="p-5 bg-gray-50 border rounded-lg animate-fade-in">
+                        <div className="p-5 bg-gray-50 border border-gray-300 rounded-lg animate-fade-in">
                             <h4 className="font-bold text-gray-700 mb-3">Assinatura a Rogo</h4>
                             <label htmlFor="casosEspeciais.nomeRogatario" className={commonLabelClass}>Nome Completo de quem assina a rogo</label>
                             <input type="text" name="casosEspeciais.nomeRogatario" id="casosEspeciais.nomeRogatario" value={formData.casosEspeciais.nomeRogatario || ''} onChange={handleInputChange} className={commonInputClass} placeholder="Nome do rogatário" />
@@ -271,7 +271,7 @@ export default function PartesAdicionaisTab({
                     )}
 
                     {formData.casosEspeciais.nubenteNaoFalaPortugues && (
-                        <div className="p-5 bg-gray-50 border rounded-lg animate-fade-in">
+                        <div className="p-5 bg-gray-50 border border-gray-300 rounded-lg animate-fade-in">
                             <h4 className="font-bold text-gray-700 mb-3">Tradutor Público</h4>
                             <label htmlFor="casosEspeciais.nomeTradutorPublico" className={commonLabelClass}>Nome Completo do Tradutor Público</label>
                             <input type="text" name="casosEspeciais.nomeTradutorPublico" id="casosEspeciais.nomeTradutorPublico" value={formData.casosEspeciais.nomeTradutorPublico || ''} onChange={handleInputChange} className={commonInputClass} placeholder="Nome do tradutor" />
@@ -279,7 +279,7 @@ export default function PartesAdicionaisTab({
                     )}
 
                     {formData.casosEspeciais.nubenteSurdoMudo && (
-                        <div className="p-5 bg-gray-50 border rounded-lg animate-fade-in">
+                        <div className="p-5 bg-gray-50 border border-gray-300 rounded-lg animate-fade-in">
                             <h4 className="font-bold text-gray-700 mb-3">Intérprete de Libras</h4>
                             <label htmlFor="casosEspeciais.nomeInterpreteLibras" className={commonLabelClass}>Nome Completo do Intérprete de Libras</label>
                             <input type="text" name="casosEspeciais.nomeInterpreteLibras" id="casosEspeciais.nomeInterpreteLibras" value={formData.casosEspeciais.nomeInterpreteLibras || ''} onChange={handleInputChange} className={commonInputClass} placeholder="Nome do intérprete" />

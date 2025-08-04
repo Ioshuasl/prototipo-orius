@@ -450,7 +450,7 @@ export default function RegistroNascimentoForm() {
                                 )}
                                 {activeTab === 'filiacao' && (
                                     <fieldset><legend className="sr-only">Filiação</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-10">
-                                        <div><h4 className="font-bold text-black mb-4 border-b pb-2">Dados da Mãe</h4>
+                                        <div><h4 className="font-bold text-black mb-4">Dados da Mãe</h4>
                                             <PersonFields
                                                 personData={formData.filiacao.mae}
                                                 pathPrefix={['filiacao', 'mae']}
@@ -460,7 +460,7 @@ export default function RegistroNascimentoForm() {
                                                 handleCpfSearch={handleCpfSearch}
                                             />
                                         </div>
-                                        <div><h4 className="font-bold text-black mb-4 border-b pb-2">Dados do Pai</h4>
+                                        <div><h4 className="font-bold text-black mb-4">Dados do Pai</h4>
                                             <PersonFields
                                                 personData={formData.filiacao.pai}
                                                 pathPrefix={['filiacao', 'pai']}
@@ -530,7 +530,7 @@ export default function RegistroNascimentoForm() {
 
                                             <div className="space-y-4">
                                                 {formData.documentosApresentados.map((doc, index) => (
-                                                    <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg border">
+                                                    <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-300">
                                                         {/* Campo de Descrição */}
                                                         <div className="flex-grow w-full">
                                                             <label htmlFor={`doc-desc-${index}`} className={commonLabelClass}>

@@ -96,7 +96,7 @@ export default function TabFalecimento({
                     <div className="lg:col-span-3"><label className={commonLabelClass}>Tipo de Morte{requiredSpan}</label><div className="flex gap-6 mt-2"><label className="flex items-center gap-2"><input type="radio" name="falecimento.tipoMorte" value="Natural" checked={falecimento.tipoMorte === 'Natural'} onChange={handleInputChange} /> Natural</label><label className="flex items-center gap-2"><input type="radio" name="falecimento.tipoMorte" value="Violenta" checked={falecimento.tipoMorte === 'Violenta'} onChange={handleInputChange} /> Violenta</label></div></div>
                     <div className="lg:col-span-3"><label className={commonLabelClass}>Causa da Morte Conhecida{requiredSpan}</label><input type="text" name="falecimento.causaMorte" value={falecimento.causaMorte} onChange={handleInputChange} className={commonInputClass} placeholder="Conforme atestado médico" /></div>
 
-                    <div className="lg:col-span-3 border-t pt-6 mt-4 space-y-4">
+                    <div className="lg:col-span-3 space-y-4">
                         <div className="flex items-center gap-3"><input id="isAposSepultamento" type="checkbox" name="falecimento.isAposSepultamento" checked={falecimento.isAposSepultamento} onChange={handleInputChange} className="h-4 w-4" /><label htmlFor="isAposSepultamento" className="font-medium">Registro realizado após o sepultamento?</label></div>
 
                         <div>
