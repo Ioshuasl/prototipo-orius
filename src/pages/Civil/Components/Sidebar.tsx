@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Book, BookKey, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon } from 'lucide-react';
+import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon } from 'lucide-react';
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
 
@@ -116,8 +116,10 @@ interface DirectLinkMenuItemProps {
 }
 
 function DirectLinkMenuItem({ item, isCollapsed }: DirectLinkMenuItemProps) {
-    const activeClass = "bg-gray-700 text-white";
-    const defaultClass = "text-gray-300 hover:bg-gray-700 hover:text-white";
+    //const activeClass = "bg-gray-700 text-white";
+    //const defaultClass = "text-gray-300 hover:bg-gray-700 hover:text-white";
+    const activeClass = "bg-white/10 text-white"; 
+    const defaultClass = "text-gray-300 hover:bg-white/10 hover:text-white"; 
 
     return (
         <li>
@@ -149,8 +151,11 @@ interface AccordionMenuItemProps {
 }
 
 function AccordionMenuItem({ item, isOpen, isCollapsed, onToggle }: AccordionMenuItemProps) {
-    const activeSubItemClass = "bg-blue-600/30 text-white";
-    const defaultSubItemClass = "hover:bg-gray-600";
+    //const activeSubItemClass = "bg-blue-600/30 text-white";
+    //const defaultSubItemClass = "hover:bg-gray-600";
+    //const location = useLocation();
+    const activeSubItemClass = "bg-[#dd6825]/80 text-white";
+    const defaultSubItemClass = "hover:bg-white/10";
     const location = useLocation();
 
     const isParentActive = item.subItems?.some(subItem => location.pathname.startsWith(subItem.path));
@@ -263,12 +268,12 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <aside 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className={`bg-gray-800 text-white p-4 flex flex-col h-screen fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out ${isVisuallyExpanded ? 'w-[250px]' : 'w-20'}`}
+            className={`bg-[#4a4e51] text-white p-4 flex flex-col h-screen fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out ${isVisuallyExpanded ? 'w-[250px]' : 'w-20'}`}
         >
             <div className="flex-shrink-0 mb-6">
                 <Link to="/home" className={`flex items-center gap-2 text-white hover:text-gray-300 ${!isVisuallyExpanded ? 'justify-center' : 'justify-center'}`}>
-                    <BookKey className="h-8 w-8 text-blue-400 flex-shrink-0" />
-                    <span className={`text-2xl font-bold whitespace-nowrap transition-opacity duration-200 ${!isVisuallyExpanded ? 'opacity-0 w-0' : 'opacity-100 delay-100'}`}>Meu Cartório</span>
+                    <img src="src\assets\logo-orius.png" alt="Orius Logo" className="h-8 w-8 flex-shrink-0"/>
+                    <span className={`text-2xl font-bold whitespace-nowrap transition-opacity duration-200 ${!isVisuallyExpanded ? 'opacity-0 w-0' : 'opacity-100 delay-100'}`}>Orius</span>
                 </Link>
             </div>
             

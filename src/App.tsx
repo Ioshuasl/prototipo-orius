@@ -1,7 +1,6 @@
 import { Route, Routes, Link, Navigate } from 'react-router-dom'
 import './App.css'
 import Login from './pages/Auth/Login'
-import ForgotPassword from './pages/Auth/ForgotPassowrd'
 import HomePage from './pages/Home/Home'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -46,6 +45,7 @@ import RelatorioAtividadesPage from './pages/Civil/Impressao/Relatorio-Atividade
 import CRCDashboard from './pages/Civil/Integracao/CRC/CRCDashboard'
 import SIRCDashboard from './pages/Civil/Integracao/SIRC/SIRCDashboard'
 import ConfiguracaoIntegracoes from './pages/Civil/Config/Integracoes/ConfiguracaoIntegracoes'
+import EsqueceuSenha from './pages/Auth/EsqueceuSenha'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -73,7 +73,7 @@ function App() {
         />
         <Route
           path='/forgot-password'
-          element={<ForgotPassword />}
+          element={<EsqueceuSenha />}
         />
         <Route
           path='/home'

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Timer, PenSquare, DollarSign, Search, Loader2, ListChecks, Target, Check, History, Inbox } from 'lucide-react';
 
-
+// --- Funções e dados simulados (sem alteração na lógica) ---
 const getOficialStats = () => [
   { title: "Pendências Críticas", value: "2", icon: Timer, isCritical: true },
   { title: "Carga de Trabalho Total", value: "14", icon: ListChecks },
@@ -43,30 +43,32 @@ export default function CivilRegistryDashboard() {
   }, [user]);
 
   const handleSearch = (e: React.FormEvent) => {
-    // ... (lógica da busca permanece a mesma) ...
+    e.preventDefault();
+    setIsSearching(true);
+    setTimeout(() => {
+        setIsSearching(false)
+    }, 1500)
   };
 
   return (
     <>
       <title>Dashboard | Registro Civil</title>
-      {/* Layout principal */}
-
       <div className="flex bg-gray-50 font-sans">
         <main className="flex-1">
           <div className="mx-auto space-y-8">
             <header>
-              <h1 className="text-4xl font-bold text-gray-900">Dashboard | Registro Civil</h1>
-              {/* Mensagem de boas-vindas genérica e útil */}
+              {/* ALTERADO: Cor do título principal para o cinza escuro da marca */}
+              <h1 className="text-4xl font-bold text-[#4a4e51]">Dashboard | Registro Civil</h1>
               <p className="text-lg text-gray-600 mt-1">Bem-vindo(a), {user?.name}. Veja suas métricas e tarefas.</p>
             </header>
 
-            {/* ===== CARDS DE INDICADORES ADAPTATIVOS ===== */}
             <section>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map(stat => (
-                  <div key={stat.title} className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                    <div className={`p-4 rounded-full ${stat.isCritical ? 'bg-red-100' : 'bg-blue-100'}`}>
-                      <stat.icon className={`h-8 w-8 ${stat.isCritical ? 'text-red-600' : 'text-blue-600'}`} />
+                  <div key={stat.title} className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-300">
+                    {/* ALTERADO: Cores dos ícones e fundos para o padrão da marca, mantendo o vermelho para alertas */}
+                    <div className={`p-4 rounded-full ${stat.isCritical ? 'bg-red-100' : 'bg-[#dd6825]/10'}`}>
+                      <stat.icon className={`h-8 w-8 ${stat.isCritical ? 'text-red-600' : 'text-[#dd6825]'}`} />
                     </div>
                     <div>
                       <p className="text-1xl font-bold text-gray-800">{stat.value}</p>
@@ -77,16 +79,17 @@ export default function CivilRegistryDashboard() {
               </div>
             </section>
 
-            {/* ===== 3. BUSCA RÁPIDA DE ATOS ===== */}
-            <section className="bg-white p-6 rounded-xl shadow-sm">
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-300">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <Search className="text-blue-600" /> Busca Rápida de Atos
+                {/* ALTERADO: Cor do ícone do título */}
+                <Search className="text-[#dd6825]" /> Busca Rápida de Atos
               </h2>
               <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                   <label htmlFor="service-type" className="block text-sm font-medium text-gray-700 mb-1">Tipo de Serviço</label>
                   <select id="service-type" value={selectedService} onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition">
+                    // ALTERADO: Cor do anel de foco
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#dd6825] transition">
                     <option value="" disabled>Selecione...</option>
                     {serviceTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -96,18 +99,21 @@ export default function CivilRegistryDashboard() {
                 <div>
                   <label htmlFor="protocol-number" className="block text-sm font-medium text-gray-700 mb-1">Protocolo</label>
                   <input type="text" id="protocol-number" placeholder="Digite o protocolo..." value={protocolNumber} onChange={(e) => setProtocolNumber(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+                    // ALTERADO: Cor do anel de foco
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#dd6825] transition" />
                 </div>
+                {/* ALTERADO: Botão secundário agora usa o cinza escuro da marca para consistência */}
                 <button type="submit" disabled={isSearching}
-                  className="bg-gray-800 text-white font-semibold px-5 py-2 rounded-lg shadow-sm hover:bg-black transition-colors disabled:bg-gray-400 flex items-center justify-center h-11">
+                  className="bg-[#4a4e51] text-white font-semibold px-5 py-2 rounded-lg shadow-sm hover:bg-[#3b3e40] transition-colors disabled:bg-[#4a4e51]/50 flex items-center justify-center h-11">
                   {isSearching ? <Loader2 className="animate-spin" /> : 'Buscar Ato'}
                 </button>
               </form>
             </section>
 
-            <section className="bg-white p-6 rounded-xl shadow-sm">
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-300">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <ListChecks className="text-blue-600" /> Atividades Recentes
+                 {/* ALTERADO: Cor do ícone do título */}
+                <ListChecks className="text-[#dd6825]" /> Atividades Recentes
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
@@ -122,7 +128,7 @@ export default function CivilRegistryDashboard() {
                   </thead>
                   <tbody>
                     {recentActivity.map(activity => (
-                      <tr key={activity.id} className="border-b hover:bg-gray-50">
+                      <tr key={activity.id} className="border-b border-gray-300 hover:bg-gray-50">
                         <td className="p-4 text-sm text-gray-800 font-mono">{activity.id}</td>
                         <td className="p-4 text-sm text-gray-900 font-semibold">{activity.name}</td>
                         <td className="p-4 text-sm text-gray-600">{activity.type}</td>
