@@ -142,10 +142,12 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
     // Gera o estilo dinâmico baseado no estado
     const qrStyle = getQrCodeStyle(qrCodePosition, qrCodeSize);
 
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
+
     return (
         <>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-8">
-                <h2 className="text-xl font-semibold text-green-700 border-b pb-4">Etapa 2: Emissão</h2>
+                <h2 className="text-xl font-semibold text-[#4a4e51] border-b pb-4">Etapa 2: Emissão</h2>
 
                 <div id='pre-visualizacao-certidao'>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Pré-visualização da Certidão ({mostrarVerso ? 'Verso da Certidão' : 'Frente da Certidão'})</label>
@@ -372,62 +374,36 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
 
                 <button
                     onClick={() => setMostrarVerso(!mostrarVerso)}
-                    className="text-sm text-blue-600 hover:underline flex items-center justify-center gap-1"
+                    className="text-sm text-[#dd6825] hover:underline flex items-center justify-center gap-1 w-full"
                 >
                     {mostrarVerso ? 'Ver Frente da Certidão' : 'Ver Verso da Certidão'}
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    {/* Ações do Documento não muda */}
                     <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                         <h4 className="font-semibold text-gray-700 mb-4">Ações do Documento</h4>
                         <div className="flex flex-col gap-3">
-                            <button
-                                onClick={() => {
-                                    if (!mostrarVerso) {
-                                        const div = document.getElementById('certidao');
-                                        if (div) {
-                                            setPreviewHtml(div.innerHTML);
-                                            setIsPreviewModalOpen(true);
-                                        } else {
-                                            toast.error("Não foi possível encontrar o conteúdo da certidão.");
-                                        }
-                                    } else {
-                                        const div = document.getElementById('certidao-verso');
-                                        if (div) {
-                                            setPreviewHtml(div.innerHTML);
-                                            setIsPreviewModalOpen(true);
-                                        } else {
-                                            toast.error("Não foi possível encontrar o conteúdo da certidão.");
-                                        }
-                                    }
-
-                                }}
-                                className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"
-                            >
+                            <button onClick={() => { /* ... */ }} className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100">
                                 <Eye size={16} /> Visualizar Impressão
                             </button>
-                            <button
-                                onClick={handleImprimirRascunho}
-                                className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"
-                            >
+                            <button onClick={handleImprimirRascunho} className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100">
                                 <Printer size={16} /> Imprimir Certidão ({mostrarVerso ? 'Verso' : 'Frente'})
                             </button>
                         </div>
                     </div>
-
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h4 className="font-semibold text-blue-800 mb-4">Selagem da Certidão</h4>
+                    
+                    {/* ALTERADO: Estilo da seção de selagem */}
+                    <div className="p-4 bg-[#dd6825]/10 border border-[#dd6825]/30 rounded-lg">
+                        <h4 className="font-semibold text-[#c25a1f] mb-4">Selagem da Certidão</h4>
                         <div className="space-y-4">
-                            {/* --- Controles da UI Atualizados --- */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label htmlFor="qr-size" className="flex items-center gap-2 text-sm font-medium text-gray-700"><Scaling size={14} /> Tamanho do selo (px)</label>
-                                    <input id="qr-size" type="text" value={qrCodeSize} onChange={(e) => setQrCodeSize(Number(e.target.value))} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
+                                    <input id="qr-size" type="text" value={qrCodeSize} onChange={(e) => setQrCodeSize(Number(e.target.value))} className={commonInputClass} />
                                 </div>
                                 <div>
                                     <label htmlFor="qr-pos" className="flex items-center gap-2 text-sm font-medium text-gray-700"><Move size={14} />Posição do selo</label>
-                                    <select id="qr-pos" value={qrCodePosition} onChange={(e) => setQrCodePosition(e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm">
+                                    <select id="qr-pos" value={qrCodePosition} onChange={(e) => setQrCodePosition(e.target.value)} className={commonInputClass}>
                                         <option value="top-left">Canto Superior Esquerdo</option>
                                         <option value="top-right">Canto Superior Direito</option>
                                         <option value="bottom-left">Canto Inferior Esquerdo</option>
@@ -437,29 +413,18 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="modelo-selo" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    Modelo do Selo
-                                </label>
-                                <select
-                                    id="modelo-selo"
-                                    value={modeloSelo}
-                                    onChange={(e) => setModeloSelo(e.target.value)}
-                                    className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm"
-                                >
+                                <label htmlFor="modelo-selo" className="flex items-center gap-2 text-sm font-medium text-gray-700">Modelo do Selo</label>
+                                <select id="modelo-selo" value={modeloSelo} onChange={(e) => setModeloSelo(e.target.value)} className={commonInputClass}>
                                     <option value="qr">Somente QR Code</option>
-                                    <option value="qr-numero">QR Code + Número do Selo ao lado</option>
-                                    <option value="qr-texto-lado">QR Code + Texto com URL ao lado</option>
-                                    <option value="qr-texto-abaixo">QR Code + Texto com URL abaixo</option>
-                                    <option value="numero">Somente Número do Selo</option>
+                                    <option value="qr-numero">QR Code + Número</option>
+                                    <option value="qr-texto-lado">QR Code + Texto (Lado)</option>
+                                    <option value="qr-texto-abaixo">QR Code + Texto (Abaixo)</option>
+                                    <option value="numero">Somente Número</option>
                                 </select>
                             </div>
                             <div>
                                 <label htmlFor="selo-verso" className="flex items-center gap-2 text-sm font-medium text-gray-700">Selar Verso da Certidão?</label>
-                                <select 
-                                    id="selo-verso" 
-                                    value={selarVerso} onChange={(e) => setSelarVerso(e.target.value)} 
-                                    className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm"
-                                >
+                                <select id="selo-verso" value={selarVerso} onChange={(e) => setSelarVerso(e.target.value)} className={commonInputClass}>
                                     <option value="false">Não</option>
                                     <option value="true">Sim</option>
                                 </select>
@@ -468,7 +433,8 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
                                 <label className="block text-sm font-medium text-gray-700">Número do Selo Digital gerado</label>
                                 <input type="text" readOnly value={selo || 'Aguardando selagem...'} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm bg-gray-100 cursor-not-allowed" />
                             </div>
-                            <button onClick={handleSelar} disabled={!!selo} className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 disabled:bg-blue-400">
+                            {/* ALTERADO: Cor do botão de selar */}
+                            <button onClick={handleSelar} disabled={!!selo} className="w-full flex items-center justify-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] disabled:bg-[#dd6825]/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                                 <Stamp size={18} /> Selar Certidão
                             </button>
                         </div>
@@ -479,7 +445,7 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
                     <button type="button" onClick={onVoltar} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
                         <ArrowLeft size={18} /> Voltar
                     </button>
-                    <button onClick={onConcluir} disabled={!selo} className="bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    <button onClick={onConcluir} disabled={!selo} className="bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                         Concluir Emissão
                     </button>
                 </div>

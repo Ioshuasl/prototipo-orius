@@ -34,20 +34,20 @@ const ConfiguracaoCartorio: React.FC = () => {
 
     const commonLabelClass = "block text-sm font-medium text-gray-700 mb-1";
     const commonInputClass = "w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors";
-    
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         const keys = name.split('.');
         const [section, field, subField] = keys;
 
         if (subField) {
-             setConfigData(prev => ({
+            setConfigData(prev => ({
                 ...prev,
                 [section]: {
                     ...(prev[section as keyof IConfiguracaoCartorio] as any),
                     [field]: {
-                       ...((prev[section as keyof IConfiguracaoCartorio] as any)[field]),
-                       [subField]: value
+                        ...((prev[section as keyof IConfiguracaoCartorio] as any)[field]),
+                        [subField]: value
                     }
                 },
             }));
@@ -61,7 +61,7 @@ const ConfiguracaoCartorio: React.FC = () => {
             }));
         }
     };
-    
+
     const handleAddressUpdate = (address: Partial<IEndereco>) => {
         setConfigData(prev => ({
             ...prev,
@@ -74,7 +74,7 @@ const ConfiguracaoCartorio: React.FC = () => {
             },
         }));
     };
-    
+
     // Função de envio do formulário
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -85,7 +85,7 @@ const ConfiguracaoCartorio: React.FC = () => {
 
     return (
         <div className="bg-gray-50 min-h-screen p-2">
-            <ToastContainer 
+            <ToastContainer
                 position="top-right"
                 autoClose={5000}
                 hideProgressBar={false}
@@ -97,14 +97,14 @@ const ConfiguracaoCartorio: React.FC = () => {
                 pauseOnHover
                 theme="light"
             />
-            <div className="mx-auto">
+            <div className="mx-auto pb-12">
                 <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-md space-y-8">
-                    
+
                     {/* Seção Dados da Serventia */}
                     <div>
                         <h2 className="text-xl font-semibold text-gray-800">Dados da Serventia</h2>
                         <p className="text-sm text-gray-500 mb-6">Informações públicas de identificação e contato do cartório.</p>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                             <div className="md:col-span-2">
                                 <label htmlFor="serventia.nome" className={commonLabelClass}>Nome da Serventia</label>
@@ -154,7 +154,7 @@ const ConfiguracaoCartorio: React.FC = () => {
                                 <input type="email" id="serventia.email" name="serventia.email" value={configData.serventia.email} onChange={handleInputChange} className={commonInputClass} />
                             </div>
                         </div>
-                        
+
                         <AddressFields
                             addressData={configData.serventia.endereco}
                             namePrefix="serventia.endereco"
@@ -162,7 +162,7 @@ const ConfiguracaoCartorio: React.FC = () => {
                             handleAddressUpdate={handleAddressUpdate}
                         />
                     </div>
-                    
+
                     {/* Seção Dados do Oficial */}
                     <div>
                         <h2 className="text-xl font-semibold text-gray-800">Dados do Oficial</h2>
@@ -173,27 +173,27 @@ const ConfiguracaoCartorio: React.FC = () => {
                                 <label htmlFor="oficial.nome" className={commonLabelClass}>Nome do Oficial</label>
                                 <input type="text" id="oficial.nome" name="oficial.nome" value={configData.oficial.nome} onChange={handleInputChange} className={commonInputClass} />
                             </div>
-                             <div>
+                            <div>
                                 <label htmlFor="oficial.funcao" className={commonLabelClass}>Função do Oficial</label>
                                 <input type="text" id="oficial.funcao" name="oficial.funcao" value={configData.oficial.funcao} onChange={handleInputChange} className={commonInputClass} />
                             </div>
-                             <div>
+                            <div>
                                 <label htmlFor="oficial.subOficialNome" className={commonLabelClass}>Nome do Sub Oficial <span className="text-xs text-gray-400">(opcional)</span></label>
                                 <input type="text" id="oficial.subOficialNome" name="oficial.subOficialNome" value={configData.oficial.subOficialNome} onChange={handleInputChange} className={commonInputClass} />
                             </div>
-                             <div>
+                            <div>
                                 <label htmlFor="oficial.subOficialFuncao" className={commonLabelClass}>Função do Sub Oficial <span className="text-xs text-gray-400">(opcional)</span></label>
                                 <input type="text" id="oficial.subOficialFuncao" name="oficial.subOficialFuncao" onChange={handleInputChange} className={commonInputClass} />
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Ações do Formulário */}
-                    <div className="pt-5 border-t">
+                    <div className="pt-5">
                         <div className="flex justify-end">
-                            <button 
+                            <button
                                 type="submit"
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+                                className="px-6 py-2 text-sm font-bold text-white bg-[#dd6825] rounded-md hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                             >
                                 Salvar Alterações
                             </button>

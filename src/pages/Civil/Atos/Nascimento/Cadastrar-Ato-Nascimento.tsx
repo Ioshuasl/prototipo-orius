@@ -44,25 +44,24 @@ const tabs = [
     { id: 'filiacao', label: 'Filiação', icon: Users },
     { id: 'partes', label: 'Partes Envolvidas', icon: FileText },
     { id: 'anexos', label: 'Anexos', icon: Paperclip },
-    //{ id: 'historico', label: 'Histórico', icon: History }
 ];
 
 const setNestedValue = (obj: any, path: (string | number)[], value: any): any => {
+    // ... (Lógica interna permanece a mesma)
     const key = path[0];
     if (path.length === 1) { return { ...obj, [key]: value }; }
     const nextObj = (obj && typeof obj[key] === 'object' && obj[key] !== null) ? obj[key] : (typeof path[1] === 'number' ? [] : {});
     return { ...obj, [key]: setNestedValue(nextObj, path.slice(1), value) };
 };
 
+
 export default function RegistroNascimentoForm() {
+    // ... (Toda a lógica de estado e handlers permanece a mesma)
     const [formData, setFormData] = useState<INascimentoFormData>(initialState);
     const [activeTab, setActiveTab] = useState(tabs[0].id);
     const [searchingCpf, setSearchingCpf] = useState<string | null>(null);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
-
-
 
     useEffect(() => {
         if (formData.controleRegistro.isLivroAntigo) {
@@ -86,7 +85,7 @@ export default function RegistroNascimentoForm() {
             }
         }
     }, [formData.nascimento.semAssistenciaMedica, formData.testemunhas.length]);
-
+    
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
@@ -150,8 +149,6 @@ export default function RegistroNascimentoForm() {
         });
     };
 
-
-
     const handleCnpjSearch = async (pathPrefix: (string | number)[], cnpj: string) => {
         const cleanCnpj = cnpj.replace(/\D/g, ''); // Remove formatação
         if (cleanCnpj.length !== 14) {
@@ -209,7 +206,7 @@ export default function RegistroNascimentoForm() {
             setSearchingCnpj(null); // Desativa o ícone de "carregando" ao final
         }
     };
-
+    
     const handleDadosChange = (path: (string | number)[], novosDados: Partial<TPessoaTipo>) => {
         setFormData(prev => {
             const newState = { ...prev };
@@ -222,7 +219,7 @@ export default function RegistroNascimentoForm() {
             return newState;
         });
     };
-
+    
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         console.log("Formulário Salvo:", formData);
@@ -260,7 +257,6 @@ export default function RegistroNascimentoForm() {
         setFormData(prev => ({ ...prev, testemunhas: prev.testemunhas.filter((_, index) => index !== indexToRemove) }));
         toast.success(`Testemunha ${indexToRemove + 1} removida.`);
     };
-
     const handleAddSocio = () => {
         setFormData(prev => {
             // Garante que o declarante é tratado como PJ
@@ -281,7 +277,6 @@ export default function RegistroNascimentoForm() {
         });
         toast.info("Campo para sócio adicionado.");
     };
-
     const handleRemoveSocio = (indexToRemove: number) => {
         setFormData(prev => {
             const declarantePJ = prev.declarante as IPessoaJuridica;
@@ -358,8 +353,8 @@ export default function RegistroNascimentoForm() {
         toast.warn("Documento removido.");
     };
 
-
-    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500";
+    // ALTERADO: Classe de input comum agora usa as cores da marca para o foco.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
 
@@ -378,13 +373,15 @@ export default function RegistroNascimentoForm() {
                     <div className="mx-auto">
                         <header className="mb-6 flex justify-between items-center">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Registrar Novo Ato de Nascimento</h1>
+                                {/* ALTERADO: Cor do título principal para o cinza escuro da marca. */}
+                                <h1 className="text-3xl font-bold text-[#4a4e51]">Registrar Novo Ato de Nascimento</h1>
                                 <p className="text-md text-gray-500 mt-1">Preencha os dados abaixo para criar um novo ato.</p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setIsHistoryModalOpen(true)}
-                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                // ALTERADO: Cor do anel de foco do botão secundário.
+                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                             >
                                 <History className="h-5 w-5" />
                                 Ver Histórico
@@ -394,7 +391,8 @@ export default function RegistroNascimentoForm() {
                         <div className="border-b border-gray-200">
                             <nav className="-mb-px flex space-x-6" aria-label="Tabs">
                                 {tabs.map(tab => (
-                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
+                                    // ALTERADO: Cor da aba ativa para o laranja da marca.
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
                                         <tab.icon className="h-5 w-5" /> {tab.label}
                                     </button>
                                 ))}
@@ -405,7 +403,8 @@ export default function RegistroNascimentoForm() {
                             <div className="tab-content">
                                 {activeTab === 'controle' && (
                                     <fieldset><legend className="sr-only">Dados de Controle</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                        <div className="flex items-center mb-5"><input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-blue-600 rounded" checked={formData.controleRegistro.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label></div>
+                                        {/* ALTERADO: Cor do checkbox. */}
+                                        <div className="flex items-center mb-5"><input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.controleRegistro.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label></div>
                                         <div className="pt-5 ">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados do Registro</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
@@ -422,7 +421,8 @@ export default function RegistroNascimentoForm() {
                                                 <div><label htmlFor="controleRegistro.numeroTermo" className={commonLabelClass}>Nº do Termo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="controleRegistro.numeroTermo" id="controleRegistro.numeroTermo" className={controlInputClass} value={formData.controleRegistro.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                                             </div>
                                         </div>
-                                        <div className="mt-6 pt-6 flex justify-end"><button type="button" onClick={handleLavrarAto} className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"><Award className="h-5 w-5" />Lavrar Ato</button></div>
+                                        {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato". */}
+                                        <div className="mt-6 pt-6 flex justify-end"><button type="button" onClick={handleLavrarAto} className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"><Award className="h-5 w-5" />Lavrar Ato</button></div>
                                     </div></fieldset>
                                 )}
                                 {activeTab === 'nascido' && (
@@ -438,13 +438,15 @@ export default function RegistroNascimentoForm() {
                                             <div className="col-span-1">
                                                 <label htmlFor="registrando.cpf" className={commonLabelClass}>CPF {requiredSpan}</label>
                                                 <div className="flex"><IMaskInput mask="000.000.000-00" name="registrando.cpf" id="registrando.cpf" value={formData.registrando.cpf} onAccept={(value) => handleInputChange({ target: { name: 'registrando.cpf', value } } as any)} className={commonInputClass} placeholder="000.000.000-00" />
-                                                    <button type="button" onClick={handleGenerateCpf} title="Gerar CPF para o nascido" className="ml-2 mt-1 px-3 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center transition-colors"><Sparkles className="h-5 w-5 text-yellow-500" />
+                                                    {/* ALTERADO: Cor do ícone do botão de gerar CPF. */}
+                                                    <button type="button" onClick={handleGenerateCpf} title="Gerar CPF para o nascido" className="ml-2 mt-1 px-3 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center transition-colors"><Sparkles className="h-5 w-5 text-[#dd6825]" />
                                                     </button>
                                                 </div>
                                             </div>
                                             <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.localNascimento" className={commonLabelClass}>Local do Nascimento</label><input type="text" name="nascimento.localNascimento" id="nascimento.localNascimento" placeholder="Hospital, Casa, etc. e Cidade - UF" className={commonInputClass} value={formData.nascimento.localNascimento} onChange={handleInputChange} /></div>
                                             <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.naturalidade" className={commonLabelClass}>Naturalidade do Registrando</label><select name="registrando.naturalidade" id="registrando.naturalidade" className={commonInputClass} value={formData.registrando.naturalidade} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Local do Parto">Município do Local do Parto</option><option value="Residência da Mãe">Município de Residência da Mãe</option></select></div>
-                                            <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-blue-600" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-blue-600" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} /> Nascimento sem assistência médica</label></div>
+                                            {/* ALTERADO: Cor dos checkboxes. */}
+                                            <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} /> Nascimento sem assistência médica</label></div>
                                         </div>
                                     </div></fieldset>
                                 )}
@@ -479,18 +481,12 @@ export default function RegistroNascimentoForm() {
                                             <SeletorDePessoa
                                                 dados={formData.declarante}
                                                 pathPrefix={['declarante']}
-
-                                                // Handlers para PF e PJ
                                                 handleInputChange={handleInputChange}
                                                 handleAddressUpdate={handleAddressUpdate}
                                                 handleCpfSearch={handleCpfSearch}
                                                 handleCnpjSearch={handleCnpjSearch}
-
-                                                // Estados de loading para PF e PJ
                                                 searchingCpf={searchingCpf}
                                                 searchingCnpj={searchingCnpj}
-
-                                                // Handler para limpar os dados ao trocar de tipo
                                                 onDadosChange={(novosDados) => handleDadosChange(['declarante'], novosDados)}
                                                 onAddSocio={handleAddSocio}
                                                 onRemoveSocio={handleRemoveSocio}
@@ -531,7 +527,6 @@ export default function RegistroNascimentoForm() {
                                             <div className="space-y-4">
                                                 {formData.documentosApresentados.map((doc, index) => (
                                                     <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-300">
-                                                        {/* Campo de Descrição */}
                                                         <div className="flex-grow w-full">
                                                             <label htmlFor={`doc-desc-${index}`} className={commonLabelClass}>
                                                                 Descrição do Documento
@@ -546,19 +541,19 @@ export default function RegistroNascimentoForm() {
                                                             />
                                                         </div>
 
-                                                        {/* Campo de Upload */}
                                                         <div className="w-full md:w-auto">
                                                             <label htmlFor={`doc-file-${index}`} className={commonLabelClass}>
                                                                 Anexo Digital
                                                             </label>
-                                                            <label htmlFor={`doc-file-${index}`} className="mt-1 cursor-pointer flex items-center justify-center gap-2 w-full md:w-56 px-4 py-2 bg-white text-blue-600 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition">
+                                                             {/* ALTERADO: Cor do botão de upload. */}
+                                                            <label htmlFor={`doc-file-${index}`} className="mt-1 cursor-pointer flex items-center justify-center gap-2 w-full md:w-56 px-4 py-2 bg-white text-[#dd6825] border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition">
                                                                 <UploadCloud size={18} />
                                                                 <span>{doc.nomeArquivo ? 'Trocar Arquivo' : 'Escolher Arquivo'}</span>
                                                             </label>
                                                             <input
                                                                 id={`doc-file-${index}`}
                                                                 type="file"
-                                                                className="sr-only" // Oculta o input padrão
+                                                                className="sr-only"
                                                                 onChange={(e) => handleFileChange(['documentosApresentados', index, 'arquivo'], e.target.files?.[0] || null)}
                                                             />
                                                             {doc.nomeArquivo && (
@@ -568,7 +563,6 @@ export default function RegistroNascimentoForm() {
                                                             )}
                                                         </div>
 
-                                                        {/* Botão de Remover */}
                                                         <div className="w-full md:w-auto flex justify-end md:self-end">
                                                             <button
                                                                 type="button"
@@ -581,13 +575,14 @@ export default function RegistroNascimentoForm() {
                                                     </div>
                                                 ))}
                                             </div>
-
+                                            
+                                            {/* ALTERADO: Cor do link "Adicionar Documento". */}
                                             <button
                                                 type="button"
                                                 onClick={handleAddDocumento}
-                                                className="mt-6 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800"
+                                                className="mt-6 flex items-center gap-2 text-ml font-medium text-[#dd6825] hover:text-[#c25a1f]"
                                             >
-                                                <PlusCircle size={16} /> Adicionar Documento
+                                                <PlusCircle size={20} /> Adicionar Documento
                                             </button>
                                         </div>
                                     </fieldset>
@@ -603,7 +598,6 @@ export default function RegistroNascimentoForm() {
                 </main>
             </div>
 
-            {/* --- MODAIS SENDO CHAMADOS COMO COMPONENTES --- */}
             <HistoricoModal
                 isOpen={isHistoryModalOpen}
                 onClose={() => setIsHistoryModalOpen(false)}

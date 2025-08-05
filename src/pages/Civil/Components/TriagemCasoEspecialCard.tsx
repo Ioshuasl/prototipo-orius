@@ -1,14 +1,6 @@
 import React from 'react';
 import { type LucideProps, CheckCircle } from 'lucide-react';
 
-/**
- * Props para o componente TriagemCasoEspecialCard.
- * @param icon - O componente de ícone a ser renderizado (ex: Globe, UserCheck de lucide-react).
- * @param title - O título principal do card.
- * @param text - O texto descritivo abaixo do título.
- * @param isActive - Um booleano que indica se o card está selecionado (ativo).
- * @param onClick - A função a ser executada quando o card é clicado.
- */
 interface TriagemCardProps {
     icon: React.ComponentType<LucideProps>;
     title: string;
@@ -17,11 +9,6 @@ interface TriagemCardProps {
     onClick: () => void;
 }
 
-/**
- * Um componente de card reutilizável usado para selecionar situações
- * específicas no formulário de casamento. Ele muda de aparência com base
- * no estado 'isActive'.
- */
 export default function TriagemCasoEspecialCard({
     icon: Icon, // Renomeia a prop 'icon' para 'Icon' para poder usá-la como um componente JSX
     title,

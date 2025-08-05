@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { User as UserIcon, Lock, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth, type User } from '../../contexts/AuthContext';
+import logo from '../../assets/logo-orius-branco-sidebar.png'
 
 // ... (O MOCK_USERS permanece o mesmo)
 const MOCK_USERS: (User & { email: string, senha_plana: string })[] = [
@@ -55,7 +56,7 @@ export default function Login() {
         
         <div className="text-center">
           {/* ALTERADO: Adicionada a logo da empresa */}
-          <img src="/logo orius.png" alt="Logo Orius Tecnologia" className="mx-auto h-12 w-auto mb-4"/>
+          <img src={logo} alt="Logo Orius Tecnologia" className="mx-auto h-24 w-auto mb-4"/>
           {/* ALTERADO: Cor do título principal para o cinza escuro da marca */}
           <h1 className="text-3xl font-bold text-[#4a4e51]">Acesso ao Sistema</h1>
           <p className="mt-2 text-gray-500">Faça login para continuar</p>

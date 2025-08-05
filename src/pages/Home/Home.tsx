@@ -11,6 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useEffect } from 'react';
+import logo from '../../assets/logo-orius-branco-sidebar.png'
 
 // --- Estrutura de dados para os módulos do sistema ---
 // ALTERADO: A cor dos ícones foi trocada de azul para o laranja da marca.
@@ -93,7 +94,7 @@ export default function DashboardPage() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* ALTERADO: Título do sistema para a logo da empresa */}
           <Link to="/" className="flex items-center gap-3">
-             <img src="/logo orius.png" alt="Logo Orius" className="h-8 w-auto" />
+             <img src={logo} alt="Logo Orius" className="h-16 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
             <div className="text-right">

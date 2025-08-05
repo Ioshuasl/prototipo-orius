@@ -171,7 +171,7 @@ export default function EmissaoAverbacao() {
     };
 
     return (
-        <div className="mx-auto space-y-6">
+        <div className="mx-auto space-y-4">
             <header className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-800 transition-colors duration-500">{headerTitle}</h1>
                 <p className="text-md text-gray-500 mt-1">Fluxo de trabalho para registro de averbações nos atos civis.</p>

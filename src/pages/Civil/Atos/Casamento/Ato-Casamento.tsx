@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Users, Save, XCircle, BookKey, History, Gavel, Scale, Files } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { type IEndereco, type IPessoaFisica, type ICasamentoFormData, type IConjugeData, type IPessoaJuridica, type TPessoaTipo } from '../../types'; // Assumindo que este arquivo existe
+import { type IEndereco, type IPessoaFisica, type ICasamentoFormData, type IConjugeData, type IPessoaJuridica, type TPessoaTipo } from '../../types';
 import HistoricoModal from '../../Components/HistoricoModal';
 import PactoAntenupcialModal from '../../Components/PactoAntenupcial';
 import ControleAtoTab from './tabs/ControleAtoTab';
@@ -13,8 +13,7 @@ import DocumentosAnexosTab from './tabs/DocumentosAnexosTab';
 import { livrosDisponiveis } from '../../lib/Constants';
 import { mockPessoDatabase } from '../../lib/Constants';
 
-
-// --- ESTADO INICIAL (ATUALIZADO) ---
+// --- ESTADOS INICIAIS E LÓGICA (sem alteração) ---
 const todayString = new Date().toISOString().split('T')[0];
 const initialEnderecoState: IEndereco = { cep: '', tipoLogradouro: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' };
 const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: '', docIdentidadeNum: '', estadoCivil: 'Solteiro(a)', regimeBens: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialEnderecoState }, nomePai: '', nomeMae: '', };
@@ -45,8 +44,8 @@ const initialState: ICasamentoFormData = {
     regimeBens: { tipo: 'Comunhão Parcial de Bens', pactoAntenupcial: null },
     casosEspeciais: {
         isConversaoUniaoEstavel: false, isPorProcuracao: false, conjuge1TemProcurador: false, conjuge2TemProcurador: false,
-        procuradorConjuge1: { ...initialPersonState }, // <-- Inicializado como PF
-        procuradorConjuge2: { ...initialPersonState }, // <-- Inicializado como PF
+        procuradorConjuge1: { ...initialPersonState },
+        procuradorConjuge2: { ...initialPersonState },
         conjuge1TeveCasamentoAnterior: false, conjuge2TeveCasamentoAnterior: false, temFilhosEmComum: false, filhosEmComum: [],
         temNubenteEstrangeiro: false, afastamentoCausaSuspensiva: false, dispensaProclamas: false, isMolestiaGrave: false,
         molestiaGraveComHabilitacao: false, isNuncupativo: false, suprirOmissaoTermoReligioso: false,
@@ -63,10 +62,7 @@ const initialState: ICasamentoFormData = {
     ]
 };
 
-// --- BANCO DE DADOS FAKE ---
 
-
-// --- ABAS DO FORMULÁRIO ---
 const tabs = [
     { id: 'controle', label: 'Controle do Ato', icon: BookKey },
     { id: 'celebracao', label: 'Celebração & Regime', icon: Scale },
@@ -74,10 +70,10 @@ const tabs = [
     { id: 'filiacao', label: 'Filiação', icon: Users },
     { id: 'partes', label: 'Partes Adicionais', icon: Gavel },
     { id: 'documentos', label: 'Documentos/Anexos', icon: Files },
-    //{ id: 'historico', label: 'Histórico', icon: History },
 ];
 
 const setNestedValue = (obj: any, path: (string | number)[], value: any): any => {
+    // ...
     const key = path[0];
     if (path.length === 1) { return { ...obj, [key]: value }; }
     const nextObj = (obj && typeof obj[key] === 'object' && obj[key] !== null) ? obj[key] : (typeof path[1] === 'number' ? [] : {});
@@ -86,52 +82,44 @@ const setNestedValue = (obj: any, path: (string | number)[], value: any): any =>
 
 
 export default function RegistroCasamentoForm() {
+    // ... (Handlers e lógica de estado permanecem os mesmos)
     const [formData, setFormData] = useState<ICasamentoFormData>(initialState);
     const [activeTab, setActiveTab] = useState(tabs[0].id);
-    const [isPactoModalOpen, setIsPactoModalOpen] = useState(false); // <-- ADICIONE ESTA LINHA
-
+    const [isPactoModalOpen, setIsPactoModalOpen] = useState(false);
     const [searchingCpf, setSearchingCpf] = useState<string | null>(null);
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
-    const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false); // <--- ADICIONE ESTA LINHA
+    const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
     const handleFileChange = (path: (string | number)[], file: File | null) => {
         setFormData(prev => {
             const newState = { ...prev };
             let currentLevel: any = newState;
-
-            // Navega até o penúltimo nível do caminho
             for (let i = 0; i < path.length - 1; i++) {
                 const key = path[i];
                 if (Array.isArray(currentLevel[key])) {
-                    currentLevel[key] = [...currentLevel[key]]; // Cria uma nova cópia do array
+                    currentLevel[key] = [...currentLevel[key]];
                 } else {
-                    currentLevel[key] = { ...currentLevel[key] }; // Cria uma nova cópia do objeto
+                    currentLevel[key] = { ...currentLevel[key] };
                 }
                 currentLevel = currentLevel[key];
             }
-
-            // Atualiza o objeto final no array
             const finalPathKey = path[path.length - 1];
             const index = path[path.length - 2];
 
             if (typeof index === 'number') {
-                const item = { ...currentLevel[index] }; // Cópia do item específico
+                const item = { ...currentLevel[index] };
                 item[finalPathKey as keyof typeof item] = file;
-                item['nomeArquivo'] = file?.name; // Guarda o nome do arquivo
+                item['nomeArquivo'] = file?.name;
                 currentLevel[index] = item;
             }
-
             return newState;
         });
         if (file) {
             toast.info(`Arquivo "${file.name}" selecionado.`);
         }
     };
-
-    // Efeitos
-
+    
     useEffect(() => {
-        // Função para calcular a idade
         const getAge = (dateString: string) => {
             if (!dateString) return 0;
             const today = new Date();
@@ -143,17 +131,11 @@ export default function RegistroCasamentoForm() {
             }
             return age;
         };
-
         const ageConjuge1 = getAge(formData.conjuge1.dataNascimento);
         const ageConjuge2 = getAge(formData.conjuge2.dataNascimento);
-
         if (ageConjuge1 < 16 || ageConjuge2 < 16) {
             toast.error("É proibido o casamento de menores de 16 anos!");
-            // Aqui você pode desabilitar o botão de lavrar, por exemplo.
         }
-
-        // Você pode armazenar o estado da menoridade para exibir avisos na UI
-        // setMenoridadeInfo({ conjuge1: ageConjuge1 >= 16 && ageConjuge1 < 18, ... })
     }, [formData.conjuge1.dataNascimento, formData.conjuge2.dataNascimento]);
 
     useEffect(() => {
@@ -167,7 +149,6 @@ export default function RegistroCasamentoForm() {
     useEffect(() => {
         const regime = formData.regimeBens.tipo;
         const needsPacto = regime === 'Comunhão Universal de Bens' || regime === 'Separação Total de Bens' || regime === 'Participação Final nos Aquestos';
-
         if (needsPacto && !formData.regimeBens.pactoAntenupcial) {
             setFormData(prev => ({ ...prev, regimeBens: { ...prev.regimeBens, pactoAntenupcial: { data: '', serventia: '', livro: '', folha: '' } } }));
         } else if (!needsPacto && formData.regimeBens.pactoAntenupcial) {
@@ -175,7 +156,6 @@ export default function RegistroCasamentoForm() {
         }
     }, [formData.regimeBens.tipo]);
 
-    // Handlers
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
@@ -229,59 +209,33 @@ export default function RegistroCasamentoForm() {
     };
 
     const handleCnpjSearch = async (pathPrefix: (string | number)[], cnpj: string) => {
-        const cleanCnpj = cnpj.replace(/\D/g, ''); // Remove formatação
+        const cleanCnpj = cnpj.replace(/\D/g, '');
         if (cleanCnpj.length !== 14) {
             toast.warn("CNPJ inválido. Por favor, preencha os 14 dígitos.");
             return;
         }
-
         const currentPathKey = pathPrefix.join('.');
-        setSearchingCnpj(currentPathKey); // Ativa o ícone de "carregando"
-
+        setSearchingCnpj(currentPathKey);
         try {
             const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 toast.error(`Erro ao buscar CNPJ: ${errorData.message || 'Não encontrado.'}`);
                 return;
             }
-
             const data = await response.json();
-
-            // Mapeia os dados da API para a nossa interface IPessoaJuridica
             const novosDadosPJ: Partial<IPessoaJuridica> = {
-                tipo: 'juridica',
-                razaoSocial: data.razao_social,
-                nomeFantasia: data.nome_fantasia,
-                cnpj: data.cnpj,
-                endereco: {
-                    cep: data.cep || '',
-                    uf: data.uf || '',
-                    cidade: data.municipio || '',
-                    bairro: data.bairro || '',
-                    logradouro: data.logradouro || '',
-                    numero: data.numero || '',
-                    complemento: data.complemento || '',
-                    tipoLogradouro: '' // A API não fornece este dado, então mantemos vazio
-                },
-                // Mapeia o array QSA (Quadro de Sócios e Administradores) da API
-                qsa: data.qsa?.map((socio: any) => ({
-                    nome: socio.nome_socio,
-                    qualificacao: socio.qualificacao_socio,
-                })) || [], // Se a API não retornar QSA, inicializa como um array vazio
+                tipo: 'juridica', razaoSocial: data.razao_social, nomeFantasia: data.nome_fantasia, cnpj: data.cnpj,
+                endereco: { cep: data.cep || '', uf: data.uf || '', cidade: data.municipio || '', bairro: data.bairro || '', logradouro: data.logradouro || '', numero: data.numero || '', complemento: data.complemento || '', tipoLogradouro: '' },
+                qsa: data.qsa?.map((socio: any) => ({ nome: socio.nome_socio, qualificacao: socio.qualificacao_socio, })) || [],
             };
-
-            // Usa a nossa função segura para atualizar o estado de forma imutável
             setFormData(prev => setNestedValue(prev, pathPrefix as string[], novosDadosPJ));
-
             toast.success(`Dados de "${data.razao_social}" preenchidos!`);
-
         } catch (error) {
             console.error("Falha na requisição do CNPJ:", error);
             toast.error("Não foi possível conectar à API de busca de CNPJ.");
         } finally {
-            setSearchingCnpj(null); // Desativa o ícone de "carregando" ao final
+            setSearchingCnpj(null);
         }
     };
 
@@ -292,7 +246,6 @@ export default function RegistroCasamentoForm() {
             for (let i = 0; i < path.length - 1; i++) {
                 currentLevel = currentLevel[path[i]];
             }
-            // Substitui o objeto inteiro (ex: 'declarante') pelos novos dados
             currentLevel[path[path.length - 1]] = novosDados;
             return newState;
         });
@@ -310,22 +263,13 @@ export default function RegistroCasamentoForm() {
 
     const handleAddSocio = (path: (string | number)[]) => {
         setFormData(prev => {
-            // Assume que o caminho é algo como ['casosEspeciais', 'procuradorConjuge1']
             const [keyCasosEspeciais, keyProcurador] = path as [string, keyof ICasamentoFormData['casosEspeciais']];
-
             const procuradorAtual = prev.casosEspeciais[keyProcurador] as IPessoaJuridica;
             const novoSocio = { nome: '', qualificacao: '' };
             const qsaAtualizado = [...(procuradorAtual.qsa || []), novoSocio];
-
             return {
                 ...prev,
-                casosEspeciais: {
-                    ...prev.casosEspeciais,
-                    [keyProcurador]: {
-                        ...procuradorAtual,
-                        qsa: qsaAtualizado,
-                    }
-                }
+                casosEspeciais: { ...prev.casosEspeciais, [keyProcurador]: { ...procuradorAtual, qsa: qsaAtualizado, } }
             };
         });
         toast.info("Campo para sócio adicionado.");
@@ -334,37 +278,22 @@ export default function RegistroCasamentoForm() {
     const handleRemoveSocio = (path: (string | number)[], indexToRemove: number) => {
         setFormData(prev => {
             const [keyCasosEspeciais, keyProcurador] = path as [string, keyof ICasamentoFormData['casosEspeciais']];
-
             const procuradorAtual = prev.casosEspeciais[keyProcurador] as IPessoaJuridica;
             const qsaAtual = procuradorAtual.qsa || [];
             const qsaAtualizado = qsaAtual.filter((_, index) => index !== indexToRemove);
-
             return {
                 ...prev,
-                casosEspeciais: {
-                    ...prev.casosEspeciais,
-                    [keyProcurador]: {
-                        ...procuradorAtual,
-                        qsa: qsaAtualizado,
-                    }
-                }
+                casosEspeciais: { ...prev.casosEspeciais, [keyProcurador]: { ...procuradorAtual, qsa: qsaAtualizado, } }
             };
         });
         toast.warn("Sócio removido.");
     };
 
-
     const handleAddFilho = () => {
         setFormData(prev => {
             const filhosAtuais = prev.casosEspeciais.filhosEmComum || [];
             const novoFilho = { nome: '', dataNascimento: '' };
-            return {
-                ...prev,
-                casosEspeciais: {
-                    ...prev.casosEspeciais,
-                    filhosEmComum: [...filhosAtuais, novoFilho]
-                }
-            };
+            return { ...prev, casosEspeciais: { ...prev.casosEspeciais, filhosEmComum: [...filhosAtuais, novoFilho] } };
         });
         toast.info("Campo para filho(a) adicionado.");
     };
@@ -372,13 +301,7 @@ export default function RegistroCasamentoForm() {
     const handleRemoveFilho = (indexToRemove: number) => {
         setFormData(prev => {
             const filhosAtuais = prev.casosEspeciais.filhosEmComum || [];
-            return {
-                ...prev,
-                casosEspeciais: {
-                    ...prev.casosEspeciais,
-                    filhosEmComum: filhosAtuais.filter((_, index) => index !== indexToRemove)
-                }
-            };
+            return { ...prev, casosEspeciais: { ...prev.casosEspeciais, filhosEmComum: filhosAtuais.filter((_, index) => index !== indexToRemove) } };
         });
         toast.warn("Filho(a) removido(a).");
     };
@@ -413,6 +336,7 @@ export default function RegistroCasamentoForm() {
     };
 
     const handleLavrarAto = () => {
+        // ... (lógica de validação permanece a mesma)
         if (!formData.conjuge1.nome || !formData.conjuge2.nome) {
             toast.warn("O nome de ambos os cônjuges é obrigatório.");
             setActiveTab('conjuges');
@@ -462,27 +386,27 @@ export default function RegistroCasamentoForm() {
         }
     };
 
-
-    // Elementos e Classes reutilizáveis
     const SectionTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">{children}</h3>;
     const SubSectionTitle = ({ children }: { children: React.ReactNode }) => <h4 className="font-bold text-gray-600 mb-3 mt-4">{children}</h4>;
 
 
     return (
         <>
-            <title>Registrar Casamento</title>
+            <title>Registrar Casamento | Orius Tecnologia</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1 p-0">
                     <div className="mx-auto">
                         <header className="mb-6 flex justify-between items-center">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Registrar Novo Ato de Casamento</h1>
+                                {/* ALTERADO: Cor do título principal */}
+                                <h1 className="text-3xl font-bold text-[#4a4e51]">Registrar Novo Ato de Casamento</h1>
                                 <p className="text-md text-gray-500 mt-1">Preencha os dados abaixo para lavrar o ato.</p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setIsHistoryModalOpen(true)}
-                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                // ALTERADO: Cor do anel de foco do botão
+                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                             >
                                 <History className="h-5 w-5" />
                                 Ver Histórico
@@ -492,7 +416,8 @@ export default function RegistroCasamentoForm() {
                         <div className="border-b border-gray-200">
                             <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
                                 {tabs.map(tab => (
-                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
+                                    // ALTERADO: Cor da aba ativa
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
                                         <tab.icon className="h-5 w-5" /> {tab.label}
                                     </button>
                                 ))}
@@ -553,7 +478,6 @@ export default function RegistroCasamentoForm() {
                 </main>
             </div>
 
-            {/* --- MODAIS SENDO CHAMADOS COMO COMPONENTES --- */}
             <HistoricoModal
                 isOpen={isHistoryModalOpen}
                 onClose={() => setIsHistoryModalOpen(false)}
@@ -563,6 +487,9 @@ export default function RegistroCasamentoForm() {
             <PactoAntenupcialModal
                 isOpen={isPactoModalOpen}
                 onClose={() => setIsPactoModalOpen(false)}
+                // Você pode passar dados do pacto para o modal se necessário
+                // pactoData={formData.regimeBens.pactoAntenupcial}
+                // onSave={(pactoData) => handleInputChange({ target: { name: 'regimeBens.pactoAntenupcial', value: pactoData } } as any)}
             />
         </>
     );

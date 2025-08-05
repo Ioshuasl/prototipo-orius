@@ -1,0 +1,3 @@
+fundo: #343c40
+orius: #f3743b
+tecnologia: #c9c9c9

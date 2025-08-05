@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircle, Search, ChevronLeft, ChevronRight, BookKey, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, MoreVertical, Fingerprint, CalendarDays, HeartCrack } from 'lucide-react';
 
-// --- ESTRUTURA DE TIPOS E DADOS SIMULADOS CORRIGIDA ---
+// --- ESTRUTURA DE TIPOS E DADOS SIMULADOS ---
 type RecordStatus = 'Finalizado' | 'Rascunho' | 'Pendente Assinatura' | 'Cancelado';
 
 interface StillbornRecord {
@@ -20,6 +20,7 @@ interface StillbornRecord {
     livro: string;
 }
 
+// --- Dados e Lógica (Inalterados) ---
 const livrosNatimortoExemplo = ['C-Aux-01', 'C-Aux-02'];
 const mockStillbornRecords: StillbornRecord[] = Array.from({ length: 14 }, (_, i) => {
     const registrationDate = new Date(2025, 3, 15 - i);
@@ -36,7 +37,7 @@ const mockStillbornRecords: StillbornRecord[] = Array.from({ length: 14 }, (_, i
         placeOfOccurrence: 'Hospital Materno Infantil, Goiânia - GO',
         registrationDate: registrationDate.toLocaleDateString('pt-BR'),
         lavraturaDate: lavraturaDate.toLocaleDateString('pt-BR'),
-        status: ['Finalizado', 'Rascunho', 'Pendente Assinatura'][i % 3] as RecordStatus, // CORRIGIDO PARA USAR OS STATUS PADRÃO
+        status: ['Finalizado', 'Rascunho', 'Pendente Assinatura'][i % 3] as RecordStatus,
         isOldBook: i % 5 === 0,
         livro: livrosNatimortoExemplo[i % livrosNatimortoExemplo.length],
     };
@@ -45,7 +46,6 @@ const mockStillbornRecords: StillbornRecord[] = Array.from({ length: 14 }, (_, i
 const statusOptions: RecordStatus[] = ['Finalizado', 'Rascunho', 'Pendente Assinatura', 'Cancelado'];
 const bookOptions = [...new Set(mockStillbornRecords.map(record => record.livro))];
 
-// --- OBJETO DE ESTILOS CORRIGIDO E CENTRALIZADO ---
 const statusStyles: Record<RecordStatus, { text: string, bg: string, border: string, topBorder: string }> = {
     Finalizado: { text: 'text-green-800', bg: 'bg-green-100', border: 'border-green-200', topBorder: 'border-t-green-500' },
     Rascunho: { text: 'text-yellow-800', bg: 'bg-yellow-100', border: 'border-yellow-200', topBorder: 'border-t-yellow-500' },
@@ -70,6 +70,7 @@ export default function StillbornRecordsManagementPage() {
     const recordsPerPage = 9;
 
     useEffect(() => {
+        // Lógica de filtro (inalterada)
         setIsLoading(true);
         const parseDate = (dateString: string): Date | null => {
             if (!dateString) return null;
@@ -123,7 +124,6 @@ export default function StillbornRecordsManagementPage() {
     };
 
     const RecordCard = ({ record }: { record: StillbornRecord }) => {
-        const cardTopBorderStyle = statusStyles[record.status]?.topBorder || 'border-t-gray-200';
         const handleActionsClick = (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
@@ -131,10 +131,11 @@ export default function StillbornRecordsManagementPage() {
         };
         return (
             <Link to={`/registro-civil/natimorto/${record.id}`} className="block group">
-                <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden border-t-4 ${cardTopBorderStyle}`}>
+                <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden`}>
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex justify-between items-start gap-4">
-                            <div><h3 className="font-bold text-gray-800 text-lg leading-tight group-hover:text-blue-600 transition-colors">Natimorto de {record.motherName}</h3><p className="text-sm text-gray-500">{record.motherCpf}</p></div>
+                            {/* ALTERADO: Cor do hover no título do card */}
+                            <div><h3 className="font-bold text-gray-800 text-lg leading-tight group-hover:transition-colors">Natimorto de {record.motherName}</h3><p className="text-sm text-gray-500">{record.motherCpf}</p></div>
                             <StatusBadge status={record.status} />
                         </div>
                     </div>
@@ -144,8 +145,9 @@ export default function StillbornRecordsManagementPage() {
                         <div className="flex items-start gap-2"><HeartCrack className="h-4 w-4 mt-0.5 text-gray-400" /><div><p className="text-xs text-gray-500">Data da Ocorrência</p><p className="font-medium text-gray-700">{record.dateOfOccurrence}</p></div></div>
                         <div className="flex items-start gap-2"><CalendarDays className="h-4 w-4 mt-0.5 text-gray-400" /><div><p className="text-xs text-gray-500">Idade Gestacional</p><p className="font-medium text-gray-700">{record.gestationalAge}</p></div></div>
                     </div>
-                    <div className="p-4 border-gray-100 flex justify-between items-center">
-                        {record.isOldBook ? (<span className="text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded">LIVRO ANTIGO</span>) : (<span></span>)}
+                    <div className="p-4 border-t border-gray-100 flex justify-between items-center">
+                        {/* ALTERADO: Cor do badge "LIVRO ANTIGO" */}
+                        {record.isOldBook ? (<span className="text-xs font-semibold text-[#4a4e51] bg-[#b1b3b4]/50 px-2 py-1 rounded">LIVRO ANTIGO</span>) : (<span></span>)}
                         <button onClick={handleActionsClick} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700"><MoreVertical className="h-5 w-5" /></button>
                     </div>
                 </div>
@@ -155,13 +157,14 @@ export default function StillbornRecordsManagementPage() {
     
     return (
         <>
-            <title>Gerenciamento de Atos de Natimorto</title>
+            <title>Gerenciamento de Natimortos | Orius Tecnologia</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1">
-                    <div className="mx-auto space-y-6">
+                    <div className="mx-auto space-y-4">
                         <header className="flex items-center justify-between">
-                            <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Natimortos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os registros de natimorto.</p></div>
-                            <Link to="/registro-civil/natimorto/cadastrar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                            {/* ALTERADO: Cor do título e do botão principal */}
+                            <div><h1 className="text-3xl font-bold text-[#4a4e51]">Gerenciamento de Natimortos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os registros de natimorto.</p></div>
+                            <Link to="/registro-civil/natimorto/cadastrar" className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105">
                                 <PlusCircle className="h-5 w-5" /> Registrar Novo
                             </Link>
                         </header>
@@ -173,15 +176,16 @@ export default function StillbornRecordsManagementPage() {
                             <div className={`grid transition-all duration-500 ease-in-out ${filtersVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                                 <div className="overflow-hidden">
                                     <div className="p-5 space-y-2 pt-0">
-                                        <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Nome ou CPF da Mãe</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full" /></div></div>
+                                        {/* ALTERADO: Adicionadas classes de foco aos inputs e selects */}
+                                        <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Nome ou CPF da Mãe</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div><label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Ato</label><select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option>{statusOptions.map(s => <option key={s}>{s}</option>)}</select></div>
-                                            <div><label htmlFor="livro" className="block text-sm font-medium text-gray-600 mb-1">Número do Livro</label><select id="livro" name="livro" value={filters.livro} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option>{bookOptions.map(b => <option key={b}>{b}</option>)}</select></div>
-                                            <div><label htmlFor="isOldBook" className="block text-sm font-medium text-gray-600 mb-1">Livro Antigo?</label><select id="isOldBook" name="isOldBook" value={filters.isOldBook} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option><option>Sim</option><option>Não</option></select></div>
+                                            <div><label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Ato</label><select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option>{statusOptions.map(s => <option key={s}>{s}</option>)}</select></div>
+                                            <div><label htmlFor="livro" className="block text-sm font-medium text-gray-600 mb-1">Número do Livro</label><select id="livro" name="livro" value={filters.livro} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option>{bookOptions.map(b => <option key={b}>{b}</option>)}</select></div>
+                                            <div><label htmlFor="isOldBook" className="block text-sm font-medium text-gray-600 mb-1">Livro Antigo?</label><select id="isOldBook" name="isOldBook" value={filters.isOldBook} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option><option>Sim</option><option>Não</option></select></div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Registro</label><div className="flex items-center gap-2"><input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span><input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /></div></div>
-                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período da Ocorrência</label><div className="flex items-center gap-2"><input type="date" name="occurrenceStartDate" value={filters.occurrenceStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span><input type="date" name="occurrenceEndDate" value={filters.occurrenceEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /></div></div>
+                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Registro</label><div className="flex items-center gap-2"><input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span><input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
+                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período da Ocorrência</label><div className="flex items-center gap-2"><input type="date" name="occurrenceStartDate" value={filters.occurrenceStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span><input type="date" name="occurrenceEndDate" value={filters.occurrenceEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
                                         </div>
                                         <div className="flex justify-end pt-2"><button type="button" onClick={handleClearFilters} className="flex items-center gap-2 bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"><FilterX className="h-5 w-5" />Limpar Filtros</button></div>
                                     </div>
@@ -189,8 +193,9 @@ export default function StillbornRecordsManagementPage() {
                             </div>
                         </div>
                         <div className="min-h-[400px] relative">
+                            {/* ALTERADO: Cor do ícone de carregamento */}
                             {isLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-blue-600 animate-spin" /></div>
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-[#dd6825] animate-spin" /></div>
                             ) : paginatedRecords.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {paginatedRecords.map(record => (

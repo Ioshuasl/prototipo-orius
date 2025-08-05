@@ -1,16 +1,15 @@
-// Salve como src/pages/TabelaEmolumentosPage.tsx
 import React, { useState, useMemo, useRef } from 'react';
 import { Book, Search, Upload } from 'lucide-react';
-import { toast } from 'react-toastify'
-import initialEmolumentosData from '../../../../../tabela-emolumentos.json'
+import { toast } from 'react-toastify';
+import initialEmolumentosData from '../../../../../tabela-emolumentos.json';
 
-// Função para formatar valores monetários
+// --- Funções e Lógica (Inalteradas) ---
 const formatCurrency = (value: number) => {
     if (typeof value !== 'number') return 'N/A';
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
-const TabelaEmolumentosPage: React.FC = () => {
+export default function TabelaEmolumentosPage() {
     const [emolumentosData, setEmolumentosData] = useState(initialEmolumentosData);
     const [searchTerm, setSearchTerm] = useState('');
     const [sistemaFilter, setSistemaFilter] = useState('');
@@ -18,34 +17,27 @@ const TabelaEmolumentosPage: React.FC = () => {
     const ITEMS_PER_PAGE = 15;
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Extrai os sistemas únicos para o filtro dropdown
     const sistemas = useMemo(() => {
         const allSistemas = emolumentosData.map(item => item.sistema);
-        return [...new Set(allSistemas)].sort(); // Ordena alfabeticamente
-    }, []);
+        return [...new Set(allSistemas)].sort();
+    }, [emolumentosData]); // Dependência adicionada para robustez
 
-    // Filtra os dados com base na busca e no filtro de sistema
     const filteredData = useMemo(() => {
         return emolumentosData.filter(item => {
             const searchMatch = searchTerm === '' ||
                 item.descricao_selo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 String(item.id_selo).includes(searchTerm);
-            
             const sistemaMatch = sistemaFilter === '' || item.sistema === sistemaFilter;
-
             return searchMatch && sistemaMatch;
         });
-    }, [searchTerm, sistemaFilter]);
+    }, [searchTerm, sistemaFilter, emolumentosData]); // Dependência adicionada
 
-    // Calcula o total de páginas e os dados da página atual
     const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
     const paginatedData = useMemo(() => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-        return filteredData.slice(startIndex, endIndex);
+        return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
     }, [currentPage, filteredData]);
-    
-    // Reseta a página para 1 quando os filtros mudam
+
     React.useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm, sistemaFilter]);
@@ -57,14 +49,11 @@ const TabelaEmolumentosPage: React.FC = () => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
                 const content = e.target?.result as string;
                 const newData = JSON.parse(content);
-
-                // Validação simples para garantir que o JSON tem a estrutura esperada
                 if (Array.isArray(newData) && newData.length > 0 && 'id_selo' in newData[0]) {
                     setEmolumentosData(newData);
                     toast.success(`Tabela de emolumentos importada com sucesso! ${newData.length} itens carregados.`);
@@ -77,71 +66,60 @@ const TabelaEmolumentosPage: React.FC = () => {
             }
         };
         reader.readAsText(file);
-        
-        // Limpa o valor do input para permitir importar o mesmo arquivo novamente
         if(event.target) event.target.value = '';
     };
 
+    // ALTERADO: Estilo de foco para os campos de formulário
+    const commonFocusStyle = "focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
+
     return (
         <div className="mx-auto">
-            <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-                accept=".json"
-            />
+            <title>Tabela de Emolumentos | Orius Tecnologia</title>
+            <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} accept=".json" />
             <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-800">Tabela de Emolumentos</h1>
+                    {/* ALTERADO: Cor do título principal */}
+                    <h1 className="text-3xl font-bold text-[#4a4e51]">Tabela de Emolumentos</h1>
                     <p className="text-md text-gray-500 mt-1">Consulte todos os selos e valores cadastrados no sistema.</p>
                 </div>
+                 {/* ALTERADO: Cor do botão de ação principal */}
                 <button 
                     onClick={handleImportClick}
-                    className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 mt-4 md:mt-0"
+                    className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] mt-4 md:mt-0 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                 >
                     <Upload className="h-5 w-5" />
                     Importar JSON
                 </button>
             </header>
 
-            {/* Controles de Filtro e Busca */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-300">
+            <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
                 <div className="flex-grow">
                     <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Buscar por ID ou Descrição</label>
                     <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search className="h-5 w-5 text-gray-400" />
-                        </div>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
+                        {/* ALTERADO: Estilo de foco */}
                         <input
-                            type="text"
-                            id="search"
-                            className="w-full border border-gray-300 rounded-md p-2 pl-10"
-                            placeholder="Digite para buscar..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            type="text" id="search"
+                            className={`w-full border border-gray-300 rounded-md p-2 pl-10 ${commonFocusStyle}`}
+                            placeholder="Digite para buscar..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
                 <div className="flex-grow md:max-w-xs">
                     <label htmlFor="sistema" className="block text-sm font-medium text-gray-700 mb-1">Filtrar por Sistema</label>
+                    {/* ALTERADO: Estilo de foco */}
                     <select
                         id="sistema"
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        value={sistemaFilter}
-                        onChange={(e) => setSistemaFilter(e.target.value)}
+                        className={`w-full border border-gray-300 rounded-md p-2 ${commonFocusStyle}`}
+                        value={sistemaFilter} onChange={(e) => setSistemaFilter(e.target.value)}
                     >
                         <option value="">Todos os Sistemas</option>
-                        {sistemas.map(sys => (
-                            <option key={sys} value={sys}>{sys}</option>
-                        ))}
+                        {sistemas.map(sys => (<option key={sys} value={sys}>{sys}</option>))}
                     </select>
                 </div>
             </div>
 
-            {/* Tabela de Dados */}
-            <div className="overflow-x-auto bg-white rounded-lg border border-gray-300">
-                {/* --- MUDANÇAS APLICADAS AQUI --- */}
+            <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
                 <table className="min-w-full divide-y divide-gray-200 table-fixed">
                     <thead className="bg-gray-50">
                         <tr>
@@ -161,7 +139,8 @@ const TabelaEmolumentosPage: React.FC = () => {
                                 <td className="px-6 py-4 text-sm text-gray-500">{item.sistema}</td>
                                 <td className="px-6 py-4 text-sm text-right font-mono">{formatCurrency(item.valor_emolumento)}</td>
                                 <td className="px-6 py-4 text-sm text-right font-mono">{formatCurrency(item.valor_taxa_judiciaria)}</td>
-                                <td className="px-6 py-4 text-sm text-right font-bold text-blue-600 font-mono">{formatCurrency(item.valor_emolumento + item.valor_taxa_judiciaria)}</td>
+                                {/* ALTERADO: Cor do valor total */}
+                                <td className="px-6 py-4 text-sm text-right font-bold text-[#dd6825] font-mono">{formatCurrency(item.valor_emolumento + item.valor_taxa_judiciaria)}</td>
                             </tr>
                         )) : (
                             <tr>
@@ -176,30 +155,13 @@ const TabelaEmolumentosPage: React.FC = () => {
                 </table>
             </div>
 
-            {/* Controles de Paginação */}
             {totalPages > 1 && (
                  <div className="flex items-center justify-between mt-6">
-                    <button
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Anterior
-                    </button>
-                    <span className="text-sm text-gray-700">
-                        Página {currentPage} de {totalPages}
-                    </span>
-                    <button
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Próxima
-                    </button>
+                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+                    <span className="text-sm text-gray-700">Página {currentPage} de {totalPages}</span>
+                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Próxima</button>
                 </div>
             )}
         </div>
     );
 };
-
-export default TabelaEmolumentosPage;

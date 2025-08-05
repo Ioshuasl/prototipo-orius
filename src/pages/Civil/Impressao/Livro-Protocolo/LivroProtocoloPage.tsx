@@ -246,7 +246,7 @@ export default function LivroProtocoloPage() {
                         </div>
                     </div>
                     <div className="flex justify-end mt-5">
-                        <button onClick={handlePesquisar} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition">
+                        <button onClick={handlePesquisar} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#dd6825] text-white text-sm font-medium rounded-md hover:bg-[#c25a1f] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                             <Search size={16} /> Pesquisar
                         </button>
                     </div>
@@ -259,10 +259,10 @@ export default function LivroProtocoloPage() {
                             <h3 className="text-lg font-medium text-gray-700">{resultados.length} resultado(s) encontrado(s)</h3>
                             {resultados.length > 0 && (
                                 <div className='flex items-center gap-2'>
-                                    <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-700 transition">
+                                    <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#4a4e51] rounded-md hover:bg-[#3b3e40] transition">
                                         <Settings size={16} /> Configurações
                                     </button>
-                                    <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
+                                    <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#dd6825] rounded-md hover:bg-[#c25a1f] transition">
                                         <Printer size={16} /> Imprimir Livro
                                     </button>
                                 </div>

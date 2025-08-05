@@ -4,7 +4,7 @@ import {
     Skull, Users, Briefcase, FileText, BookKey, Save, XCircle, History, AlertTriangle, HelpCircle,
 } from 'lucide-react'
 
-// Importações ajustadas para o seu projeto. Garanta que os caminhos estejam corretos.
+// --- Importações e Estados Iniciais (Lógica inalterada) ---
 import { type IObitoFormData, type IPessoaFisica, type IEndereco, type IPessoaJuridica, type TPessoaTipo } from '../../types'
 import { livrosDisponiveis, ufs, mockPessoDatabase } from '../../lib/Constants'
 import HistoricoModal from '../../Components/HistoricoModal';
@@ -15,7 +15,6 @@ import TabBens from './tabs/TabBens'
 import TabDocumentos from './tabs/TabDocumentos'
 import TabFalecimento from './tabs/TabFalecimento'
 
-// O Estado Inicial agora reflete perfeitamente a estrutura de IObitoFormData
 const todayString = new Date().toISOString().split('T')[0]
 const initialAddressState: IEndereco = { cep: '', tipoLogradouro: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' }
 const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: 'RG', docIdentidadeNum: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialAddressState }, sexo: 'Masculino', cor: 'Parda', estadoCivil: 'Solteiro(a)' }
@@ -58,6 +57,7 @@ const initialState: IObitoFormData = {
 }
 
 const regrasDeNegocio = {
+    // ... (Regras de negócio inalteradas)
     naturezaRegistro: {
         title: 'Regra: Natureza do Registro',
         content: (
@@ -122,6 +122,7 @@ const regrasDeNegocio = {
     }
 }
 
+
 const tabs = [
     { id: 'controle', label: 'Controle do Ato', icon: BookKey },
     { id: 'falecimento', label: 'Falecimento e Declarante', icon: Skull },
@@ -131,6 +132,7 @@ const tabs = [
 ]
 
 const setNestedValue = (obj: any, path: (string | number)[], value: any): any => {
+    // ... (lógica inalterada)
     const key = path[0];
     if (path.length === 1) { return { ...obj, [key]: value }; }
     const nextObj = (obj && typeof obj[key] === 'object' && obj[key] !== null) ? obj[key] : (typeof path[1] === 'number' ? [] : {});
@@ -139,6 +141,7 @@ const setNestedValue = (obj: any, path: (string | number)[], value: any): any =>
 
 
 export default function AtoObitoForm() {
+    // --- Lógica de estado e Handlers (inalterada) ---
     const [formData, setFormData] = useState<IObitoFormData>(initialState)
     const [activeTab, setActiveTab] = useState(tabs[0].id)
     const { controleRegistro, falecimento, falecido } = formData;
@@ -148,9 +151,7 @@ export default function AtoObitoForm() {
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
     const [isRegistroTardio, setIsRegistroTardio] = useState(false);
     const [isMenorDeUmAno, setIsMenorDeUmAno] = useState(false);
-
     const [modalState, setModalState] = useState({ isOpen: false, title: '', content: null as React.ReactNode });
-
 
     useEffect(() => {
         if (controleRegistro.dataRegistro && falecimento.dataFalecimento) {
@@ -160,7 +161,6 @@ export default function AtoObitoForm() {
             const diffDays = diffTime / (1000 * 3600 * 24);
             setIsRegistroTardio(diffDays > 15);
         }
-
         if (falecido.dataNascimento) {
             const dataNasc = new Date(falecido.dataNascimento);
             const hoje = new Date();
@@ -185,12 +185,10 @@ export default function AtoObitoForm() {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
         let finalValue = type === 'checkbox' ? checked : value;
-
         if (type === 'radio' && (value === 'true' || value === 'false')) {
             finalValue = value === 'true';
         }
         const keys = name.split('.');
-
         setFormData(prev => {
             const newState = JSON.parse(JSON.stringify(prev));
             let currentLevel: any = newState;
@@ -199,29 +197,24 @@ export default function AtoObitoForm() {
                 currentLevel = currentLevel[keys[i]];
             }
             currentLevel[keys[keys.length - 1]] = finalValue;
-
             if (name === 'bens.deixouTestamento' && !finalValue) {
                 newState.bens.infoTestamento = '';
             }
-
             if (name === 'familia.eraCasado' && !finalValue) {
                 newState.familia.conjugeNome = '';
                 newState.familia.eraViuvo = false;
                 newState.familia.cartorioCasamento = '';
             }
-
             if (name === 'familia.deixouFilhos' && !finalValue) {
                 newState.familia.filhos = [];
             }
-
             if (name === 'falecimento.destinacaoCorpo' && finalValue !== 'Cremacao') {
                 newState.falecimento.autorizacaoCremacao = { tipo: 'NaoAplicavel', autorizacaoJudicial: '' };
             }
-
             return newState;
         });
     };
-
+    
     const handleCpfSearch = (pathPrefix: (string | number)[], cpf: string) => {
         const cleanCpf = cpf.replace(/\D/g, '');
         if (cleanCpf.length !== 11) {
@@ -252,98 +245,52 @@ export default function AtoObitoForm() {
     };
 
     const handleCnpjSearch = async (pathPrefix: (string | number)[], cnpj: string) => {
-        const cleanCnpj = cnpj.replace(/\D/g, ''); // Remove formatação
+        const cleanCnpj = cnpj.replace(/\D/g, '');
         if (cleanCnpj.length !== 14) {
             toast.warn("CNPJ inválido. Por favor, preencha os 14 dígitos.");
             return;
         }
-
         const currentPathKey = pathPrefix.join('.');
-        setSearchingCnpj(currentPathKey); // Ativa o ícone de "carregando"
-
+        setSearchingCnpj(currentPathKey);
         try {
             const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 toast.error(`Erro ao buscar CNPJ: ${errorData.message || 'Não encontrado.'}`);
                 return;
             }
-
             const data = await response.json();
-
-            // Mapeia os dados da API para a nossa interface IPessoaJuridica
             const novosDadosPJ: Partial<IPessoaJuridica> = {
-                tipo: 'juridica',
-                razaoSocial: data.razao_social,
-                nomeFantasia: data.nome_fantasia,
-                cnpj: data.cnpj,
-                endereco: {
-                    cep: data.cep || '',
-                    uf: data.uf || '',
-                    cidade: data.municipio || '',
-                    bairro: data.bairro || '',
-                    logradouro: data.logradouro || '',
-                    numero: data.numero || '',
-                    complemento: data.complemento || '',
-                    tipoLogradouro: '' // A API não fornece este dado, então mantemos vazio
-                },
-                // Mapeia o array QSA (Quadro de Sócios e Administradores) da API
-                qsa: data.qsa?.map((socio: any) => ({
-                    nome: socio.nome_socio,
-                    qualificacao: socio.qualificacao_socio,
-                })) || [], // Se a API não retornar QSA, inicializa como um array vazio
+                tipo: 'juridica', razaoSocial: data.razao_social, nomeFantasia: data.nome_fantasia, cnpj: data.cnpj,
+                endereco: { cep: data.cep || '', uf: data.uf || '', cidade: data.municipio || '', bairro: data.bairro || '', logradouro: data.logradouro || '', numero: data.numero || '', complemento: data.complemento || '', tipoLogradouro: '' },
+                qsa: data.qsa?.map((socio: any) => ({ nome: socio.nome_socio, qualificacao: socio.qualificacao_socio, })) || [],
             };
-
-            // Usa a nossa função segura para atualizar o estado de forma imutável
             setFormData(prev => setNestedValue(prev, pathPrefix as string[], novosDadosPJ));
-
             toast.success(`Dados de "${data.razao_social}" preenchidos!`);
-
         } catch (error) {
             console.error("Falha na requisição do CNPJ:", error);
             toast.error("Não foi possível conectar à API de busca de CNPJ.");
         } finally {
-            setSearchingCnpj(null); // Desativa o ícone de "carregando" ao final
+            setSearchingCnpj(null);
         }
     };
-
     const handleAddSocio = () => {
-    setFormData(prev => {
-        // Preserva todas as propriedades do declarante ao fazer o cast
-        const declaranteAtual = prev.declarante as IPessoaJuridica & typeof prev.declarante;
-        
-        const qsaAtualizado = [...(declaranteAtual.qsa || []), { nome: '', qualificacao: '' }];
-        
-        return {
-            ...prev,
-            // ATUALIZAÇÃO: Espalha as propriedades do declarante antigo para não perdê-las
-            declarante: {
-                ...declaranteAtual,
-                qsa: qsaAtualizado
-            }
-        };
-    });
-    toast.info("Campo para sócio adicionado.");
-};
+        setFormData(prev => {
+            const declaranteAtual = prev.declarante as IPessoaJuridica & typeof prev.declarante;
+            const qsaAtualizado = [...(declaranteAtual.qsa || []), { nome: '', qualificacao: '' }];
+            return { ...prev, declarante: { ...declaranteAtual, qsa: qsaAtualizado } };
+        });
+        toast.info("Campo para sócio adicionado.");
+    };
 
-const handleRemoveSocio = (indexToRemove: number) => {
-    setFormData(prev => {
-        const declaranteAtual = prev.declarante as IPessoaJuridica & typeof prev.declarante;
-        
-        const qsaAtualizado = declaranteAtual.qsa?.filter((_, i) => i !== indexToRemove) || [];
-        
-        return {
-            ...prev,
-            // ATUALIZAÇÃO: Espalha as propriedades do declarante antigo para não perdê-las
-            declarante: {
-                ...declaranteAtual,
-                qsa: qsaAtualizado
-            }
-        };
-    });
-    toast.warn("Sócio removido.");
-};
+    const handleRemoveSocio = (indexToRemove: number) => {
+        setFormData(prev => {
+            const declaranteAtual = prev.declarante as IPessoaJuridica & typeof prev.declarante;
+            const qsaAtualizado = declaranteAtual.qsa?.filter((_, i) => i !== indexToRemove) || [];
+            return { ...prev, declarante: { ...declaranteAtual, qsa: qsaAtualizado } };
+        });
+        toast.warn("Sócio removido.");
+    };
 
     const handleDadosChange = (path: (string | number)[], novosDados: Partial<TPessoaTipo>) => {
         setFormData(prev => {
@@ -352,7 +299,6 @@ const handleRemoveSocio = (indexToRemove: number) => {
             for (let i = 0; i < path.length - 1; i++) {
                 currentLevel = currentLevel[path[i]];
             }
-            // Substitui o objeto inteiro (ex: 'declarante') pelos novos dados
             currentLevel[path[path.length - 1]] = novosDados;
             return newState;
         });
@@ -395,21 +341,15 @@ const handleRemoveSocio = (indexToRemove: number) => {
     };
 
     const handleAddDocumento = () => {
-        setFormData(prev => ({
-            ...prev,
-            documentosApresentados: [...prev.documentosApresentados, { descricao: '', arquivo: null, nomeArquivo: '' }]
-        }));
+        setFormData(prev => ({ ...prev, documentosApresentados: [...prev.documentosApresentados, { descricao: '', arquivo: null, nomeArquivo: '' }] }));
         toast.info("Campo para documento adicionado.");
     };
 
     const handleRemoveDocumento = (indexToRemove: number) => {
-        setFormData(prev => ({
-            ...prev,
-            documentosApresentados: prev.documentosApresentados.filter((_, index) => index !== indexToRemove)
-        }));
+        setFormData(prev => ({ ...prev, documentosApresentados: prev.documentosApresentados.filter((_, index) => index !== indexToRemove) }));
         toast.warn("Documento removido.");
     };
-
+    
     const handleLavrarAto = () => {
         if (window.confirm("Atenção: Lavrar o ato de óbito é uma ação definitiva que gerará um registro oficial. Deseja continuar?")) {
             toast.promise(
@@ -417,24 +357,31 @@ const handleRemoveSocio = (indexToRemove: number) => {
                     console.log("Ato de Óbito Lavrado:", formData);
                     resolve(true);
                 }, 1500)),
-                {
-                    pending: 'Processando e lavrando o ato de óbito...',
-                    success: 'Ato de óbito lavrado com sucesso! Registro gerado.',
-                    error: 'Ocorreu um erro ao lavrar o ato.'
-                }
+                { pending: 'Processando e lavrando o ato de óbito...', success: 'Ato de óbito lavrado com sucesso!', error: 'Ocorreu um erro ao lavrar o ato.' }
             );
         }
     };
 
+    // --- Componentes e Classes de Estilo Reutilizáveis ---
     const SectionTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-xl font-semibold text-gray-800 mb-6 pb-3 border-b border-gray-200">{children}</h3>;
     const SubSectionTitle = ({ children }: { children: React.ReactNode }) => <h4 className="font-bold text-gray-700 mb-4 mt-6">{children}</h4>;
+    
+    // ALTERADO: Estilo do InfoBox para usar as cores da marca.
     const InfoBox = ({ type = 'info', children }: { type?: 'info' | 'warning', children: React.ReactNode }) => {
         const baseClasses = "p-4 my-4 rounded-md flex items-start gap-3";
-        const typeClasses = { info: "bg-blue-50 border border-blue-300 text-blue-800", warning: "bg-yellow-50 border border-yellow-300 text-yellow-800" };
-        return <div className={`${baseClasses} ${typeClasses[type]}`}><AlertTriangle size={20} className="flex-shrink-0 mt-0.5" /><div>{children}</div></div>;
+        const typeClasses = { 
+            info: "bg-[#dd6825]/10 border border-[#dd6825]/30 text-[#c25a1f]", 
+            warning: "bg-yellow-50 border border-yellow-300 text-yellow-800" 
+        };
+        const Icon = type === 'info' ? AlertTriangle : AlertTriangle;
+        return <div className={`${baseClasses} ${typeClasses[type]}`}><Icon size={20} className="flex-shrink-0 mt-0.5" /><div>{children}</div></div>;
     };
-    const HelpButton = ({ onClick }: { onClick: () => void }) => <button type="button" onClick={onClick} className="ml-2 text-gray-400 hover:text-blue-500 transition-colors"><HelpCircle size={16} /></button>;
-    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500";
+    
+    // ALTERADO: Cor do hover do HelpButton.
+    const HelpButton = ({ onClick }: { onClick: () => void }) => <button type="button" onClick={onClick} className="ml-2 text-gray-400 hover:text-[#dd6825] transition-colors"><HelpCircle size={16} /></button>;
+    
+    // ALTERADO: Cor do foco nos inputs.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
 
@@ -443,19 +390,21 @@ const handleRemoveSocio = (indexToRemove: number) => {
 
     return (
         <>
-            <title>Óbito</title>
+            <title>Registrar Óbito | Orius Tecnologia</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1 p-0">
                     <div className="mx-auto">
                         <header className="mb-6 flex justify-between items-center">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Registrar Novo Ato de Óbito</h1>
+                                {/* ALTERADO: Cor do título principal. */}
+                                <h1 className="text-3xl font-bold text-[#4a4e51]">Registrar Novo Ato de Óbito</h1>
                                 <p className="text-md text-gray-500 mt-1">Preencha os dados abaixo para lavrar o ato.</p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setIsHistoryModalOpen(true)}
-                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                // ALTERADO: Cor do foco do botão.
+                                className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                             >
                                 <History className="h-5 w-5" />
                                 Ver Histórico
@@ -465,7 +414,8 @@ const handleRemoveSocio = (indexToRemove: number) => {
                         <div className="border-b border-gray-200">
                             <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
                                 {tabs.map(tab => (
-                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
+                                    // ALTERADO: Cor da aba ativa.
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
                                         <tab.icon className="h-5 w-5" /> {tab.label}
                                     </button>
                                 ))}
@@ -474,76 +424,17 @@ const handleRemoveSocio = (indexToRemove: number) => {
 
                         <form noValidate className="mt-6 space-y-6">
                             <div className="tab-content bg-white p-6 rounded-xl border border-gray-200 shadow-sm min-h-[500px]">
-
-                                {activeTab === 'controle' && (
-                                    <TabControle
-                                        formData={formData}
-                                        isControlReadOnly={isControlReadOnly}
-                                        isRegistroTardio={isRegistroTardio}
-                                        handleInputChange={handleInputChange}
-                                        handleLavrarAto={handleLavrarAto}
-                                        openInfoModal={openInfoModal}
-                                        livrosDisponiveis={livrosDisponiveis}
-                                        {...commonUiProps}
-                                    />
-                                )}
-
-                                {activeTab === 'falecimento' && (
-                                    <TabFalecimento
-                                        formData={formData}
-                                        searchingCpf={searchingCpf}
-                                        searchingCnpj={searchingCnpj} // <-- Passar prop
-                                        handleInputChange={handleInputChange}
-                                        handleCpfSearch={handleCpfSearch}
-                                        handleCnpjSearch={handleCnpjSearch} // <-- Passar prop
-                                        handleAddressUpdate={handleAddressUpdate}
-                                        onDadosChange={handleDadosChange} // <-- Passar prop
-                                        onAddSocio={handleAddSocio} // <-- Passar prop
-                                        onRemoveSocio={handleRemoveSocio} // <-- Passar prop
-                                        openInfoModal={openInfoModal}
-                                        {...commonUiProps}
-                                    />
-                                )}
-
-                                {activeTab === 'falecidoFamilia' && (
-                                    <TabFalecidoFamilia
-                                        formData={formData}
-                                        isMenorDeUmAno={isMenorDeUmAno}
-                                        searchingCpf={searchingCpf}
-                                        handleInputChange={handleInputChange}
-                                        handleCpfSearch={handleCpfSearch}
-                                        handleAddressUpdate={handleAddressUpdate}
-                                        handleAddFilho={handleAddFilho} // <-- Passar prop
-                                        handleRemoveFilho={handleRemoveFilho} // <-- Passar prop
-                                        openInfoModal={openInfoModal}
-                                        ufs={ufs}
-                                        {...commonUiProps}
-                                    />
-                                )}
-
-                                {activeTab === 'bens' && (
-                                    <TabBens
-                                        formData={formData}
-                                        handleInputChange={handleInputChange}
-                                        {...commonUiProps}
-                                    />
-                                )}
-
-                                {activeTab === 'documentos' && (
-                                    <TabDocumentos
-                                        formData={formData}
-                                        handleInputChange={handleInputChange}
-                                        handleFileChange={handleFileChange}
-                                        handleAddDocumento={handleAddDocumento} // <-- Passar prop
-                                        handleRemoveDocumento={handleRemoveDocumento} // <-- Passar prop
-                                        {...commonUiProps}
-                                    />
-                                )}
+                                {activeTab === 'controle' && <TabControle formData={formData} isControlReadOnly={isControlReadOnly} isRegistroTardio={isRegistroTardio} handleInputChange={handleInputChange} handleLavrarAto={handleLavrarAto} openInfoModal={openInfoModal} livrosDisponiveis={livrosDisponiveis} {...commonUiProps} />}
+                                {activeTab === 'falecimento' && <TabFalecimento formData={formData} searchingCpf={searchingCpf} searchingCnpj={searchingCnpj} handleInputChange={handleInputChange} handleCpfSearch={handleCpfSearch} handleCnpjSearch={handleCnpjSearch} handleAddressUpdate={handleAddressUpdate} onDadosChange={handleDadosChange} onAddSocio={handleAddSocio} onRemoveSocio={handleRemoveSocio} openInfoModal={openInfoModal} {...commonUiProps} />}
+                                {activeTab === 'falecidoFamilia' && <TabFalecidoFamilia formData={formData} isMenorDeUmAno={isMenorDeUmAno} searchingCpf={searchingCpf} handleInputChange={handleInputChange} handleCpfSearch={handleCpfSearch} handleAddressUpdate={handleAddressUpdate} handleAddFilho={handleAddFilho} handleRemoveFilho={handleRemoveFilho} openInfoModal={openInfoModal} ufs={ufs} {...commonUiProps} />}
+                                {activeTab === 'bens' && <TabBens formData={formData} handleInputChange={handleInputChange} {...commonUiProps} />}
+                                {activeTab === 'documentos' && <TabDocumentos formData={formData} handleInputChange={handleInputChange} handleFileChange={handleFileChange} handleAddDocumento={handleAddDocumento} handleRemoveDocumento={handleRemoveDocumento} {...commonUiProps} />}
                             </div>
 
                             <div className="flex justify-end pt-6 mt-8 gap-4">
-                                <button type="button" onClick={() => setFormData(initialState)} className="flex items-center gap-2 bg-gray-600 text-white font-semibold px-6 py-3 rounded-lg shadow-sm hover:bg-gray-700"><XCircle className="h-5 w-5" /> Cancelar</button>
-                                <button type="submit" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700"><Save className="h-5 w-5" /> Salvar Rascunho</button>
+                                {/* ALTERADO: Cores dos botões de rodapé para padrão (vermelho/verde). */}
+                                <button type="button" onClick={() => setFormData(initialState)} className="flex items-center gap-2 bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"><XCircle className="h-5 w-5" /> Cancelar</button>
+                                <button type="submit" className="flex items-center gap-2 bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"><Save className="h-5 w-5" /> Salvar Rascunho</button>
                             </div>
                         </form>
                     </div>

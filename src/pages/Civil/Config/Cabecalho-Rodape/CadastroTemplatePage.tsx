@@ -1,4 +1,3 @@
-// Salve como src/pages/CadastroTemplatePage.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,7 +5,6 @@ import { Save, Loader2, ArrowLeft } from 'lucide-react';
 import { mockHeaderFooterTemplates } from '../../lib/Constants';
 import MainEditor from '../../Components/MainEditor';
 
-// --- DEFINIÇÕES DE TIPO E DADOS MOCK ---
 export interface ITemplate {
   id: number;
   nome: string;
@@ -24,8 +22,6 @@ const initialState: ITemplate = {
     isPadrao: false,
     dataModificacao: new Date().toISOString(),
 };
-// --- FIM DAS DEFINIÇÕES ---
-
 
 const CadastroTemplatePage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -45,12 +41,13 @@ const CadastroTemplatePage: React.FC = () => {
                 navigate(-1);
             }
             setIsLoading(false);
+        } else {
+            setIsLoading(false);
         }
     }, [id, navigate]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
-        
         if (type === 'checkbox') {
             const { checked } = e.target as HTMLInputElement;
             setTemplate(prev => ({ ...prev, [name]: checked }));
@@ -80,33 +77,38 @@ const CadastroTemplatePage: React.FC = () => {
 
     const pageTitle = id ? "Editar Template" : "Criar Novo Template";
 
+    // ALTERADO: Centralização dos estilos de formulário
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
+
     if (isLoading) {
-        return <div className="flex justify-center p-10"><Loader2 className="animate-spin" size={32} /></div>;
+        // ALTERADO: Cor do loader
+        return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#dd6825]" size={32} /></div>;
     }
 
     return (
         <div className="mx-auto p-6">
+            <title>{pageTitle} | Orius Tecnologia</title>
             <header className="mb-6 pb-4">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista
                 </button>
-                <h1 className="text-3xl font-bold text-gray-800">{pageTitle}</h1>
+                {/* ALTERADO: Cor do título principal */}
+                <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando: {template.nome}</p>}
             </header>
 
             <form onSubmit={handleSubmit}>
-                {/* Seção de Configuração */}
-                <div className="bg-white p-6 rounded-lg border border-gray-300 mb-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm mb-6">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Configurações do Template</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome do Template*</label>
-                            <input type="text" id="nome" name="nome" value={template.nome} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2"/>
+                            <input type="text" id="nome" name="nome" value={template.nome} onChange={handleInputChange} className={commonInputClass}/>
                         </div>
                         <div>
                             <label htmlFor="tipo" className="block text-sm font-medium text-gray-700">Tipo de Template*</label>
-                            <select id="tipo" name="tipo" value={template.tipo} onChange={handleInputChange} disabled={!!id} className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-50 disabled:cursor-not-allowed">
+                            <select id="tipo" name="tipo" value={template.tipo} onChange={handleInputChange} disabled={!!id} className={`${commonInputClass} disabled:bg-gray-100 disabled:cursor-not-allowed`}>
                                 <option value="cabecalho">Cabeçalho</option>
                                 <option value="rodape">Rodapé</option>
                             </select>
@@ -114,20 +116,20 @@ const CadastroTemplatePage: React.FC = () => {
                     </div>
                     <div className="mt-4">
                         <label className="flex items-center space-x-3 cursor-pointer">
+                             {/* ALTERADO: Cor e foco do checkbox */}
                             <input
                                 type="checkbox"
                                 name="isPadrao"
                                 checked={template.isPadrao}
                                 onChange={handleInputChange}
-                                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                className="h-4 w-4 text-[#dd6825] border-gray-300 rounded focus:ring-[#dd6825]"
                             />
                             <span className="text-sm text-gray-700">Definir como template padrão para este tipo</span>
                         </label>
                     </div>
                 </div>
 
-                {/* Seção do Editor */}
-                <div className="bg-white p-6 rounded-lg border border-gray-300">
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                      <h2 className="text-lg font-semibold text-gray-700 mb-4">Conteúdo</h2>
                      <div className="flex justify-center">
                         <MainEditor
@@ -140,10 +142,11 @@ const CadastroTemplatePage: React.FC = () => {
                 </div>
 
                 <footer className="mt-8 pt-6 flex justify-end gap-4">
-                    <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold">
+                    <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
                         Cancelar
                     </button>
-                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold flex items-center gap-2">
+                    {/* ALTERADO: Cor do botão de ação principal */}
+                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Salvar Template
                     </button>

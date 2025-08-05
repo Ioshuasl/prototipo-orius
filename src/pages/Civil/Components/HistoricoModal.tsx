@@ -38,7 +38,7 @@ const HistoricoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose, histor
                 className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col"
                 onClick={e => e.stopPropagation()} // Impede que o clique no modal feche-o
             >
-                <header className="flex justify-between items-center p-5 border-b">
+                <header className="flex justify-between items-center p-5">
                     <h2 className="text-2xl font-bold text-gray-800">Histórico do Ato</h2>
                     <button
                         onClick={onClose}
@@ -72,7 +72,7 @@ const HistoricoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose, histor
                     </div>
                 </main>
 
-                <footer className="p-4 bg-gray-50 border-t text-right">
+                <footer className="p-4 bg-gray-50 text-right">
                     <button
                         type="button"
                         onClick={onClose}

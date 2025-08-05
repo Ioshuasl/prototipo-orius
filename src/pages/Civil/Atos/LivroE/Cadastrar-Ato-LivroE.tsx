@@ -20,35 +20,9 @@ import FormNascimentoPaisEstrangeiros from './Components/FormNascimentoPaisEstra
 import FormTrasladoExterior from './Components/FormTrasladoExterior';
 import DocumentosAnexosTab from './Components/DocumentosAnexosTab';
 
-const initialEnderecoState: IEndereco = {
-    cep: '',
-    tipoLogradouro: '',
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    uf: ''
-};
-
-const initialPersonState: Partial<IPessoaFisica> = {
-    nome: '',
-    cpf: '',
-    dataNascimento: '',
-    docIdentidadeTipo: '',
-    docIdentidadeNum: '',
-    estadoCivil: '',
-    regimeBens: '',
-    profissao: '',
-    nacionalidade: 'Brasileira',
-    naturalidadeCidade: '',
-    naturalidadeUF: '',
-    endereco: { ...initialEnderecoState },
-    nomePai: '',
-    nomeMae: '',
-};
-
-// --- ESTADO INICIAL E FUNÇÕES HELPERS ---
+// --- Lógica e Estados Iniciais (Inalterados) ---
+const initialEnderecoState: IEndereco = { cep: '', tipoLogradouro: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' };
+const initialPersonState: Partial<IPessoaFisica> = { nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: '', docIdentidadeNum: '', estadoCivil: '', regimeBens: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialEnderecoState }, nomePai: '', nomeMae: '', };
 const initialStateLivroE: ILivroEFormData = {
     tipoAto: '',
     controleRegistro: { isLivroAntigo: false, dataRegistro: new Date().toISOString().split('T')[0], protocolo: '', dataLavratura: '', livro: 'Livro E', folha: '', numeroTermo: '' },
@@ -60,6 +34,7 @@ const initialStateLivroE: ILivroEFormData = {
 };
 
 const createInitialStateForAto = (tipo: TipoAtoLivroE) => {
+    // ... (lógica inalterada)
     const dadosSentenca = { dataSentenca: '', juizo: '', nomeMagistrado: '', dataTransitoEmJulgado: '' };
     switch (tipo) {
         case 'emancipacao':
@@ -93,6 +68,7 @@ const createInitialStateForAto = (tipo: TipoAtoLivroE) => {
 };
 
 const createInitialStateForTraslado = (tipoTraslado: 'nascimento' | 'casamento' | 'obito') => {
+    // ... (lógica inalterada)
     switch (tipoTraslado) {
         case 'nascimento':
             return {
@@ -122,7 +98,7 @@ const tabs = [
 ];
 
 export default function CadastrarAtoLivroE() {
-    // ALTERAÇÃO: A aba inicial agora é 'controle'
+    // --- Handlers e Lógica de Estado (Inalterados) ---
     const [activeTab, setActiveTab] = useState(tabs[0].id);
     const [formData, setFormData] = useState<ILivroEFormData>(initialStateLivroE);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
@@ -137,7 +113,6 @@ export default function CadastrarAtoLivroE() {
         setModalInfo({ isOpen: false, title: '', content: null });
     };
 
-    // Efeito para lidar com a lógica do checkbox 'isLivroAntigo'
     useEffect(() => {
         if (formData.controleRegistro.isLivroAntigo) {
             setFormData(prev => ({ ...prev, controleRegistro: { ...prev.controleRegistro, dataRegistro: '', protocolo: '' } }));
@@ -149,19 +124,15 @@ export default function CadastrarAtoLivroE() {
 
     const addDynamicItem = (path: string) => {
         const keys = path.split('.');
-
-        // Define o objeto inicial com base no caminho
         let initialStateSlice: any;
         if (path.includes('filhos')) {
             initialStateSlice = { nome: '', idade: '' };
         } else {
-            // Pode ser expandido para outras listas no futuro
             toast.error("Tipo de lista dinâmica não reconhecido.");
             return;
         }
-
         setFormData(prev => {
-            const newState = JSON.parse(JSON.stringify(prev)); // Usar uma cópia profunda para segurança
+            const newState = JSON.parse(JSON.stringify(prev));
             let currentLevel = newState;
             for (let i = 0; i < keys.length - 1; i++) {
                 currentLevel = currentLevel[keys[i]];
@@ -188,18 +159,16 @@ export default function CadastrarAtoLivroE() {
         toast.warn("Item removido da lista.");
     };
 
-    // --- HANDLERS ---
     const handleTipoAtoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const novoTipo = e.target.value as TipoAtoLivroE;
         toast.info(`Formulário para "${tiposDeAtoLivroE.find(t => t.value === novoTipo)?.label}" iniciado.`);
         setFormData(prev => ({
-            ...prev, // Mantém os dados de controle já preenchidos
+            ...prev,
             tipoAto: novoTipo,
             dadosAto: {
                 [novoTipo]: createInitialStateForAto(novoTipo)
             }
         }));
-        // Sugestão: Mudar para a aba de dados do ato após a seleção
         setActiveTab('dadosAto');
     };
 
@@ -219,21 +188,13 @@ export default function CadastrarAtoLivroE() {
         const { name, value, type } = e.target;
         const keys = name.split('.');
         const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-
         setFormData(prev => {
-            // Primeiro, atualiza o valor do campo que foi alterado
             const stateAfterValueUpdate = setNestedValue(prev, keys, finalValue);
-
-            // Se o campo alterado for o seletor de tipo de traslado, faz uma segunda atualização
-            // para inicializar o sub-estado `dadosAto` do traslado.
             if (name === 'dadosAto.trasladoExterior.tipoTraslado') {
                 const tipoTraslado = value as 'nascimento' | 'casamento' | 'obito';
                 const initialSubState = createInitialStateForTraslado(tipoTraslado);
-
                 return setNestedValue(stateAfterValueUpdate, ['dadosAto', 'trasladoExterior', 'dadosAto'], initialSubState);
             }
-
-            // Para todos os outros campos, retorna apenas a primeira atualização.
             return stateAfterValueUpdate;
         });
     };
@@ -283,52 +244,41 @@ export default function CadastrarAtoLivroE() {
         setFormData(prev => {
             const newState = { ...prev };
             let currentLevel: any = newState;
-
-            // Navega até o penúltimo nível do caminho
             for (let i = 0; i < path.length - 1; i++) {
                 const key = path[i];
                 if (Array.isArray(currentLevel[key])) {
-                    currentLevel[key] = [...currentLevel[key]]; // Cria uma nova cópia do array
+                    currentLevel[key] = [...currentLevel[key]];
                 } else {
-                    currentLevel[key] = { ...currentLevel[key] }; // Cria uma nova cópia do objeto
+                    currentLevel[key] = { ...currentLevel[key] };
                 }
                 currentLevel = currentLevel[key];
             }
-
-            // Atualiza o objeto final no array
             const finalPathKey = path[path.length - 1];
             const index = path[path.length - 2];
 
             if (typeof index === 'number') {
-                const item = { ...currentLevel[index] }; // Cópia do item específico
+                const item = { ...currentLevel[index] };
                 item[finalPathKey as keyof typeof item] = file;
-                item['nomeArquivo'] = file?.name; // Guarda o nome do arquivo
+                item['nomeArquivo'] = file?.name;
                 currentLevel[index] = item;
             }
-
             return newState;
         });
         if (file) {
             toast.info(`Arquivo "${file.name}" selecionado.`);
         }
     };
-
-    // FUNÇÃO DE LAVRAR ATO ADICIONADA AQUI
+    
     const handleLavrarAto = () => {
         if (!formData.tipoAto) {
             toast.warn("Por favor, selecione um tipo de ato antes de lavrar.");
             setActiveTab('controle');
             return;
         }
-
         if (window.confirm("Atenção: Lavrar o ato é uma ação definitiva que gerará um registro oficial. Deseja continuar?")) {
             toast.promise(
                 new Promise(resolve => setTimeout(resolve, 1500)),
-                {
-                    pending: 'Processando e lavrando o ato...',
-                    success: 'Ato lavrado com sucesso!',
-                    error: 'Ocorreu um erro ao lavrar o ato.'
-                }
+                { pending: 'Processando e lavrando o ato...', success: 'Ato lavrado com sucesso!', error: 'Ocorreu um erro ao lavrar o ato.' }
             );
             console.log("Lavrando o ato com os seguintes dados:", formData);
         }
@@ -349,58 +299,55 @@ export default function CadastrarAtoLivroE() {
     };
 
     const SectionTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">{children}</h3>;
-        const SubSectionTitle = ({ children }: { children: React.ReactNode }) => <h4 className="font-bold text-gray-600 mb-3 mt-4">{children}</h4>;
+    const SubSectionTitle = ({ children }: { children: React.ReactNode }) => <h4 className="font-bold text-gray-600 mb-3 mt-4">{children}</h4>;
 
-    // --- RENDERIZAÇÃO ---
+    // ALTERADO: Centralização dos estilos de UI em um objeto para passar como props.
+    const commonUiProps = {
+        commonInputClass: "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]",
+        commonLabelClass: "block text-sm font-medium text-gray-700",
+        commonCheckboxClass: "h-4 w-4 text-[#dd6825] border-gray-300 rounded focus:ring-[#dd6825]",
+        addLinkClass: "flex items-center gap-2 text-sm font-medium text-[#dd6825] hover:text-[#c25a1f]",
+        uploadButtonClass: "mt-1 cursor-pointer flex items-center justify-center gap-2 w-full md:w-56 px-4 py-2 bg-white text-[#dd6825] border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition",
+    };
+
     const renderFormByTipoAto = () => {
+        // ... (lógica inalterada, mas agora passará commonUiProps)
         const tipoAto = formData.tipoAto;
-        const commonProps = { handleInputChange, handleAddressUpdate, handleCpfSearch, searchingCpf, addDynamicItem, removeDynamicItem, onOpenInfoModal: handleOpenInfoModal };
+        const commonProps = { handleInputChange, handleAddressUpdate, handleCpfSearch, searchingCpf, addDynamicItem, removeDynamicItem, onOpenInfoModal: handleOpenInfoModal, ...commonUiProps };
 
         if (!tipoAto) {
             return (
-                <div className="text-center text-gray-500 py-10">
-                    <p>Por favor, selecione o tipo de ato na aba "Controle e Lavratura" para continuar.</p>
-                </div>
+                <div className="text-center text-gray-500 py-10"><p>Por favor, selecione o tipo de ato na aba "Controle e Lavratura" para continuar.</p></div>
             );
         }
-
         switch (tipoAto) {
-            case 'emancipacao':
-                return <FormEmancipacao data={formData.dadosAto.emancipacao!} {...commonProps} />;
-            case 'interdicao':
-                return <FormInterdicao data={formData.dadosAto.interdicao!} {...commonProps} />;
-            case 'ausencia':
-                return <FormAusencia data={formData.dadosAto.ausencia!} {...commonProps} />;
-            case 'mortePresumida':
-                return <FormMortePresumida data={formData.dadosAto.mortePresumida!} {...commonProps} />;
-            case 'tutela':
-                return <FormTutela data={formData.dadosAto.tutela!} {...commonProps} />;
-            case 'guarda':
-                return <FormGuarda data={formData.dadosAto.guarda!} {...commonProps} />;
-            case 'opcaoNacionalidade':
-                return <FormOpcaoNacionalidade data={formData.dadosAto.opcaoNacionalidade!} {...commonProps} />;
-            case 'uniaoEstavel':
-                return <FormUniaoEstavel data={formData.dadosAto.uniaoEstavel!} {...commonProps} />;
-            case 'nascimentoPaisEstrangeiros':
-                return <FormNascimentoPaisEstrangeiros data={formData.dadosAto.nascimentoPaisEstrangeiros!} {...commonProps} />;
-            case 'trasladoExterior':
-                return <FormTrasladoExterior data={formData.dadosAto.trasladoExterior!} {...commonProps} />;
-            default:
-                return <div className="text-center text-gray-500 py-10">Formulário para "{tiposDeAtoLivroE.find(t => t.value === tipoAto)?.label}" ainda não implementado.</div>;
+            case 'emancipacao': return <FormEmancipacao data={formData.dadosAto.emancipacao!} {...commonProps} />;
+            case 'interdicao': return <FormInterdicao data={formData.dadosAto.interdicao!} {...commonProps} />;
+            case 'ausencia': return <FormAusencia data={formData.dadosAto.ausencia!} {...commonProps} />;
+            case 'mortePresumida': return <FormMortePresumida data={formData.dadosAto.mortePresumida!} {...commonProps} />;
+            case 'tutela': return <FormTutela data={formData.dadosAto.tutela!} {...commonProps} />;
+            case 'guarda': return <FormGuarda data={formData.dadosAto.guarda!} {...commonProps} />;
+            case 'opcaoNacionalidade': return <FormOpcaoNacionalidade data={formData.dadosAto.opcaoNacionalidade!} {...commonProps} />;
+            case 'uniaoEstavel': return <FormUniaoEstavel data={formData.dadosAto.uniaoEstavel!} {...commonProps} />;
+            case 'nascimentoPaisEstrangeiros': return <FormNascimentoPaisEstrangeiros data={formData.dadosAto.nascimentoPaisEstrangeiros!} {...commonProps} />;
+            case 'trasladoExterior': return <FormTrasladoExterior data={formData.dadosAto.trasladoExterior!} {...commonProps} />;
+            default: return <div className="text-center text-gray-500 py-10">Formulário para "{tiposDeAtoLivroE.find(t => t.value === tipoAto)?.label}" ainda não implementado.</div>;
         }
     };
 
     return (
         <>
-            <title>Registrar Ato - Livro E</title>
+            <title>Registrar Ato - Livro E | Orius Tecnologia</title>
             <main className="flex-1 p-0">
                 <div className="mx-auto">
                     <header className="mb-6 flex justify-between items-center">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-800">Registrar Ato do Livro E</h1>
+                            {/* ALTERADO: Cor do título principal */}
+                            <h1 className="text-3xl font-bold text-[#4a4e51]">Registrar Ato do Livro E</h1>
                             <p className="text-md text-gray-500 mt-1">Preencha os dados de controle e do ato para realizar o registro.</p>
                         </div>
-                        <button type="button" onClick={() => setIsHistoryModalOpen(true)} className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors">
+                        {/* ALTERADO: Estilo de foco do botão */}
+                        <button type="button" onClick={() => setIsHistoryModalOpen(true)} className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                             <History className="h-5 w-5" /> Ver Histórico
                         </button>
                     </header>
@@ -408,12 +355,12 @@ export default function CadastrarAtoLivroE() {
                     <form onSubmit={handleSubmit} noValidate>
                         <div className="border-b border-gray-200">
                             <nav className="-mb-px flex space-x-6" aria-label="Tabs">
-                                {tabs.map(tab => (<button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}><tab.icon className="h-5 w-5" /> {tab.label}</button>))}
+                                {/* ALTERADO: Cor da aba ativa */}
+                                {tabs.map(tab => (<button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}><tab.icon className="h-5 w-5" /> {tab.label}</button>))}
                             </nav>
                         </div>
 
                         <div className="mt-6">
-                            {/* Aba de Controle */}
                             {activeTab === 'controle' && (
                                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                     <ControleAtoLivroE
@@ -421,41 +368,44 @@ export default function CadastrarAtoLivroE() {
                                         handleInputChange={handleInputChange}
                                         handleTipoAtoChange={handleTipoAtoChange}
                                         handleLavrarAto={handleLavrarAto}
+                                        {...commonUiProps} // Passando os estilos centralizados
                                     />
                                 </div>
                             )}
 
-                            {/* Aba de Dados do Ato */}
                             {activeTab === 'dadosAto' && (
                                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                     {renderFormByTipoAto()}
                                 </div>
                             )}
 
-                            {/* Aba de Anexos */}
                             {activeTab === 'anexos' && (
-                                <DocumentosAnexosTab documentos={formData.documentosApresentados} handleInputChange={handleInputChange} handleFileChange={handleFileChange} addDynamicItem={() => addDynamicItem('documentosApresentados')} removeDynamicItem={(index) => removeDynamicItem('documentosApresentados', index)} SectionTitle={SectionTitle} SubSectionTitle={SubSectionTitle} />
+                                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                    <DocumentosAnexosTab 
+                                        documentos={formData.documentosApresentados} 
+                                        handleInputChange={handleInputChange} 
+                                        handleFileChange={handleFileChange} 
+                                        addDynamicItem={() => addDynamicItem('documentosApresentados')} 
+                                        removeDynamicItem={(index) => removeDynamicItem('documentosApresentados', index)} 
+                                        SectionTitle={SectionTitle} 
+                                        SubSectionTitle={SubSectionTitle}
+                                        {...commonUiProps} // Passando os estilos centralizados
+                                    />
+                                </div>
                             )}
                         </div>
 
                         <div className="flex justify-end pt-6 mt-8 gap-4">
-                            <button type="button" onClick={handleCancel} className="flex items-center gap-2 bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-sm hover:bg-red-700"> <XCircle className="h-5 w-5" /> Cancelar </button>
-                            <button type="submit" className="flex items-center gap-2 bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-green-700"> <Save className="h-5 w-5" /> Salvar Rascunho </button>
+                            {/* ALTERADO: Estilos de foco nos botões de rodapé */}
+                            <button type="button" onClick={handleCancel} className="flex items-center gap-2 bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"> <XCircle className="h-5 w-5" /> Cancelar </button>
+                            <button type="submit" className="flex items-center gap-2 bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"> <Save className="h-5 w-5" /> Salvar Rascunho </button>
                         </div>
                     </form>
                 </div>
             </main>
 
             <HistoricoModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} historico={formData.historico} />
-
-            <InfoModal
-                isOpen={modalInfo.isOpen}
-                onClose={handleCloseInfoModal}
-                title={modalInfo.title}
-            >
-                {modalInfo.content}
-            </InfoModal>
-
+            <InfoModal isOpen={modalInfo.isOpen} onClose={handleCloseInfoModal} title={modalInfo.title}>{modalInfo.content}</InfoModal>
         </>
     );
 }

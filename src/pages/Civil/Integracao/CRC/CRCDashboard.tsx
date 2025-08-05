@@ -174,9 +174,9 @@ export default function CRCDashboard() {
 
 
     return (
-        <div className="mx-auto">
+        <div className="mx-auto space-y-4 pb-24">
             {/* CABEÇALHO DA PÁGINA - Padrão de GerenciamentoTemplates.tsx */}
-            <header className="mb-8 pb-4 border-b border-gray-200">
+            <header className="pb-4 border-b border-gray-200">
                 <h1 className="text-3xl font-bold text-gray-800">Integração CRC Nacional</h1>
                 <p className="text-md text-gray-500 mt-1">
                     Monitore o status, envie pendências e consulte o histórico de comunicação.

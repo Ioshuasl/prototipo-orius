@@ -27,7 +27,6 @@ const CadastroUsuarioPage: React.FC = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [isLoadingLogs, setIsLoadingLogs] = useState(false);
 
-    // Efeito para carregar dados do usuário (modo edição)
     useEffect(() => {
         if (id) {
             const usuarioExistente = mockUsuarios.find(u => u.id === parseInt(id));
@@ -36,10 +35,11 @@ const CadastroUsuarioPage: React.FC = () => {
                 setUsuario(dadosSemSenha as IUsuario);
             }
             setIsLoading(false);
+        } else {
+            setIsLoading(false); // Garante que o loading pare se não houver ID
         }
     }, [id]);
 
-    // Efeito para carregar logs quando a aba é selecionada
     useEffect(() => {
         if (id && activeTab === 'logs') {
             setIsLoadingLogs(true);
@@ -59,23 +59,18 @@ const CadastroUsuarioPage: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        // 2. VALIDAÇÃO DA SENHA
-        if (usuario.senha || !id) { // Valida se a senha foi digitada ou se é um novo cadastro
+        if (usuario.senha || !id) {
             if (usuario.senha !== confirmarSenha) {
                 toast.error("As senhas não coincidem.");
                 return;
             }
-            if (!id && !usuario.senha) { // Senha é obrigatória no cadastro
+            if (!id && !usuario.senha) {
                  toast.error("O campo de senha é obrigatório para novos usuários.");
                 return;
             }
         }
-        
         setIsSaving(true);
         toast.info("Salvando dados do usuário...");
-        console.log("Dados a serem salvos (senha não deve ser logada em produção):", usuario);
-
         setTimeout(() => {
             setIsSaving(false);
             toast.success("Usuário salvo com sucesso!");
@@ -85,43 +80,51 @@ const CadastroUsuarioPage: React.FC = () => {
 
     const pageTitle = id ? 'Editar Usuário' : 'Cadastrar Novo Usuário';
 
-    if (isLoading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin" size={32} /></div>;
+    // ALTERADO: Centralização dos estilos de formulário
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
+
+    if (isLoading) {
+        // ALTERADO: Cor do loader principal
+        return <div className="p-10 flex justify-center"><Loader2 className="animate-spin text-[#dd6825]" size={32} /></div>;
+    }
 
     return (
         <div className="mx-auto">
+            <title>{pageTitle} | Orius Tecnologia</title>
             <header className="pb-4">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} /> Voltar para a Lista
                 </button>
-                <h1 className="text-3xl font-bold text-gray-800">{pageTitle}</h1>
+                {/* ALTERADO: Cor do título principal */}
+                <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando o cadastro de: {usuario.nome}</p>}
             </header>
 
             {id && (
                 <nav className="flex mb-6 border-b border-gray-200">
-                    <button onClick={() => setActiveTab('dados')} className={`px-4 py-3 font-semibold text-center border-b-2 ${activeTab === 'dados' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:border-gray-300'}`}>
+                    {/* ALTERADO: Cores das abas */}
+                    <button onClick={() => setActiveTab('dados')} className={`px-4 py-3 font-semibold text-center border-b-2 transition-colors ${activeTab === 'dados' ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:border-[#dd6825]/30'}`}>
                         Dados Cadastrais
                     </button>
-                    <button onClick={() => setActiveTab('logs')} className={`px-4 py-3 font-semibold text-center border-b-2 ${activeTab === 'logs' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:border-gray-300'}`}>
+                    <button onClick={() => setActiveTab('logs')} className={`px-4 py-3 font-semibold text-center border-b-2 transition-colors ${activeTab === 'logs' ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:border-[#dd6825]/30'}`}>
                         Logs de Atividade
                     </button>
                 </nav>
             )}
 
-            {/* Renderização condicional do conteúdo da aba */}
             {activeTab === 'dados' ? (
-                <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border border-gray-300">
+                <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                     <div>
                         <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome Completo*</label>
-                        <input type="text" id="nome" name="nome" value={usuario.nome} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2" />
+                        <input type="text" id="nome" name="nome" value={usuario.nome} onChange={handleInputChange} className={commonInputClass} />
                     </div>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email*</label>
-                        <input type="email" id="email" name="email" value={usuario.email} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2" />
+                        <input type="email" id="email" name="email" value={usuario.email} onChange={handleInputChange} className={commonInputClass} />
                     </div>
                     <div>
                         <label htmlFor="cargoId" className="block text-sm font-medium text-gray-700">Cargo*</label>
-                        <select id="cargoId" name="cargoId" value={usuario.cargoId} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2">
+                        <select id="cargoId" name="cargoId" value={usuario.cargoId} onChange={handleInputChange} className={commonInputClass}>
                             <option value={0}>Selecione um cargo...</option>
                             {mockCargos.map(cargo => (
                                 <option key={cargo.id} value={cargo.id}>{cargo.nome}</option>
@@ -129,7 +132,6 @@ const CadastroUsuarioPage: React.FC = () => {
                         </select>
                     </div>
 
-                    {/* 3. CAMPOS DE SENHA ADICIONADOS AO FORMULÁRIO */}
                     <div className="pt-2">
                          <div className="flex items-center gap-2 mb-4">
                             <KeyRound className="text-gray-400" size={20}/>
@@ -145,6 +147,7 @@ const CadastroUsuarioPage: React.FC = () => {
                                     value={usuario.senha || ''}
                                     onChange={handleInputChange}
                                     autoComplete="new-password"
+                                    className={commonInputClass} // Passando a classe de estilo
                                 />
                             </div>
                              <div>
@@ -155,6 +158,7 @@ const CadastroUsuarioPage: React.FC = () => {
                                      value={confirmarSenha}
                                      onChange={(e) => setConfirmarSenha(e.target.value)}
                                      autoComplete="new-password"
+                                     className={commonInputClass} // Passando a classe de estilo
                                 />
                             </div>
                          </div>
@@ -162,22 +166,26 @@ const CadastroUsuarioPage: React.FC = () => {
 
                     <div>
                         <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-                        <select id="status" name="status" value={usuario.status} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2">
+                        <select id="status" name="status" value={usuario.status} onChange={handleInputChange} className={commonInputClass}>
                             <option>Ativo</option>
                             <option>Inativo</option>
                         </select>
                     </div>
 
                     <footer className="pt-6 flex justify-end gap-4">
-                        <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold">Cancelar</button>
-                        <button type="submit" disabled={isSaving} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold flex items-center gap-2">
+                        <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Cancelar</button>
+                        {/* ALTERADO: Cor do botão de ação principal */}
+                        <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                             {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />} Salvar
                         </button>
                     </footer>
                 </form>
             ) : (
-                <div className="bg-white p-6 rounded-lg border border-gray-300">
-                    {isLoadingLogs ? <div className="flex justify-center p-4"><Loader2 className="animate-spin" /></div> : (
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                    {isLoadingLogs ? (
+                        // ALTERADO: Cor do loader de logs
+                        <div className="flex justify-center p-4"><Loader2 className="animate-spin text-[#dd6825]" /></div>
+                    ) : (
                         <ul className="space-y-4">
                             {logs.map(log => (
                                 <li key={log.id} className="flex items-start gap-4">

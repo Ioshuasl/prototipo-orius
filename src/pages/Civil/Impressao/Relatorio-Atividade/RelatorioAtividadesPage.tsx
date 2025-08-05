@@ -3,7 +3,7 @@ import { Search, Printer, Settings, ListX } from 'lucide-react';
 import ModalConfiguracaoImpressao from './Components/ModalConfiguracaoImpressao';
 import { mockLogsDatabase, mockUsuarios } from '../../lib/Constants'; // Importando os dados do arquivo de constantes
 import brasao from '../../../../assets/logo-cartorio.png'
-import {type ILogAtividade, type IUsuario} from '../../types'
+import { type ILogAtividade, type IUsuario } from '../../types'
 
 export type TemplateCabecalhoId = 'modelo1' | 'modelo2' | 'modelo3' | 'modelo4';
 
@@ -90,7 +90,7 @@ export default function RelatorioAtividadesPage() {
                 );
         }
     };
-    
+
     // Função auxiliar para encontrar o nome do usuário pelo ID
     const getNomeUsuario = (userId: number) => {
         const usuario = mockUsuarios.find(u => u.id === userId);
@@ -99,7 +99,7 @@ export default function RelatorioAtividadesPage() {
 
     return (
         <>
-            <div className="mx-auto space-y-6">
+            <div className="mx-auto space-y-6 pb-24">
                 <div className="print:hidden">
                     <h1 className="text-2xl font-bold text-gray-800">Relatório de Atividades</h1>
                     <p className="text-sm text-gray-500">Audite as ações realizadas no sistema.</p>
@@ -120,7 +120,7 @@ export default function RelatorioAtividadesPage() {
                         </div>
                         <div>
                             <label htmlFor="tipoAcao" className="block text-sm text-gray-700 font-medium mb-1">Tipo de Ação</label>
-                             <select name="tipoAcao" id="tipoAcao" value={filtros.tipoAcao} onChange={handleFiltroChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select name="tipoAcao" id="tipoAcao" value={filtros.tipoAcao} onChange={handleFiltroChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 {tiposDeAcaoUnicos.map(acao => (
                                     <option key={acao} value={acao}>{acao === 'todos' ? 'Todas as Ações' : acao.replace(/_/g, ' ')}</option>
                                 ))}
@@ -136,7 +136,7 @@ export default function RelatorioAtividadesPage() {
                         </div>
                     </div>
                     <div className="flex justify-end mt-5">
-                        <button onClick={handlePesquisar} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition">
+                        <button onClick={handlePesquisar} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#dd6825] text-white text-sm font-medium rounded-md hover:bg-[#c25a1f] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                             <Search size={16} /> Pesquisar
                         </button>
                     </div>
@@ -145,15 +145,15 @@ export default function RelatorioAtividadesPage() {
                 {/* Resultados */}
                 {pesquisaFeita && (
                     <section>
-                         <div className="flex justify-between items-center mb-4 print:hidden">
+                        <div className="flex justify-between items-center mb-4 print:hidden">
                             <h3 className="text-lg font-medium text-gray-700">{resultados.length} registro(s) encontrado(s)</h3>
                             {resultados.length > 0 && (
                                 <div className='flex items-center gap-2'>
-                                    <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-700 transition">
+                                    <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#4a4e51] rounded-md hover:bg-[#3b3e40] transition">
                                         <Settings size={16} /> Configurações
                                     </button>
-                                    <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                        <Printer size={16} /> Imprimir Relatório
+                                    <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#dd6825] rounded-md hover:bg-[#c25a1f] transition">
+                                        <Printer size={16} /> Imprimir Livro
                                     </button>
                                 </div>
                             )}
@@ -209,10 +209,10 @@ export default function RelatorioAtividadesPage() {
                 `}
             </style>
             <div id="area-impressao-logs" className="hidden print:block">
-                 <div className="header-impressao">{renderHeaderImpressao()}</div>
-                 <table id="tabela-impressao-logs">
+                <div className="header-impressao">{renderHeaderImpressao()}</div>
+                <table id="tabela-impressao-logs">
                     <thead>
-                       <tr>
+                        <tr>
                             <th>Data e Hora</th>
                             <th>Usuário</th>
                             <th>Ação</th>
@@ -221,7 +221,7 @@ export default function RelatorioAtividadesPage() {
                     </thead>
                     <tbody>
                         {resultados.map(log => (
-                             <tr key={log.id}>
+                            <tr key={log.id}>
                                 <td>{new Date(log.dataHora).toLocaleString('pt-BR')}</td>
                                 <td>{getNomeUsuario(log.userId)}</td>
                                 <td>{log.acao.replace(/_/g, ' ')}</td>
@@ -229,9 +229,9 @@ export default function RelatorioAtividadesPage() {
                             </tr>
                         ))}
                     </tbody>
-                 </table>
+                </table>
             </div>
-            
+
             <ModalConfiguracaoImpressao
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

@@ -63,33 +63,19 @@ const getAtoIcon = (tipoAto: string) => {
 
 const AtoCard = ({ ato }: { ato: any }) => {
     return (
-        <Link to={`ato/${ato.protocolo}`} className="block group ">
-            <div className="border border-gray-300 bg-white rounded-lg p-3 hover:shadow-md transition-shadow duration-200">
+       <Link to={`ato/${ato.protocolo}`} className="block group">
+            <div className="border border-gray-200 bg-white rounded-lg p-3 hover:border-[#dd6825]/50 transition-all duration-200">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center text-sm">
-
-                    {/* Coluna 1: Protocolo */}
                     <div className="flex items-center text-gray-700">
                         <FileText size={16} className="text-gray-400 mr-2 flex-shrink-0" />
-                        <span className="font-semibold">{ato.protocolo}</span>
+                        <span className="font-semibold transition-colors group-hover:text-[#dd6825]">{ato.protocolo}</span>
                     </div>
-
-                    {/* Coluna 2: Tipo de Ato */}
                     <div className="flex items-center">
                         {getAtoIcon(ato.tipoAto)}
                         <span>{ato.tipoAto}</span>
                     </div>
-
-                    {/* Coluna 3: Livro e Folha */}
-                    <div className="flex items-center text-gray-600">
-                        <BookOpen size={16} className="text-gray-400 mr-2 flex-shrink-0" />
-                        <span>{`L: ${ato.livro}, Fl: ${ato.folha}`}</span>
-                    </div>
-
-                    {/* Coluna 4: Termo */}
-                    <div className="flex items-center text-gray-600">
-                        <CalendarDays size={16} className="text-gray-400 mr-2 flex-shrink-0" />
-                        <span>Termo: {ato.termo}</span>
-                    </div>
+                    <div className="flex items-center text-gray-600"><BookOpen size={16} className="text-gray-400 mr-2 flex-shrink-0" /><span>{`L: ${ato.livro}, Fl: ${ato.folha}`}</span></div>
+                    <div className="flex items-center text-gray-600"><CalendarDays size={16} className="text-gray-400 mr-2 flex-shrink-0" /><span>Termo: {ato.termo}</span></div>
                 </div>
             </div>
         </Link>
@@ -236,20 +222,23 @@ const CadastroPessoaPage: React.FC = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#dd6825]" />
                 <p className="ml-4 text-lg text-gray-600">Carregando dados...</p>
             </div>
         );
     }
 
     const tabStyle = "px-4 py-3 font-semibold text-center border-b-2 cursor-pointer transition-colors duration-200";
-    const activeTabStyle = "border-blue-600 text-blue-600";
-    const inactiveTabStyle = "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300";
+    const activeTabStyle = "border-[#dd6825] text-[#dd6825]";
+    const inactiveTabStyle = "border-transparent text-gray-500 hover:text-[#dd6825] hover:border-[#dd6825]/30";
 
     // Função para renderizar o conteúdo da aba de Atos
     const renderAtosTab = () => {
         if (isLoadingAtos) {
-            return <div className="flex flex-col items-center justify-center py-10"><Loader2 className="h-8 w-8 mb-4 animate-spin text-blue-600" /><h3 className="text-lg font-semibold">Buscando atos...</h3></div>;
+            return <div className="flex flex-col items-center justify-center py-10">
+                <Loader2 className="h-8 w-8 mb-4 animate-spin text-[#dd6825]" />
+                <h3 className="text-lg font-semibold">Buscando atos...</h3>
+            </div>;
         }
         if (atos.length === 0) {
             return <div className="flex flex-col items-center justify-center text-center text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed py-10"><ListX className="h-12 w-12 mb-4 text-gray-400" /><h3 className="text-lg font-semibold">Nenhum ato encontrado</h3></div>;
@@ -261,7 +250,7 @@ const CadastroPessoaPage: React.FC = () => {
         <div className="mx-auto p-6 bg-white rounded-xl shadow-lg">
             <header className="mb-6">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4"><ArrowLeft size={16} />Voltar</button>
-                <h1 className="text-3xl font-bold text-gray-800">{pageTitle}</h1>
+                <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Visualizando: {nomePessoaHeader}</p>}
             </header>
 
@@ -291,9 +280,9 @@ const CadastroPessoaPage: React.FC = () => {
                         />
                         <footer className="pt-6 flex justify-end gap-4">
                             <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancelar</button>
-                            <button type="submit" disabled={isSaving} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg hover:bg-[#c25a1f] font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                                 {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                                Salvar Alterações
+                                Salvar
                             </button>
                         </footer>
                     </form>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import PersonFields from '../../../Components/PersonFields';
-import { type ICasamentoFormData, type IEndereco, type IPersonData } from '../../../types';
+import { type ICasamentoFormData, type IEndereco, type IPessoaFisica } from '../../../types';
 
 // Tipos das props
 interface FiliacaoTabProps {
@@ -39,8 +39,8 @@ export default function FiliacaoTab({
     };
 
     // Helper para criar os cards, evitando repetição de código
-    const renderParentCard = (key: FiliacaoCollapseKeys, title: string, personData: IPersonData, pathPrefix: (string | number)[]) => (
-        <div className="bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300">
+    const renderParentCard = (key: FiliacaoCollapseKeys, title: string, personData: IPessoaFisica, pathPrefix: (string | number)[]) => (
+        <div className="bg-white rounded-lg border border-gray-200 transition-all duration-300">
             <button
                 type="button"
                 className="w-full flex justify-between items-center p-5 cursor-pointer"

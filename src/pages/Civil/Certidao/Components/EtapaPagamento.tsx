@@ -53,13 +53,14 @@ export default function EtapaPagamento({ pedido, setPedido, onConfirmarPagamento
                 <div className='flex items-center justify-center gap-4'>
                     <button
                         onClick={() => navigate('/registro-civil/certidoes')}
-                        className="mt-6 bg-gray-400 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-gray-500 transition-colors"
+                        className="mt-6 bg-gray-500 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-gray-600 transition-colors"
                     >
                         Voltar para a Página Inicial
                     </button>
+                    {/* ALTERADO: Cor do botão de ação principal na tela de sucesso */}
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-6 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+                        className="mt-6 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                     >
                         Iniciar Novo Pedido
                     </button>
@@ -69,19 +70,21 @@ export default function EtapaPagamento({ pedido, setPedido, onConfirmarPagamento
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-8">
-            <h2 className="text-xl font-semibold text-purple-700 border-b pb-4">Etapa 3: Pagamento</h2>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+            {/* ALTERADO: Cor do título da etapa */}
+            <h2 className="text-xl font-semibold text-[#4a4e51]">Etapa 3: Pagamento</h2>
 
-            {/* Seção de Valores */}
-            <div className="p-4 bg-gray-50 rounded-lg border">
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                 <h4 className="font-semibold text-gray-800 mb-3">Resumo de Valores</h4>
                 <div className="flex justify-between items-center text-lg">
                     <span className="text-gray-600">Valor Total:</span>
-                    <span className="font-bold text-purple-800">{formatCurrency(valores.total)}</span>
+                    {/* ALTERADO: Cor do valor total */}
+                    <span className="font-bold text-[#4a4e51]">{formatCurrency(valores.total)}</span>
                 </div>
+                {/* ALTERADO: Cor do link de detalhes */}
                 <button
                     onClick={() => setIsDetalhesOpen(!isDetalhesOpen)}
-                    className="text-sm text-blue-600 hover:underline mt-2 flex items-center gap-1"
+                    className="text-sm text-[#dd6825] hover:underline mt-2 flex items-center gap-1"
                 >
                     <Info size={14} />
                     {isDetalhesOpen ? 'Ocultar detalhes' : 'Ver detalhes'}
@@ -95,29 +98,28 @@ export default function EtapaPagamento({ pedido, setPedido, onConfirmarPagamento
                 )}
             </div>
 
-            {/* Seção de Opções de Pagamento */}
-            <div className="p-4 rounded-lg border">
+            <div className="p-4 rounded-lg border border-gray-300">
                 <h4 className="font-semibold text-gray-800 mb-4">Opções de Pagamento</h4>
                 <div className="space-y-4">
-                    {/* Escolha do Local de Pagamento */}
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <legend className="sr-only">Local de Pagamento</legend>
-                        <label className={`p-4 border rounded-lg flex items-center gap-3 cursor-pointer transition-all ${pagamento.metodo !== 'caixa' ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-300' : 'bg-white'}`}>
-                            <input type="radio" name="localPagamento" value="agora" checked={pagamento.metodo !== 'caixa'} onChange={handleLocalPagamentoChange} className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" />
-                            <DollarSign className="text-blue-700" />
+                        {/* ALTERADO: Estilo do radio button selecionado */}
+                        <label className={`p-4 border border-gray-300 rounded-lg flex items-center gap-3 cursor-pointer transition-all ${pagamento.metodo !== 'caixa' ? 'bg-[#dd6825]/10 border-[#dd6825] ring-2 ring-[#dd6825]/50' : 'bg-white'}`}>
+                            <input type="radio" name="localPagamento" value="agora" checked={pagamento.metodo !== 'caixa'} onChange={handleLocalPagamentoChange} className="focus:ring-[#dd6825] h-4 w-4 text-[#dd6825] border-gray-300" />
+                            <DollarSign className="text-[#dd6825]" />
                             <span className="font-semibold text-gray-700">Pagar agora</span>
                         </label>
-                        <label className={`p-4 border rounded-lg flex items-center gap-3 cursor-pointer transition-all ${pagamento.metodo === 'caixa' ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-300' : 'bg-white'}`}>
-                            <input type="radio" name="localPagamento" value="caixa" checked={pagamento.metodo === 'caixa'} onChange={handleLocalPagamentoChange} className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" />
-                            <Store className="text-blue-700" />
+                        <label className={`p-4 border border-gray-300 rounded-lg flex items-center gap-3 cursor-pointer transition-all ${pagamento.metodo === 'caixa' ? 'bg-[#dd6825]/10 border-[#dd6825] ring-2 ring-[#dd6825]/50' : 'bg-white'}`}>
+                            <input type="radio" name="localPagamento" value="caixa" checked={pagamento.metodo === 'caixa'} onChange={handleLocalPagamentoChange} className="focus:ring-[#dd6825] h-4 w-4 text-[#dd6825] border-gray-300" />
+                            <Store className="text-[#dd6825]" />
                             <span className="font-semibold text-gray-700">Pagar no caixa</span>
                         </label>
                     </fieldset>
 
-                    {/* Seletor de Forma de Pagamento (condicional) */}
                     {pagamento.metodo !== 'caixa' && (
                         <div className="animate-fade-in">
                             <label htmlFor="metodoPagamento" className="block text-sm font-medium text-gray-700">Forma de Pagamento</label>
+                            {/* ALTERADO: Estilo de foco do select */}
                             <select
                                 id="metodoPagamento"
                                 value={pagamento.metodo || ''}
@@ -136,16 +138,16 @@ export default function EtapaPagamento({ pedido, setPedido, onConfirmarPagamento
                 </div>
             </div>
 
-            {/* Botões de Navegação */}
-            <div className="text-right pt-6 border-t flex items-center justify-between">
+            <div className="text-right pt-4 flex items-center justify-between">
                 <button type="button" onClick={onVoltar} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
                     <ArrowLeft size={18} />
                     Voltar
                 </button>
+                {/* ALTERADO: Cor do botão de confirmação */}
                 <button
                     onClick={onConfirmarPagamento}
                     disabled={isConfirmacaoDisabled}
-                    className="bg-purple-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                 >
                     <CheckCircle size={18} />
                     Confirmar Pagamento

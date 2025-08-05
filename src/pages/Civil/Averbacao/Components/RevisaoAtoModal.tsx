@@ -3,12 +3,12 @@ import { X } from 'lucide-react';
 interface RevisaoAtoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  ato: any; // O objeto completo do ato encontrado
+  ato: any;
 }
 
-// Componente auxiliar para renderizar um campo de detalhe
+// Componente auxiliar para renderizar um campo de detalhe (sem alteração)
 const DetalheCampo = ({ label, value }: { label: string; value: any }) => {
-    if (!value) return null; // Não renderiza o campo se o valor for nulo ou vazio
+    if (!value) return null;
     return (
         <div className="py-2 px-3 bg-gray-50 rounded-md">
             <p className="text-xs font-semibold text-gray-500">{label}</p>
@@ -20,7 +20,8 @@ const DetalheCampo = ({ label, value }: { label: string; value: any }) => {
 // Componente auxiliar para seções
 const Secao = ({ titulo, children }: { titulo: string, children: React.ReactNode }) => (
     <div className="space-y-3">
-        <h4 className="text-lg font-semibold text-blue-800 border-b pb-2 mb-3">{titulo}</h4>
+        {/* ALTERADO: Cor do título da seção para o cinza escuro da marca */}
+        <h4 className="text-lg font-semibold text-[#4a4e51] border-b pb-2 mb-3">{titulo}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {children}
         </div>
@@ -56,7 +57,8 @@ export default function RevisaoAtoModal({ isOpen, onClose, ato }: RevisaoAtoModa
                 </Secao>
                  <Secao titulo="Filiação">
                     {dadosCompletos.filiacao?.map((genitor: any, index: number) => (
-                        <div key={index} className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        // ALTERADO: Cor de fundo e borda da seção de filiação para cinza neutro
+                        <div key={index} className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-100 rounded-lg border border-gray-200">
                              <DetalheCampo label={`Genitor(a) ${index + 1}`} value={genitor.nome} />
                              <DetalheCampo label="Naturalidade" value={`${genitor.naturalidade} / ${genitor.ufNaturalidade}`} />
                              <div className="md:col-span-2">
@@ -162,16 +164,17 @@ export default function RevisaoAtoModal({ isOpen, onClose, ato }: RevisaoAtoModa
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4 animate-fade-in-fast"
+      className="fixed inset-0 z-50 flex justify-center items-center p-4 animate-fade-in-fast bg-gray-900/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 
         className="bg-gray-100 rounded-lg shadow-2xl w-full max-w-5xl max-h-[95vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between p-4 border-b bg-white rounded-t-lg sticky top-0">
+        <header className="flex items-center justify-between p-4 bg-white rounded-t-lg sticky top-0">
           <div>
-             <h2 className="text-xl font-bold text-gray-800">Revisão do Ato Completo</h2>
+            {/* ALTERADO: Cor do título do modal */}
+             <h2 className="text-xl font-bold text-[#4a4e51]">Revisão do Ato Completo</h2>
              <p className="text-sm text-gray-500">Ato de {tipoAto} - {nomePrincipal}</p>
           </div>
           <button 
@@ -181,7 +184,7 @@ export default function RevisaoAtoModal({ isOpen, onClose, ato }: RevisaoAtoModa
             <X className="h-6 w-6" />
           </button>
         </header>
-        <main className="p-6 overflow-y-auto space-y-6">
+        <main className="p-6 overflow-y-auto space-y-6 pb-24">
             {renderDetalhesAto()}
         </main>
       </div>

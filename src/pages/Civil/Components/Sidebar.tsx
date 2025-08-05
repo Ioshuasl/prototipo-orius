@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon } from 'lucide-react';
+import logo from '../../../assets/logo-orius-sidebar.png'
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
 
@@ -116,9 +117,7 @@ interface DirectLinkMenuItemProps {
 }
 
 function DirectLinkMenuItem({ item, isCollapsed }: DirectLinkMenuItemProps) {
-    //const activeClass = "bg-gray-700 text-white";
-    //const defaultClass = "text-gray-300 hover:bg-gray-700 hover:text-white";
-    const activeClass = "bg-white/10 text-white"; 
+    const activeClass = "bg-white/10 text-[#eb6b22]"; 
     const defaultClass = "text-gray-300 hover:bg-white/10 hover:text-white"; 
 
     return (
@@ -131,9 +130,8 @@ function DirectLinkMenuItem({ item, isCollapsed }: DirectLinkMenuItemProps) {
             >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 <span className={`font-semibold ml-3 transition-opacity whitespace-nowrap ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>{item.title}</span>
-
                 {isCollapsed && (
-                    <div className="absolute left-full ml-4 px-2 py-1 bg-gray-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className="absolute left-full ml-4 px-2 py-1 bg-black/80 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                         {item.title}
                     </div>
                 )}
@@ -151,41 +149,36 @@ interface AccordionMenuItemProps {
 }
 
 function AccordionMenuItem({ item, isOpen, isCollapsed, onToggle }: AccordionMenuItemProps) {
-    //const activeSubItemClass = "bg-blue-600/30 text-white";
-    //const defaultSubItemClass = "hover:bg-gray-600";
-    //const location = useLocation();
-    const activeSubItemClass = "bg-[#dd6825]/80 text-white";
+    // ALTERADO: Cor do sub-item ativo usando o HEX do Laranja Orius diretamente.
+    const activeSubItemClass = "bg-[#f3743b]/80 text-white";
     const defaultSubItemClass = "hover:bg-white/10";
     const location = useLocation();
 
-    const isParentActive = item.subItems?.some(subItem => location.pathname.startsWith(subItem.path));
+    const isParentActive = item.subItems?.some(subItem => location.pathname.includes(subItem.path));
 
     return (
         <li>
             <button
                 onClick={!isCollapsed ? onToggle : undefined}
                 aria-expanded={isOpen && !isCollapsed}
-                className={`w-full flex items-center p-3 rounded-md hover:bg-gray-700 transition-colors group relative ${isCollapsed ? 'justify-center' : 'justify-between'} ${isParentActive && !isOpen ? 'bg-gray-700/50' : ''}`}
+                className={`w-full flex items-center p-3 rounded-md hover:bg-white/10 transition-colors group relative ${isCollapsed ? 'justify-center' : 'justify-between'} ${isParentActive && !isOpen ? 'bg-white/5' : ''}`}
             >
                 <div className="flex items-center overflow-hidden">
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     <h3 className={`font-semibold ml-3 whitespace-nowrap transition-opacity ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>{item.title}</h3>
                 </div>
                 {!isCollapsed && (
-                    <ChevronLeft className={`h-5 w-5 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-270' : ''}`} />
+                    <ChevronLeft className={`h-5 w-5 transition-transform duration-300 flex-shrink-0 ${isOpen ? '-rotate-90' : ''}`} />
                 )}
-
                 {isCollapsed && (
-                    <div className="absolute left-full ml-4 px-2 py-1 bg-gray-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className="absolute left-full ml-4 px-2 py-1 bg-black/80 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                         {item.title}
                     </div>
                 )}
             </button>
-
-            <div className={`grid overflow-hidden transition-all duration-300 ease-in-out ${isOpen && !isCollapsed ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                }`}>
+            <div className={`grid overflow-hidden transition-all duration-300 ease-in-out ${isOpen && !isCollapsed ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                 <div className="overflow-hidden">
-                    <ul className="pl-8 pr-2 mt-2 space-y-1 relative before:absolute ">
+                    <ul className="pl-8 pr-2 mt-2 space-y-1 relative">
                         {item.subItems!.map(subItem => (
                             <li key={subItem.label}>
                                 <NavLink
@@ -268,12 +261,11 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <aside 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className={`bg-[#4a4e51] text-white p-4 flex flex-col h-screen fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out ${isVisuallyExpanded ? 'w-[250px]' : 'w-20'}`}
+            className={`bg-[#343c40] text-white p-4 flex flex-col h-screen fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out ${isVisuallyExpanded ? 'w-[250px]' : 'w-20'}`}
         >
             <div className="flex-shrink-0 mb-6">
                 <Link to="/home" className={`flex items-center gap-2 text-white hover:text-gray-300 ${!isVisuallyExpanded ? 'justify-center' : 'justify-center'}`}>
-                    <img src="src\assets\logo-orius.png" alt="Orius Logo" className="h-8 w-8 flex-shrink-0"/>
-                    <span className={`text-2xl font-bold whitespace-nowrap transition-opacity duration-200 ${!isVisuallyExpanded ? 'opacity-0 w-0' : 'opacity-100 delay-100'}`}>Orius</span>
+                    <img src={logo} alt="Orius Logo" className="flex-shrink-0"/>
                 </Link>
             </div>
             

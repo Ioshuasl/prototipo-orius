@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// Ícones reutilizados e novos para o contexto de averbações
 import { PlusCircle, Search, ChevronLeft, ChevronRight, FileText, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, MoreVertical, User, Edit, XCircle, FileClock, CheckCircle } from 'lucide-react';
-import { atoOptions, averbacaoPorAto } from '../lib/Constants'; // Importando a nova constante
+import { atoOptions, averbacaoPorAto } from '../lib/Constants';
 import { toast } from 'react-toastify';
 import { type AtoOriginalTipo } from '../types';
 
-// --- ESTRUTURA DE TIPOS E DADOS SIMULADOS PARA AVERBAÇÕES ---
-
-// 1. Definindo um tipo para o status da averbação
+// --- ESTRUTURA DE TIPOS E DADOS SIMULADOS ---
 type AverbacaoStatus = 'Concluída' | 'Em Análise' | 'Pendente' | 'Cancelada';
 
-// 2. Definindo a interface para uma solicitação de averbação
 export interface AverbacaoRequest {
     id: number;
     protocolo: string;
@@ -27,7 +23,7 @@ export interface AverbacaoRequest {
     status: AverbacaoStatus;
 }
 
-// 3. Criando dados simulados para as averbações
+// --- Dados e Lógica (Inalterados) ---
 const mockAverbacaoRequests: AverbacaoRequest[] = Array.from({ length: 40 }, (_, i) => {
     const dataSolicitacao = new Date(2025, 3, 25 - i);
     const tipoAto = atoOptions[i % atoOptions.length] as AtoOriginalTipo;
@@ -50,12 +46,12 @@ const mockAverbacaoRequests: AverbacaoRequest[] = Array.from({ length: 40 }, (_,
     };
 });
 
-// 4. Opções e Estilos para os novos status
 const statusOptions: AverbacaoStatus[] = ['Concluída', 'Em Análise', 'Pendente', 'Cancelada'];
 
+// ALTERADO: O status "Em Análise" foi ajustado de azul para cinza para melhor harmonia com a paleta.
 const statusStyles: Record<AverbacaoStatus, { text: string, bg: string, border: string, topBorder: string }> = {
     'Concluída': { text: 'text-green-800', bg: 'bg-green-100', border: 'border-green-200', topBorder: 'border-t-green-500' },
-    'Em Análise': { text: 'text-blue-800', bg: 'bg-blue-100', border: 'border-blue-200', topBorder: 'border-t-blue-500' },
+    'Em Análise': { text: 'text-gray-800', bg: 'bg-gray-100', border: 'border-gray-200', topBorder: 'border-t-gray-500' },
     'Pendente': { text: 'text-orange-800', bg: 'bg-orange-100', border: 'border-orange-200', topBorder: 'border-t-orange-500' },
     'Cancelada': { text: 'text-red-800', bg: 'bg-red-100', border: 'border-red-200', topBorder: 'border-t-red-500' },
 };
@@ -136,7 +132,6 @@ export default function GerenciamentoAverbacoesPage() {
     };
 
     const AverbacaoCard = ({ record }: { record: AverbacaoRequest }) => {
-        const cardTopBorderStyle = statusStyles[record.status]?.topBorder || 'border-t-gray-200';
         const isMenuOpen = openMenuId === record.id;
 
         const toggleMenu = (e: React.MouseEvent) => {
@@ -148,10 +143,11 @@ export default function GerenciamentoAverbacoesPage() {
         return (
             <div className="relative">
                 <Link to={`/registro-civil/averbacoes/${record.id}`} className="block group">
-                    <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden border-t-4 ${cardTopBorderStyle}`}>
+                    <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden`}>
                         <div className="p-4 border-b border-gray-100">
                             <div className="flex justify-between items-start gap-2">
-                                <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:text-blue-600 transition-colors pr-8">
+                                {/* ALTERADO: Cor do hover no título do card */}
+                                <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:transition-colors pr-8">
                                     {record.tipoAverbacao}
                                 </h3>
                             </div>
@@ -195,11 +191,12 @@ export default function GerenciamentoAverbacoesPage() {
 
     return (
         <>
-            <title>Gerenciamento de Averbações</title>
-            <div className="mx-auto space-y-6">
+            <title>Gerenciamento de Averbações | Orius Tecnologia</title>
+            <div className="mx-auto space-y-4">
                 <header className="flex items-center justify-between">
-                    <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Averbações</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os processos de averbação.</p></div>
-                    <Link to="/registro-civil/averbacoes/averbar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                     {/* ALTERADO: Cor do título e do botão principal */}
+                    <div><h1 className="text-3xl font-bold text-[#4a4e51]">Gerenciamento de Averbações</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os processos de averbação.</p></div>
+                    <Link to="/registro-civil/averbacoes/averbar" className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105">
                         <PlusCircle className="h-5 w-5" /> Nova Averbação
                     </Link>
                 </header>
@@ -212,19 +209,20 @@ export default function GerenciamentoAverbacoesPage() {
                     <div className={`grid transition-all duration-500 ease-in-out ${filtersVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                         <div className="overflow-hidden">
                             <div className="p-5 space-y-4">
-                                <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Solicitante ou Parte do Ato Original</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full" /></div></div>
+                                {/* ALTERADO: Estilos de foco nos inputs e selects */}
+                                <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Solicitante ou Parte do Ato Original</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div>
                                         <label htmlFor="tipoAto" className="block text-sm font-medium text-gray-600 mb-1">Tipo de Ato Original</label>
-                                        <select id="tipoAto" name="tipoAto" value={filters.tipoAto} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full">
+                                        <select id="tipoAto" name="tipoAto" value={filters.tipoAto} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]">
                                             <option>Todos</option>
                                             {atoOptions.map(s => <option key={s}>{s}</option>)}
                                         </select>
                                     </div>
                                     <div>
                                         <label htmlFor="tipoAverbacao" className="block text-sm font-medium text-gray-600 mb-1">Tipo de Averbação</label>
-                                        <select id="tipoAverbacao" name="tipoAverbacao" value={filters.tipoAverbacao} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" disabled={filters.tipoAto === 'Todos'}>
+                                        <select id="tipoAverbacao" name="tipoAverbacao" value={filters.tipoAverbacao} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" disabled={filters.tipoAto === 'Todos'}>
                                             <option>Todos</option>
                                             {filters.tipoAto !== 'Todos' && averbacaoPorAto[filters.tipoAto]?.map(s => (
                                                 <option key={s.titulo_servico}>{s.titulo_servico}</option>
@@ -233,7 +231,7 @@ export default function GerenciamentoAverbacoesPage() {
                                     </div>
                                     <div>
                                         <label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
-                                        <select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full">
+                                        <select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]">
                                             <option>Todos</option>
                                             {statusOptions.map(s => <option key={s}>{s}</option>)}
                                         </select>
@@ -243,8 +241,8 @@ export default function GerenciamentoAverbacoesPage() {
                                     <div className='flex flex-col flex-1 gap-1'>
                                         <label className="block text-sm font-medium text-gray-600">Período da Solicitação</label>
                                         <div className="flex items-center gap-2">
-                                            <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span>
-                                            <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" />
+                                            <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span>
+                                            <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" />
                                         </div>
                                     </div>
                                     <button type="button" onClick={handleClearFilters} className="flex items-center gap-2 bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors h-fit"><FilterX className="h-5 w-5" />Limpar Filtros</button>
@@ -255,8 +253,9 @@ export default function GerenciamentoAverbacoesPage() {
                 </div>
 
                 <div className="min-h-[400px] relative">
+                    {/* ALTERADO: Cor do ícone de carregamento */}
                     {isLoading ? (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-blue-600 animate-spin" /></div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-[#dd6825] animate-spin" /></div>
                     ) : paginatedRecords.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedRecords.map(record => (

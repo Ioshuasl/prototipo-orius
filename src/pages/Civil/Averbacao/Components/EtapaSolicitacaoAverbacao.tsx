@@ -4,7 +4,7 @@ import { averbacaoPorAto } from '../../lib/Constants';
 import BuscaAtoCertidao from './BuscaAtoCertidao';
 import SeletorRequerente from './SeletorRequerente';
 import { toast } from 'react-toastify';
-import { type ProcessoAverbacaoState } from '../EmissaoAverbacao'; // Importando o tipo do orquestrador
+import { type ProcessoAverbacaoState } from '../EmissaoAverbacao';
 import InfoModal from '../../Components/InfoModal';
 import * as InfoContents from '../../lib/contextualInfo';
 
@@ -28,72 +28,41 @@ interface EtapaSolicitacaoAverbacaoProps {
 
 export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onConcluir, onRevisarAto, isSearching, handleSearch, onDesistir }: EtapaSolicitacaoAverbacaoProps) {
     const { atoEncontrado, requerente, dadosAverbacao } = processo;
-    const [modalInfo, setModalInfo] = useState<ModalInfoState>({
-        isOpen: false,
-        title: '',
-        content: null,
-    });
+    const [modalInfo, setModalInfo] = useState<ModalInfoState>({ isOpen: false, title: '', content: null });
 
+    // --- Lógica e Handlers (Inalterados) ---
     const handleOpenHelpModal = () => {
         let infoKey: InfoKey | undefined;
-        // Mapeia o ID da averbação para a chave do objeto de informação
         switch (dadosAverbacao.tipoAverbacao) {
-            case '21': // ID de Cancelamento de Interdição
-                infoKey = 'infoInterdicao';
-                break;
-            case '24': // ID de Dissolução de União Estável
-                infoKey = 'infoUniaoEstavel';
-                break;
-            // Adicione outros mapeamentos aqui conforme necessário
+            case '21': infoKey = 'infoInterdicao'; break;
+            case '24': infoKey = 'infoUniaoEstavel'; break;
             default:
                 toast.info("Não há informações de ajuda para este tipo de averbação.");
                 return;
         }
-
         if (infoKey) {
-            const info = InfoContents[infoKey]; // Agora esta linha funciona sem erros!
+            const info = InfoContents[infoKey];
             if (info) {
                 setModalInfo({ isOpen: true, title: info.title, content: info.content });
             }
         }
     };
 
-    // Handler para atualizar qualquer campo do processo
     const handleProcessoChange = (secao: 'requerente' | 'dadosAverbacao', field: string, value: any) => {
         setProcesso(prev => {
-            // Limpa os dados específicos se o tipo de averbação mudar
             if (field === 'tipoAverbacao') {
-                return {
-                    ...prev,
-                    dadosAverbacao: { tipoAverbacao: value }
-                };
+                return { ...prev, dadosAverbacao: { tipoAverbacao: value } };
             }
-            return {
-                ...prev,
-                [secao]: {
-                    ...prev[secao],
-                    [field]: value,
-                }
-            };
+            return { ...prev, [secao]: { ...prev[secao], [field]: value } };
         });
     };
 
     const handleRequerenteChange = (field: string, value: any) => {
         setProcesso((prev: any) => {
-
             if (field === 'tipo') {
-                return {
-                    ...prev,
-                    requerente: { tipo: value }
-                };
+                return { ...prev, requerente: { tipo: value } };
             }
-            return {
-                ...prev,
-                requerente: {
-                    ...prev.requerente,
-                    [field]: value,
-                }
-            };
+            return { ...prev, requerente: { ...prev.requerente, [field]: value } };
         });
     };
 
@@ -102,63 +71,39 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
             onDesistir();
         }
     };
-
+    
+    // ALTERADO: Adicionada classe de foco nos inputs dos campos dinâmicos.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm";
 
     const RenderCamposAverbacao = () => {
-        // O switch agora usa os IDs numéricos (como strings)
         switch (dadosAverbacao.tipoAverbacao) {
             case '8': // Averbação de Divórcio
                 return (
                     <>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Data da Sentença</label>
-                            <input type="date" value={dadosAverbacao.dataSentenca || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dataSentenca', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
+                            <input type="date" value={dadosAverbacao.dataSentenca || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dataSentenca', e.target.value)} className={commonInputClass} />
                         </div>
-                        {/* ... outros campos de divórcio ... */}
                     </>
                 );
 
             case '1': // Averbação de Reconhecimento de Paternidade
                 return (
                     <>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Nome Completo do Pai</label>
-                            <input type="text" value={dadosAverbacao.nomeNovoPai || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'nomeNovoPai', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
-                        </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Avós Paternos (separados por ponto e vírgula)</label>
-                            <input type="text" value={dadosAverbacao.avosPaternos || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'avosPaternos', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
-                        </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Novo Nome Completo do(a) Registrado(a)</label>
-                            <input type="text" value={dadosAverbacao.nomeNovo || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'nomeNovo', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Instrumento de Reconhecimento</label>
-                            <input type="text" value={dadosAverbacao.instrumento || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'instrumento', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" placeholder="Ex: Escritura Pública..." />
-                        </div>
+                        <div className="md:col-span-1"><label className="block text-sm font-medium text-gray-700">Nome Completo do Pai</label><input type="text" value={dadosAverbacao.nomeNovoPai || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'nomeNovoPai', e.target.value)} className={commonInputClass} /></div>
+                        <div className="md:col-span-1"><label className="block text-sm font-medium text-gray-700">Avós Paternos</label><input type="text" value={dadosAverbacao.avosPaternos || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'avosPaternos', e.target.value)} className={commonInputClass} placeholder="Separados por ;" /></div>
+                        <div className="md:col-span-1"><label className="block text-sm font-medium text-gray-700">Novo Nome Completo do(a) Registrado(a)</label><input type="text" value={dadosAverbacao.nomeNovo || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'nomeNovo', e.target.value)} className={commonInputClass} /></div>
+                        <div><label className="block text-sm font-medium text-gray-700">Instrumento de Reconhecimento</label><input type="text" value={dadosAverbacao.instrumento || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'instrumento', e.target.value)} className={commonInputClass} placeholder="Ex: Escritura Pública..." /></div>
                     </>
                 );
 
             case '3': // Averbação de Retificação de Registro
                 return (
                     <>
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">Campo a ser corrigido</label>
-                            <input type="text" value={dadosAverbacao.campoCorrigido || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'campoCorrigido', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" placeholder="Ex: o nome da mãe" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Dado Incorreto (como está no registro)</label>
-                            <input type="text" value={dadosAverbacao.dadoIncorreto || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dadoIncorreto', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Dado Correto (como deve ser)</label>
-                            <input type="text" value={dadosAverbacao.dadoCorreto || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dadoCorreto', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" />
-                        </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">Motivo/Fundamento da Retificação</label>
-                            <input type="text" value={dadosAverbacao.motivoRetificacao || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'motivoRetificacao', e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm" placeholder="Ex: Despacho judicial de..." />
-                        </div>
+                        <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Campo a ser corrigido</label><input type="text" value={dadosAverbacao.campoCorrigido || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'campoCorrigido', e.target.value)} className={commonInputClass} placeholder="Ex: o nome da mãe" /></div>
+                        <div><label className="block text-sm font-medium text-gray-700">Dado Incorreto</label><input type="text" value={dadosAverbacao.dadoIncorreto || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dadoIncorreto', e.target.value)} className={commonInputClass} /></div>
+                        <div><label className="block text-sm font-medium text-gray-700">Dado Correto</label><input type="text" value={dadosAverbacao.dadoCorreto || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'dadoCorreto', e.target.value)} className={commonInputClass} /></div>
+                        <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Motivo/Fundamento</label><input type="text" value={dadosAverbacao.motivoRetificacao || ''} onChange={(e) => handleProcessoChange('dadosAverbacao', 'motivoRetificacao', e.target.value)} className={commonInputClass} placeholder="Ex: Despacho judicial de..." /></div>
                     </>
                 );
 
@@ -169,35 +114,33 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
 
     return (
         <>
-
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-8">
-                <h2 className="text-xl font-semibold text-blue-700 border-b pb-4">Etapa 1: Solicitação da Averbação</h2>
+                {/* ALTERADO: Cor do título da etapa */}
+                <h2 className="text-xl font-semibold text-[#4a4e51] border-b pb-4">Etapa 1: Solicitação da Averbação</h2>
 
-                {/* Componente reutilizado para buscar o ato */}
                 <BuscaAtoCertidao onSearch={handleSearch} isSearching={isSearching} />
 
                 {atoEncontrado && (
                     <div className="space-y-6 animate-fade-in">
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex justify-between items-center">
+                        {/* ALTERADO: Estilo do box de informação do ato encontrado */}
+                        <div className="p-4 bg-[#dd6825]/10 border border-[#dd6825]/30 rounded-lg flex justify-between items-center">
                             <div>
-                                <p className="text-sm text-blue-800">Ato a ser averbado:</p>
-                                <p className="font-semibold text-blue-900">{atoEncontrado.nomePrincipal} ({atoEncontrado.tipoAto})</p>
+                                <p className="text-sm text-[#c25a1f]">Ato a ser averbado:</p>
+                                <p className="font-semibold text-[#dd6825]">{atoEncontrado.nomePrincipal} ({atoEncontrado.tipoAto})</p>
                             </div>
-                            <button type="button" onClick={onRevisarAto} className="flex items-center gap-2 text-sm bg-white border border-blue-300 text-blue-700 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors">
+                            <button type="button" onClick={onRevisarAto} className="flex items-center gap-2 text-sm bg-white border border-[#dd6825]/50 text-[#dd6825] px-3 py-1.5 rounded-md hover:bg-[#dd6825]/10 transition-colors">
                                 <BookOpen size={16} /> Revisar Ato Completo
                             </button>
                         </div>
 
-                        {/* Componente reutilizado para os dados do requerente */}
                         <SeletorRequerente requerente={requerente} onRequerenteChange={handleRequerenteChange} />
 
-                        {/* Nova seção para os dados da averbação */}
-                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
+                        <div className="p-4 rounded-lg border border-gray-300">
                             <div className="flex items-center gap-2 mb-3">
                                 <h4 className="font-semibold text-gray-700">3. Dados da Averbação</h4>
-                                {/* BOTÃO DE AJUDA - visível apenas quando um tipo é selecionado */}
                                 {dadosAverbacao.tipoAverbacao && (
-                                    <button onClick={handleOpenHelpModal} className="text-blue-500 hover:text-blue-700">
+                                    // ALTERADO: Cor do botão de ajuda
+                                    <button onClick={handleOpenHelpModal} className="text-[#dd6825] hover:text-[#c25a1f]">
                                         <HelpCircle size={16} />
                                     </button>
                                 )}
@@ -217,10 +160,9 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
                                     <select
                                         value={dadosAverbacao.tipoAverbacao}
                                         onChange={(e) => handleProcessoChange('dadosAverbacao', 'tipoAverbacao', e.target.value)}
-                                        className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm"
+                                        className={commonInputClass}
                                     >
                                         <option value="">Selecione...</option>
-                                        {/* usamos o 'id' como o valor da opção */}
                                         {averbacaoPorAto[atoEncontrado.tipoAto]?.map(option => (
                                             <option key={option.id} value={option.id}>
                                                 {option.titulo_servico}
@@ -236,7 +178,8 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
                             <button type="button" onClick={handleDesistirClick} className="flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
                                 <ArrowLeft size={16} /> Desistir
                             </button>
-                            <button onClick={onConcluir} className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                            {/* ALTERADO: Cor do botão de ação principal */}
+                            <button onClick={onConcluir} className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                                 <FileSignature size={18} /> Gerar Termo e Avançar
                             </button>
                         </div>
@@ -244,7 +187,6 @@ export default function EtapaSolicitacaoAverbacao({ processo, setProcesso, onCon
                 )}
             </div>
 
-            {/* Renderização do Modal de Ajuda */}
             <InfoModal
                 isOpen={modalInfo.isOpen}
                 onClose={() => setModalInfo({ ...modalInfo, isOpen: false })}

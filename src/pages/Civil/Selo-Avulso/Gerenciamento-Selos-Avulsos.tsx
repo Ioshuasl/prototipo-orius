@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { PlusCircle, Search, ChevronLeft, ChevronRight, FileText, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, MoreVertical, User, Download, Eye, XCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { mockSelosAvulsos } from '../lib/Constants'; // Supondo que o mock está nesse caminho
-import { type ISeloAvulsoFormData, type SeloAvulsoStatus, type AtoOriginalTipo } from '../types'; // Supondo que as interfaces estão nesse caminho
+import { mockSelosAvulsos } from '../lib/Constants';
+import { type ISeloAvulsoFormData, type SeloAvulsoStatus, type AtoOriginalTipo } from '../types';
 
-// --- DEFINIÇÕES DE STATUS PARA SELO AVULSO ---
+// --- DEFINIÇÕES DE STATUS E ESTILOS ---
 const statusOptions: SeloAvulsoStatus[] = ['Em Aberto', 'Finalizado', 'Cancelado'];
 const atoOptions: AtoOriginalTipo[] = ['Nascimento', 'Casamento', 'Óbito', 'Natimorto', 'Livro E'];
 
@@ -25,11 +25,11 @@ export default function GerenciamentoSelosAvulsosPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [filtersVisible, setFiltersVisible] = useState(false);
-    const [openMenuId, setOpenMenuId] = useState<string | null>(null); // Usando protocolo (string) como ID
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
     const recordsPerPage = 9;
 
-    // Efeito para fechar o menu se o usuário clicar fora
     useEffect(() => {
+        // ... (Lógica inalterada)
         const handleClickOutside = (event: MouseEvent) => {
             if (openMenuId !== null && !(event.target as Element).closest('.action-menu-container')) {
                 setOpenMenuId(null);
@@ -39,7 +39,6 @@ export default function GerenciamentoSelosAvulsosPage() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [openMenuId]);
 
-    // Efeito para filtrar os registros
     useEffect(() => {
         setIsLoading(true);
         const filterTimeout = setTimeout(() => {
@@ -49,23 +48,18 @@ export default function GerenciamentoSelosAvulsosPage() {
                     (record.requerente.nome || record.requerente.razaoSocial || '').toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
                     record.referenciaAto.nomePartePrincipal.toLowerCase().includes(filters.searchTerm.toLowerCase())
                     : true;
-
                 const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
                 const tipoAtoMatch = filters.tipoAto !== 'Todos' ? record.referenciaAto.tipoAto === filters.tipoAto : true;
-
-                // A data da solicitação no mock é YYYY-MM-DD, convertemos para comparação
                 const parseDate = (dateString: string) => new Date(dateString + 'T00:00:00');
                 const solicitationDate = parseDate(record.dataSolicitacao);
                 const startDateMatch = filters.startDate ? solicitationDate >= new Date(filters.startDate + 'T00:00:00') : true;
                 const endDateMatch = filters.endDate ? solicitationDate <= new Date(filters.endDate + 'T23:59:59') : true;
-
                 return searchTermMatch && statusMatch && tipoAtoMatch && startDateMatch && endDateMatch;
             });
             setFilteredRecords(results);
             setCurrentPage(1);
             setIsLoading(false);
         }, 300);
-
         return () => clearTimeout(filterTimeout);
     }, [filters]);
 
@@ -85,14 +79,12 @@ export default function GerenciamentoSelosAvulsosPage() {
     const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
     const paginatedRecords = filteredRecords.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage);
 
-    // --- SUB-COMPONENTES DE UI ---
     const StatusBadge = ({ status }: { status: SeloAvulsoStatus }) => {
         const style = statusStyles[status] || {};
         return <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${style.text} ${style.bg} ${style.border}`}>{status}</span>;
     };
 
     const SeloAvulsoCard = ({ record }: { record: ISeloAvulsoFormData }) => {
-        const cardTopBorderStyle = statusStyles[record.status]?.topBorder || 'border-t-gray-200';
         const isMenuOpen = openMenuId === record.protocolo;
         const totalSelos = record.selosSolicitados.reduce((acc, selo) => acc + selo.quantidade, 0);
 
@@ -105,9 +97,10 @@ export default function GerenciamentoSelosAvulsosPage() {
         return (
             <div className="relative">
                 <Link to={`${record.protocolo}`} className="block group">
-                    <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden border-t-4 ${cardTopBorderStyle}`}>
+                    <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden`}>
                         <div className="p-4 border-b border-gray-100">
-                            <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:text-blue-600 transition-colors pr-8">
+                            {/* ALTERADO: Cor do hover no título do card */}
+                            <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:transition-colors pr-8">
                                 Pedido de {totalSelos} Selo(s) Avulso(s)
                             </h3>
                             <p className="text-sm text-gray-500 truncate mt-2">
@@ -126,9 +119,7 @@ export default function GerenciamentoSelosAvulsosPage() {
                 </Link>
 
                 <div className="absolute top-3 right-3 action-menu-container">
-                    <button onClick={toggleMenu} className="p-2 rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700">
-                        <MoreVertical className="h-5 w-5" />
-                    </button>
+                    <button onClick={toggleMenu} className="p-2 rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700"><MoreVertical className="h-5 w-5" /></button>
                     {isMenuOpen && (
                         <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10">
                             <div className="py-1">
@@ -144,14 +135,14 @@ export default function GerenciamentoSelosAvulsosPage() {
         );
     }
 
-    // --- RENDERIZAÇÃO PRINCIPAL ---
     return (
         <>
-            <title>Gerenciamento de Selos Avulsos</title>
+            <title>Gerenciamento de Selos Avulsos | Orius Tecnologia</title>
             <div className="mx-auto space-y-6">
                 <header className="flex items-center justify-between">
-                    <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Selos Avulsos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie as emissões de selos avulsos.</p></div>
-                    <Link to="emitir" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                    {/* ALTERADO: Cor do título e do botão principal */}
+                    <div><h1 className="text-3xl font-bold text-[#4a4e51]">Gerenciamento de Selos Avulsos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie as emissões de selos avulsos.</p></div>
+                    <Link to="emitir" className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105">
                         <PlusCircle className="h-5 w-5" /> Nova Emissão Avulsa
                     </Link>
                 </header>
@@ -164,19 +155,20 @@ export default function GerenciamentoSelosAvulsosPage() {
                     <div className={`grid transition-all duration-500 ease-in-out ${filtersVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                         <div className="overflow-hidden">
                             <div className="p-5 space-y-4">
-                                <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Requerente ou Parte Referente</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full" /></div></div>
+                                {/* ALTERADO: Estilos de foco nos inputs e selects */}
+                                <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Requerente ou Parte Referente</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                                     <div>
                                         <label htmlFor="tipoAto" className="block text-sm font-medium text-gray-600 mb-1">Tipo de Ato de Referência</label>
-                                        <select id="tipoAto" name="tipoAto" value={filters.tipoAto} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full">
+                                        <select id="tipoAto" name="tipoAto" value={filters.tipoAto} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]">
                                             <option>Todos</option>
                                             {atoOptions.map(s => <option key={s}>{s}</option>)}
                                         </select>
                                     </div>
                                     <div>
                                         <label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Pedido</label>
-                                        <select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full">
+                                        <select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]">
                                             <option>Todos</option>
                                             {statusOptions.map(s => <option key={s}>{s}</option>)}
                                         </select>
@@ -187,8 +179,8 @@ export default function GerenciamentoSelosAvulsosPage() {
                                     <div className='flex flex-col flex-1 gap-1 min-w-[300px]'>
                                         <label className="block text-sm font-medium text-gray-600">Período da Solicitação</label>
                                         <div className="flex items-center gap-2">
-                                            <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span>
-                                            <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" />
+                                            <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span>
+                                            <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" />
                                         </div>
                                     </div>
                                     <div className="flex justify-end"><button type="button" onClick={handleClearFilters} className="flex items-center gap-2 bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"><FilterX className="h-5 w-5" />Limpar Filtros</button></div>
@@ -199,8 +191,9 @@ export default function GerenciamentoSelosAvulsosPage() {
                 </div>
 
                 <div className="min-h-[400px] relative">
+                    {/* ALTERADO: Cor do ícone de carregamento */}
                     {isLoading ? (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-blue-600 animate-spin" /></div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-[#dd6825] animate-spin" /></div>
                     ) : paginatedRecords.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedRecords.map(record => (

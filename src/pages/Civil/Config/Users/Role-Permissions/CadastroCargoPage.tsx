@@ -1,4 +1,3 @@
-// Salve como src/pages/CadastroCargoPage.tsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -21,7 +20,6 @@ const CadastroCargoPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(!!id);
     const [isSaving, setIsSaving] = useState(false);
 
-    // Agrupa as permissões por módulo para exibição na tela
     const permissoesAgrupadas = useMemo(() => {
         return mockPermissoes.reduce((acc, permissao) => {
             (acc[permissao.modulo] = acc[permissao.modulo] || []).push(permissao);
@@ -35,6 +33,8 @@ const CadastroCargoPage: React.FC = () => {
             if (cargoExistente) {
                 setCargo(cargoExistente);
             }
+            setIsLoading(false);
+        } else {
             setIsLoading(false);
         }
     }, [id]);
@@ -66,43 +66,49 @@ const CadastroCargoPage: React.FC = () => {
         toast.success("Cargo salvo com sucesso!");
         setTimeout(() => {
             setIsSaving(false);
-            navigate(-1); // Rota da página de listagem
+            navigate(-1);
         }, 1000);
     };
 
     const pageTitle = id ? "Editar Cargo" : "Criar Novo Cargo";
     
-    if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+    // ALTERADO: Centralização dos estilos de formulário
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
+    
+    if (isLoading) {
+        // ALTERADO: Cor do loader
+        return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#dd6825]" size={32} /></div>;
+    }
 
     return (
         <div className="mx-auto p-6">
+            <title>{pageTitle} | Orius Tecnologia</title>
             <header className="mb-6 pb-4">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista de Cargos
                 </button>
-                <h1 className="text-3xl font-bold text-gray-800">{pageTitle}</h1>
+                {/* ALTERADO: Cor do título principal */}
+                <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando o cargo: {cargo.nome}</p>}
             </header>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Seção de Identificação do Cargo */}
-                <div className="p-6 bg-white rounded-lg border border-gray-300">
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Identificação</h2>
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome do Cargo*</label>
-                            <input type="text" id="nome" name="nome" value={cargo.nome} onChange={handleInputChange} className="mt-1 w-full border border-gray-300 rounded-md p-2"/>
+                            <input type="text" id="nome" name="nome" value={cargo.nome} onChange={handleInputChange} className={commonInputClass}/>
                         </div>
                         <div>
                             <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">Descrição</label>
-                            <textarea id="descricao" name="descricao" value={cargo.descricao} onChange={handleInputChange} rows={3} className="mt-1 w-full border border-gray-300 rounded-md p-2"/>
+                            <textarea id="descricao" name="descricao" value={cargo.descricao} onChange={handleInputChange} rows={3} className={commonInputClass}/>
                         </div>
                     </div>
                 </div>
 
-                {/* Seção da Matriz de Permissões */}
-                <div className="p-6 bg-white rounded-lg border border-gray-300">
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Permissões do Cargo</h2>
                     <div className="space-y-6">
                         {Object.entries(permissoesAgrupadas).map(([modulo, permissoes]) => (
@@ -111,11 +117,12 @@ const CadastroCargoPage: React.FC = () => {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     {permissoes.map(permissao => (
                                         <label key={permissao.chave} className="flex items-center space-x-3 cursor-pointer">
+                                            {/* ALTERADO: Cor e foco do checkbox */}
                                             <input
                                                 type="checkbox"
                                                 checked={cargo.permissoes.includes(permissao.chave)}
                                                 onChange={(e) => handlePermissionChange(permissao.chave, e.target.checked)}
-                                                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                                className="h-4 w-4 text-[#dd6825] border-gray-300 rounded focus:ring-[#dd6825]"
                                             />
                                             <span className="text-sm text-gray-700">{permissao.nome}</span>
                                         </label>
@@ -127,10 +134,11 @@ const CadastroCargoPage: React.FC = () => {
                 </div>
 
                 <footer className="pt-6 flex justify-end gap-4">
-                    <button type="button" onClick={() => navigate('/admin/cargos')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold">
+                    <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
                         Cancelar
                     </button>
-                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold flex items-center gap-2">
+                     {/* ALTERADO: Cor do botão de ação principal */}
+                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Salvar
                     </button>

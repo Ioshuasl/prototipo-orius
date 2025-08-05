@@ -63,7 +63,7 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center" aria-modal="true" role="dialog">
+        <div className="fixed inset-0 z-50 flex justify-center items-center p-4 animate-fade-in-fast bg-gray-900/50 backdrop-blur-sm" aria-modal="true" role="dialog">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 space-y-6">
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-bold text-gray-800">Configurações de Impressão</h2>
@@ -113,7 +113,7 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
                     <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
                         Cancelar
                     </button>
-                    <button onClick={handleSaveClick} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                    <button onClick={handleSaveClick} className="px-4 py-2 text-sm font-medium text-white bg-[#dd6825] rounded-md hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                         Salvar Configurações
                     </button>
                 </div>

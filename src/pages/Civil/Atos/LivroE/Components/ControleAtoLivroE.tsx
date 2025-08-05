@@ -7,11 +7,12 @@ interface ControleAtoProps {
     formData: ILivroEFormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     handleTipoAtoChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    handleLavrarAto: () => void; // <-- Prop para a nova função
+    handleLavrarAto: () => void;
 }
 
 export default function ControleAtoLivroE({ formData, handleInputChange, handleTipoAtoChange, handleLavrarAto }: ControleAtoProps) {
-    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500";
+    // ALTERADO: Estilos de foco agora usam a cor laranja da marca.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
 
@@ -20,16 +21,16 @@ export default function ControleAtoLivroE({ formData, handleInputChange, handleT
 
     return (
         <div className="space-y-8">
-            {/* Seletor do Tipo de Ato (movido para cá) */}
             <div>
                 <label htmlFor="tipo-ato" className="block text-lg font-semibold text-gray-800 mb-2">
                     1. Selecione o Tipo de Ato do Livro E {requiredSpan}
                 </label>
+                {/* ALTERADO: Estilos de foco no seletor principal. */}
                 <select
                     id="tipo-ato"
                     value={formData.tipoAto}
                     onChange={handleTipoAtoChange}
-                    className="mt-1 w-full border border-gray-300 rounded-md p-3 text-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 w-full border border-gray-300 rounded-md p-3 text-lg shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"
                 >
                     <option value="" disabled>Selecione um tipo de ato...</option>
                     {tiposDeAtoLivroE.map(ato => (
@@ -38,14 +39,14 @@ export default function ControleAtoLivroE({ formData, handleInputChange, handleT
                 </select>
             </div>
 
-            {/* Campos de Controle (baseado no registro de nascimento) */}
-            <div className="space-y-6 pt-6 border-t">
+            <div className="space-y-6">
                  <div className="flex items-center">
+                    {/* ALTERADO: Cor do checkbox. */}
                     <input
                         type="checkbox"
                         name="controleRegistro.isLivroAntigo"
                         id="controleRegistro.isLivroAntigo"
-                        className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                        className="form-checkbox h-5 w-5 text-[#dd6825] rounded"
                         checked={formData.controleRegistro.isLivroAntigo}
                         onChange={handleInputChange}
                     />
@@ -77,7 +78,6 @@ export default function ControleAtoLivroE({ formData, handleInputChange, handleT
                         </div>
                         <div>
                             <label htmlFor="controleRegistro.livro" className={commonLabelClass}>Livro {requiredSpan}</label>
-                            {/* O livro é fixo como Livro E, então usamos um input readonly */}
                              <input type="text" name="controleRegistro.livro" id="controleRegistro.livro" className={`${commonInputClass} bg-gray-100 cursor-not-allowed`} value={formData.controleRegistro.livro} readOnly />
                         </div>
                         <div>
@@ -91,12 +91,12 @@ export default function ControleAtoLivroE({ formData, handleInputChange, handleT
                     </div>
                 </div>
             </div>
-            {/* BOTÃO DE LAVRAR ATO ADICIONADO AQUI */}
-            <div className="mt-8 pt-6 border-t flex justify-end">
+            <div className="mt-8 pt-2 flex justify-end">
+                {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato". */}
                 <button
                     type="button"
                     onClick={handleLavrarAto}
-                    className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                 >
                     <Award className="h-5 w-5" />
                     Lavrar Ato

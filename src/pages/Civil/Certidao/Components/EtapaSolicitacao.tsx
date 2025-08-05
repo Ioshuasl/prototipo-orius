@@ -19,60 +19,46 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
 
     const handleRequerenteChange = (field: string, value: any) => {
         setPedido((prev: any) => {
-
             if (field === 'tipo') {
-                return {
-                    ...prev,
-                    requerente: { tipo: value }
-                };
+                return { ...prev, requerente: { tipo: value } };
             }
-            return {
-                ...prev,
-                requerente: {
-                    ...prev.requerente,
-                    [field]: value,
-                }
-            };
+            return { ...prev, requerente: { ...prev.requerente, [field]: value } };
         });
     };
 
     const handleConfiguracaoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = parseInt(e.target.value, 10);
-
         setPedido((prev: any) => ({
             ...prev,
-            configuracao: {
-                ...prev.configuracao,
-                tipoCertidao: selectedId,
-            }
+            configuracao: { ...prev.configuracao, tipoCertidao: selectedId }
         }));
     };
 
     const handleVoltarClick = () => {
-        const confirmar = window.confirm("Tem certeza que deseja desistir da emissão desta certidão? Todo o progresso será perdido.");
-
-        if (confirmar) {
+        if (window.confirm("Tem certeza que deseja desistir da emissão desta certidão? Todo o progresso será perdido.")) {
             onDesistir();
         }
     };
 
     return (
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-8">
-            <h2 className="text-xl font-semibold text-blue-700 border-b pb-4">Etapa 1: Solicitação</h2>
+            {/* ALTERADO: Cor do título da etapa */}
+            <h2 className="text-xl font-semibold text-[#4a4e51] border-b pb-4">Etapa 1: Solicitação</h2>
 
             <BuscaAtoCertidao onSearch={handleSearch} isSearching={isSearching} />
 
             {atoEncontrado && (
                 <div className="space-y-6 animate-fade-in">
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex justify-between items-center">
+                    {/* ALTERADO: Estilo do box de informação do ato encontrado */}
+                    <div className="p-4 bg-[#dd6825]/10 border border-[#dd6825]/30 rounded-lg flex justify-between items-center">
                         <div>
-                            <p className="text-sm text-blue-800">Ato Encontrado:</p>
-                            <p className="font-semibold text-blue-900">{atoEncontrado.nomePrincipal} ({atoEncontrado.tipoAto})</p>
+                            <p className="text-sm text-[#c25a1f]">Ato Encontrado:</p>
+                            <p className="font-semibold text-[#dd6825]">{atoEncontrado.nomePrincipal} ({atoEncontrado.tipoAto})</p>
                         </div>
                         <button
                             type="button"
                             onClick={onRevisarAto}
-                            className="flex items-center gap-2 text-sm bg-white border border-blue-300 text-blue-700 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors"
+                            className="flex items-center gap-2 text-sm bg-white border border-[#dd6825]/50 text-[#dd6825] px-3 py-1.5 rounded-md hover:bg-[#dd6825]/10 transition-colors"
                         >
                             <BookOpen size={16} />
                             Revisar Ato Completo
@@ -95,10 +81,11 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Tipo de Certidão</label>
+                                {/* ALTERADO: Estilo de foco do select */}
                                 <select
                                     value={configuracao.tipoCertidao}
                                     onChange={handleConfiguracaoChange}
-                                    className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm"
+                                    className="mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"
                                     disabled={!atoEncontrado.tipoAto}
                                 >
                                     <option value="">Selecione...</option>
@@ -112,18 +99,19 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
                         </div>
                     </div>
 
-                    <div className="flex gap-4 text-right pt-4 justify-end">
+                    <div className="flex gap-4 text-right pt-4 justify-between">
                         <button
                             type="button"
                             onClick={handleVoltarClick}
-                            className="flex items-center gap-2 bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-red-700 transition-colors"
+                            className="flex items-center gap-2 bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-700 transition-colors"
                         >
                             <ArrowLeft size={16} />
-                            Voltar
+                            Desistir
                         </button>
+                        {/* ALTERADO: Cor do botão de ação principal */}
                         <button
                             onClick={onConcluir}
-                            className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+                            className="bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                         >
                             Concluir Solicitação
                         </button>

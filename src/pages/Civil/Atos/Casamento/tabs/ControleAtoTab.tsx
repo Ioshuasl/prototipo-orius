@@ -15,8 +15,8 @@ export default function ControleAtoTab({ formData, handleInputChange, handleLavr
     const { controleRegistro } = formData;
     const isControlReadOnly = !controleRegistro.isLivroAntigo;
     
-    // Classes de Estilo (podem vir de um arquivo central)
-    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500";
+    // ALTERADO: Classes de foco agora usam a cor laranja da marca.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
     const controlInputClass = `${commonInputClass} ${isControlReadOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`;
@@ -25,7 +25,8 @@ export default function ControleAtoTab({ formData, handleInputChange, handleLavr
         <fieldset>
             <SectionTitle>Controle do Ato</SectionTitle>
             <div className="flex items-center mb-5">
-                <input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-blue-600 rounded" checked={controleRegistro.isLivroAntigo} onChange={handleInputChange} />
+                {/* ALTERADO: Cor do checkbox para o laranja da marca. */}
+                <input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={controleRegistro.isLivroAntigo} onChange={handleInputChange} />
                 <label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
@@ -40,7 +41,13 @@ export default function ControleAtoTab({ formData, handleInputChange, handleLavr
                     <div><label htmlFor="controleRegistro.folha" className={commonLabelClass}>Folha {requiredSpan}</label><input type="text" name="controleRegistro.folha" id="controleRegistro.folha" className={controlInputClass} value={controleRegistro.folha} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                     <div><label htmlFor="controleRegistro.numeroTermo" className={commonLabelClass}>Nº do Termo {requiredSpan}</label><input type="text" name="controleRegistro.numeroTermo" id="controleRegistro.numeroTermo" className={controlInputClass} value={controleRegistro.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                 </div>
-                <div className="mt-6 pt-6 flex justify-end"><button type="button" onClick={handleLavrarAto} className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"><Award className="h-5 w-5" />Lavrar Ato</button></div>
+                <div className="mt-6 pt-6 flex justify-end">
+                    {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato" para o laranja da marca. */}
+                    <button type="button" onClick={handleLavrarAto} className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
+                        <Award className="h-5 w-5" />
+                        Lavrar Ato
+                    </button>
+                </div>
             </div>
         </fieldset>
     );

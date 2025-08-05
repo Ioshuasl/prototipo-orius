@@ -25,15 +25,14 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
         }
     };
     
-    // Classes de estilização comuns para inputs e labels
-    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500 h-10";
+    // ALTERADO: Estilos de foco agora usam a cor laranja da marca.
+    const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825] h-10";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
 
     return (
         <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
             <h4 className="font-semibold text-gray-700 mb-3">1. Localizar Ato Original</h4>
             
-            {/* ALTERAÇÃO: O formulário agora usa 'flex' para alinhar os itens em uma linha */}
             <form onSubmit={handleFormSubmit} className="flex items-end gap-4">
                 
                 <div className="flex-grow-[1]">
@@ -49,7 +48,6 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                     </select>
                 </div>
 
-                {/* Renderização condicional dos campos de busca */}
                 {tipoBusca === 'livroFolha' ? (
                     <>
                         <div className="flex-grow-[1]">
@@ -74,7 +72,7 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                         </div>
                     </>
                 ) : (
-                    <div className="flex-grow-[3]"> {/* Este campo ocupará mais espaço */}
+                    <div className="flex-grow-[3]">
                         <label className={commonLabelClass}>Número</label>
                         <input
                             type="text"
@@ -85,12 +83,12 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                     </div>
                 )}
                 
-                {/* O botão fica no final da linha */}
                 <div>
+                    {/* ALTERADO: Cor do botão de busca para o cinza escuro da marca. */}
                     <button
                         type="submit"
                         disabled={isSearching}
-                        className="h-10 px-6 inline-flex items-center justify-center gap-2 bg-gray-600 text-white font-semibold rounded-lg shadow-sm hover:bg-gray-700 disabled:bg-gray-400"
+                        className="h-10 px-6 inline-flex items-center justify-center gap-2 bg-[#4a4e51] text-white font-semibold rounded-lg shadow-sm hover:bg-[#3b3e40] transition-colors disabled:bg-[#4a4e51]/50 disabled:cursor-not-allowed"
                     >
                         {isSearching ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
                         <span>Buscar</span>

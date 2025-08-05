@@ -8,23 +8,23 @@ type RecordStatus = 'Finalizado' | 'Rascunho' | 'Pendente Assinatura' | 'Cancela
 interface DeathRecord {
     id: number;
     protocol: string;
-    deceasedName: string; // Nome do Falecido(a)
+    deceasedName: string; 
     cpf: string;
-    age: number; // Idade ao falecer
-    dateOfDeath: string; // Data do Óbito
-    registrationDate: string; // Data do Registro
-    lavraturaDate: string; // Data da Lavratura
+    age: number;
+    dateOfDeath: string;
+    registrationDate: string;
+    lavraturaDate: string;
     status: RecordStatus;
     isOldBook: boolean;
-    livro: string; // Número do Livro
+    livro: string;
 }
 
-// Geração de dados simulados para óbito
+// --- Dados simulados (lógica inalterada) ---
 const livrosObitoExemplo = ['E-301', 'E-302', 'AUX-45', 'C-Aux-01'];
 const mockDeathRecords: DeathRecord[] = Array.from({ length: 32 }, (_, i) => {
     const registrationDate = new Date(2025, 4, 30 - i);
-    const dateOfDeath = new Date(registrationDate.getTime() - (5 * 24 * 60 * 60 * 1000)); // 5 dias antes do registro
-    const lavraturaDate = new Date(registrationDate.getTime() + (1 * 24 * 60 * 60 * 1000)); // 1 dia depois do registro
+    const dateOfDeath = new Date(registrationDate.getTime() - (5 * 24 * 60 * 60 * 1000));
+    const lavraturaDate = new Date(registrationDate.getTime() + (1 * 24 * 60 * 60 * 1000));
 
     return {
         id: i + 1,
@@ -61,6 +61,7 @@ export default function DeathRecordsManagementPage() {
     const recordsPerPage = 9;
 
     useEffect(() => {
+        // --- Lógica de filtro (inalterada) ---
         setIsLoading(true);
         const parseDate = (dateString: string): Date | null => {
             if (!dateString) return null;
@@ -78,15 +79,12 @@ export default function DeathRecordsManagementPage() {
                 const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
                 const isOldBookMatch = filters.isOldBook !== 'Todos' ? record.isOldBook === (filters.isOldBook === 'Sim') : true;
                 const livroMatch = filters.livro !== 'Todos' ? record.livro === filters.livro : true;
-                
                 const registrationDate = parseDate(record.registrationDate);
                 const regStartDateMatch = filters.startDate && registrationDate ? registrationDate >= new Date(filters.startDate + 'T00:00:00') : true;
                 const regEndDateMatch = filters.endDate && registrationDate ? registrationDate <= new Date(filters.endDate + 'T23:59:59') : true;
-
                 const lavraturaDate = parseDate(record.lavraturaDate);
                 const lavraturaStartDateMatch = filters.lavraturaStartDate && lavraturaDate ? lavraturaDate >= new Date(filters.lavraturaStartDate + 'T00:00:00') : true;
                 const lavraturaEndDateMatch = filters.lavraturaEndDate && lavraturaDate ? lavraturaDate <= new Date(filters.lavraturaEndDate + 'T23:59:59') : true;
-                
                 const dateOfDeath = parseDate(record.dateOfDeath);
                 const deathStartDateMatch = filters.deathStartDate && dateOfDeath ? dateOfDeath >= new Date(filters.deathStartDate + 'T00:00:00') : true;
                 const deathEndDateMatch = filters.deathEndDate && dateOfDeath ? dateOfDeath <= new Date(filters.deathEndDate + 'T23:59:59') : true;
@@ -123,13 +121,6 @@ export default function DeathRecordsManagementPage() {
     };
 
     const RecordCard = ({ record }: { record: DeathRecord }) => {
-        const statusStyles: Record<RecordStatus, string> = {
-            Finalizado: 'border-t-green-500',
-            Rascunho: 'border-t-yellow-500',
-            'Pendente Assinatura': 'border-t-orange-500',
-            Cancelado: 'border-t-red-500',
-        };
-        const cardTopBorderStyle = statusStyles[record.status] || 'border-t-gray-200';
         const handleActionsClick = (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
@@ -137,10 +128,11 @@ export default function DeathRecordsManagementPage() {
         };
         return (
             <Link to={`/registro-civil/obito/${record.id}`} className="block group">
-                <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden border-t-4 ${cardTopBorderStyle}`}>
+                <div className={`bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:border-gray-300 overflow-hidden`}>
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex justify-between items-start gap-4">
-                            <div><h3 className="font-bold text-gray-800 text-lg leading-tight group-hover:text-blue-600 transition-colors">{record.deceasedName}</h3><p className="text-sm text-gray-500">{record.cpf}</p></div>
+                            {/* ALTERADO: Cor do hover no título do card */}
+                            <div><h3 className="font-bold text-gray-800 text-lg leading-tight group-hover:transition-colors">{record.deceasedName}</h3><p className="text-sm text-gray-500">{record.cpf}</p></div>
                             <StatusBadge status={record.status} />
                         </div>
                     </div>
@@ -150,8 +142,9 @@ export default function DeathRecordsManagementPage() {
                         <div className="flex items-start gap-2"><Skull className="h-4 w-4 mt-0.5 text-gray-400" /><div><p className="text-xs text-gray-500">Data do Óbito</p><p className="font-medium text-gray-700">{record.dateOfDeath}</p></div></div>
                         <div className="flex items-start gap-2"><CalendarDays className="h-4 w-4 mt-0.5 text-gray-400" /><div><p className="text-xs text-gray-500">Registro: {record.registrationDate}</p><p className="text-xs text-gray-500">Idade: {record.age} anos</p></div></div>
                     </div>
-                    <div className="p-4 border-gray-100 flex justify-between items-center">
-                        {record.isOldBook ? (<span className="text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded">LIVRO ANTIGO</span>) : (<span></span>)}
+                    <div className="p-4 border-t border-gray-100 flex justify-between items-center">
+                        {/* ALTERADO: Cor do badge "LIVRO ANTIGO" */}
+                        {record.isOldBook ? (<span className="text-xs font-semibold text-[#4a4e51] bg-[#b1b3b4]/50 px-2 py-1 rounded">LIVRO ANTIGO</span>) : (<span></span>)}
                         <button onClick={handleActionsClick} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700"><MoreVertical className="h-5 w-5" /></button>
                     </div>
                 </div>
@@ -161,13 +154,14 @@ export default function DeathRecordsManagementPage() {
     
     return (
         <>
-            <title>Gerenciamento de Atos de Óbito</title>
+            <title>Gerenciamento de Óbitos | Orius Tecnologia</title>
             <div className="flex bg-gray-50 min-h-screen font-sans">
                 <main className="flex-1">
-                    <div className="mx-auto space-y-6">
+                    <div className="mx-auto space-y-4">
                         <header className="flex items-center justify-between">
-                            <div><h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Óbitos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os registros de óbito.</p></div>
-                            <Link to="/registro-civil/obito/cadastrar" className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                            {/* ALTERADO: Cor do título e do botão principal */}
+                            <div><h1 className="text-3xl font-bold text-[#4a4e51]">Gerenciamento de Óbitos</h1><p className="text-md text-gray-500 mt-1">Consulte e gerencie os registros de óbito.</p></div>
+                            <Link to="/registro-civil/obito/cadastrar" className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105">
                                 <PlusCircle className="h-5 w-5" /> Registrar Novo
                             </Link>
                         </header>
@@ -181,18 +175,19 @@ export default function DeathRecordsManagementPage() {
                             <div className={`grid transition-all duration-500 ease-in-out ${filtersVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                                 <div className="overflow-hidden">
                                     <div className="p-5 space-y-2 pt-0">
-                                        <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Nome ou CPF do Falecido</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full" /></div></div>
+                                        {/* ALTERADO: Adicionadas classes de foco aos inputs e selects */}
+                                        <div><label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Protocolo, Nome ou CPF do Falecido</label><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" /><input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder="Digite para buscar..." className="border border-gray-300 rounded-md pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div><label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Ato</label><select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option>{statusOptions.map(s => <option key={s}>{s}</option>)}</select></div>
-                                            <div><label htmlFor="livro" className="block text-sm font-medium text-gray-600 mb-1">Número do Livro</label><select id="livro" name="livro" value={filters.livro} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option>{bookOptions.map(b => <option key={b}>{b}</option>)}</select></div>
-                                            <div><label htmlFor="isOldBook" className="block text-sm font-medium text-gray-600 mb-1">Livro Antigo?</label><select id="isOldBook" name="isOldBook" value={filters.isOldBook} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full"><option>Todos</option><option>Sim</option><option>Não</option></select></div>
+                                            <div><label htmlFor="status" className="block text-sm font-medium text-gray-600 mb-1">Status do Ato</label><select id="status" name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option>{statusOptions.map(s => <option key={s}>{s}</option>)}</select></div>
+                                            <div><label htmlFor="livro" className="block text-sm font-medium text-gray-600 mb-1">Número do Livro</label><select id="livro" name="livro" value={filters.livro} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option>{bookOptions.map(b => <option key={b}>{b}</option>)}</select></div>
+                                            <div><label htmlFor="isOldBook" className="block text-sm font-medium text-gray-600 mb-1">Livro Antigo?</label><select id="isOldBook" name="isOldBook" value={filters.isOldBook} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"><option>Todos</option><option>Sim</option><option>Não</option></select></div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Registro</label><div className="flex items-center gap-2"><input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span><input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /></div></div>
-                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período da Lavratura</label><div className="flex items-center gap-2"><input type="date" name="lavraturaStartDate" value={filters.lavraturaStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span><input type="date" name="lavraturaEndDate" value={filters.lavraturaEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /></div></div>
+                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Registro</label><div className="flex items-center gap-2"><input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span><input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
+                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período da Lavratura</label><div className="flex items-center gap-2"><input type="date" name="lavraturaStartDate" value={filters.lavraturaStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span><input type="date" name="lavraturaEndDate" value={filters.lavraturaEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Óbito</label><div className="flex items-center gap-2"><input type="date" name="deathStartDate" value={filters.deathStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /><span className="text-gray-500">até</span><input type="date" name="deathEndDate" value={filters.deathEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full" /></div></div>
+                                            <div><label className="block text-sm font-medium text-gray-600 mb-1">Período do Óbito</label><div className="flex items-center gap-2"><input type="date" name="deathStartDate" value={filters.deathStartDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /><span className="text-gray-500">até</span><input type="date" name="deathEndDate" value={filters.deathEndDate} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]" /></div></div>
                                             <div className="flex justify-end items-end"><button type="button" onClick={handleClearFilters} className="flex items-center gap-2 bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors w-full md:w-auto"><FilterX className="h-5 w-5" />Limpar Filtros</button></div>
                                         </div>
                                     </div>
@@ -200,8 +195,9 @@ export default function DeathRecordsManagementPage() {
                             </div>
                         </div>
                         <div className="min-h-[400px] relative">
+                            {/* ALTERADO: Cor do ícone de carregamento */}
                             {isLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-blue-600 animate-spin" /></div>
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-50/50 rounded-xl z-10"><Loader2 className="h-10 w-10 text-[#dd6825] animate-spin" /></div>
                             ) : paginatedRecords.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {paginatedRecords.map(record => (
