@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Save, Loader2, ArrowLeft, Copy, X, Search } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Copy, X, Search, FileUp } from 'lucide-react';
 import MainEditor from '../../Components/MainEditor';
 import { type TipoAto, type CertidaoTemplate } from '../../types';
 import { mockCertidaoTemplates, mockHeaderFooterTemplates } from '../../lib/Constants';
-import emolumentosData from '../../../../../tabela-emolumentos.json'
+import emolumentosData from '../../../../../tabela-emolumentos.json';
+import * as mammoth from 'mammoth';
 
-// --- Lógica e Estados Iniciais (Inalterados) ---
+// --- Funções Utilitárias ---
 const updateNestedState = (prevState: any, path: string, value: any): any => {
     const keys = path.split('.');
     const newState = { ...prevState };
@@ -37,11 +38,12 @@ const initialState: CertidaoTemplate = {
     tipoAto: 'Nascimento',
     cabecalhoPadraoId: null,
     rodapePadraoId: null,
-    conteudo: '<p>Comece a editar o corpo da certidão aqui...</p>',
+    conteudo: '<p>Comece a editar o corpo da certidão aqui ou importe um arquivo .docx.</p>',
     margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
     layout: { largura_mm: 210, altura_mm: 297 }
 };
 
+// --- Componente Principal ---
 const CadastroCertidaoPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -53,6 +55,7 @@ const CadastroCertidaoPage: React.FC = () => {
     const [seloSearchTerm, setSeloSearchTerm] = useState('');
     const [isSeloDropdownOpen, setIsSeloDropdownOpen] = useState(false);
     const seloSearchRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null); // Ref para o input de arquivo
 
     const selosRegistroCivil = useMemo(() => {
         return emolumentosData.filter(selo => selo.sistema === 'REGISTRO CIVIL');
@@ -70,11 +73,6 @@ const CadastroCertidaoPage: React.FC = () => {
         return selosRegistroCivil.find(s => s.id_selo === template.id_selo) || null;
     }, [template.id_selo, selosRegistroCivil]);
 
-    const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setMargins(prevMargins => ({ ...prevMargins, [name]: value }));
-    };
-
     useEffect(() => {
         if (id) {
             const templateExistente = mockCertidaoTemplates.find(t => t.id === id);
@@ -88,9 +86,15 @@ const CadastroCertidaoPage: React.FC = () => {
         }
     }, [id, navigate]);
 
+    // --- Handlers ---
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setTemplate(prev => updateNestedState(prev, name, value));
+    };
+
+    const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setMargins(prevMargins => ({ ...prevMargins, [name]: value }));
     };
 
     const handleSeloSelect = (selo: typeof emolumentosData[0]) => {
@@ -115,7 +119,7 @@ const CadastroCertidaoPage: React.FC = () => {
             return;
         }
         setIsSaving(true);
-        console.log("Salvando modelo de certidão:", template);
+        console.log("Salvando modelo de certidão:", { ...template, margins });
         toast.success("Modelo salvo com sucesso!");
         setTimeout(() => {
             setIsSaving(false);
@@ -123,11 +127,40 @@ const CadastroCertidaoPage: React.FC = () => {
         }, 1500);
     };
 
+    // NOVA FUNÇÃO para lidar com o upload de arquivos .docx
+    const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (file.type !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            toast.error("Por favor, selecione um arquivo .docx válido.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const arrayBuffer = e.target?.result as ArrayBuffer;
+            if (arrayBuffer) {
+                try {
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    setTemplate(prev => ({ ...prev, conteudo: result.value }));
+                    toast.success("Modelo .docx importado com sucesso!");
+                } catch (error) {
+                    console.error("Erro ao converter o arquivo .docx:", error);
+                    toast.error("Não foi possível ler o arquivo .docx.");
+                }
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }, []);
+
+    // Função para acionar o clique no input de arquivo escondido
+    const triggerFileSelect = () => fileInputRef.current?.click();
+
+    // --- Constantes para Renderização ---
     const pageTitle = id ? "Editar Modelo de Certidão" : "Criar Novo Modelo de Certidão";
     const abas: TipoAto[] = ["Nascimento", "Casamento", "Óbito", "Natimorto", "Livro E"];
     const allVariables = ['{{ MATRICULA }}', '{{ NOME_DO_REGISTRADO }}', '{{ DATA_DE_NASCIMENTO }}', '{{ HORA_DE_NASCIMENTO }}', '{{ NOME_DO_PAI }}', '{{ NOME_DA_MAE }}'];
-
-    // ALTERADO: Centralização dos estilos de formulário
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
 
     if (isLoading) {
@@ -135,25 +168,26 @@ const CadastroCertidaoPage: React.FC = () => {
     }
 
     return (
+        <>
+        <title>{pageTitle} | Orius Tecnologia</title>
         <div className="mx-auto">
-             <title>{pageTitle} | Orius Tecnologia</title>
-            <header className="mb-6 pb-4">
+            <header className="mb-6">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista
                 </button>
-                {/* ALTERADO: Cor do título principal */}
                 <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando: {template.titulo}</p>}
             </header>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Seção de Identificação */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Identificação</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título do Modelo*</label>
-                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} />
+                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} required />
                         </div>
                         <div>
                             <label htmlFor="tipoAto" className="block text-sm font-medium text-gray-700">Tipo de Ato*</label>
@@ -168,6 +202,7 @@ const CadastroCertidaoPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Seção de Emolumentos */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Emolumentos e Valores</h2>
                     <div className="md:col-span-2" ref={seloSearchRef}>
@@ -189,7 +224,6 @@ const CadastroCertidaoPage: React.FC = () => {
                                     {isSeloDropdownOpen && (
                                         <div className="absolute z-10 w-full bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
                                             {filteredSelos.length > 0 ? filteredSelos.map(selo => (
-                                                // ALTERADO: Cor do hover no dropdown
                                                 <div key={selo.id_selo} onClick={() => handleSeloSelect(selo)} className="p-2 hover:bg-[#dd6825]/10 cursor-pointer text-sm">
                                                     <strong>{selo.id_selo}</strong> - {selo.descricao_selo}
                                                 </div>
@@ -206,13 +240,13 @@ const CadastroCertidaoPage: React.FC = () => {
                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Taxa Judiciária:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_taxa_judiciaria)}</span></div>
                             <div className="pt-3 mt-3 flex justify-between items-center">
                                 <span className="font-bold text-gray-800">Total:</span>
-                                {/* ALTERADO: Cor do valor total */}
                                 <span className="font-bold font-mono text-[#dd6825] text-base">{formatCurrency(selectedSelo.valor_emolumento + selectedSelo.valor_taxa_judiciaria)}</span>
                             </div>
                         </div>
                     )}
                 </div>
 
+                {/* Seção de Templates Padrão */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Templates Padrão</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -233,21 +267,58 @@ const CadastroCertidaoPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Seção de Layout e Margens */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Layout e Margens</h2>
+                    <div className="grid grid-cols-2 gap-6 mb-2 pb-2">
+                        <div><label htmlFor="layout-width" className="block text-sm font-medium text-gray-700">Largura (mm)</label><input type="number" id="layout-width" name="layout.largura_mm" value={template.layout.largura_mm} onChange={handleInputChange} className={commonInputClass} /></div>
+                        <div><label htmlFor="layout-height" className="block text-sm font-medium text-gray-700">Altura (mm)</label><input type="number" id="layout-height" name="layout.altura_mm" value={template.layout.altura_mm} onChange={handleInputChange} className={commonInputClass} /></div>
+                    </div>
+                    <h3 className="text-md font-medium text-gray-700 mb-4">Margens (cm)</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div><label htmlFor="margin-top" className="block text-sm font-medium text-gray-700">Superior (cm)</label><input type="number" id="margin-top" name="top" value={margins.top} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margins-bottom" className="block text-sm font-medium text-gray-700">Inferior (cm)</label><input type="number" id="margins-bottom" name="bottom" value={margins.bottom} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margins-left" className="block text-sm font-medium text-gray-700">Esquerda (cm)</label><input type="number" id="margins-left" name="left" value={margins.left} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margins-right" className="block text-sm font-medium text-gray-700">Direita (cm)</label><input type="number" id="margins-right" name="right" value={margins.right} onChange={handleMarginChange} className={commonInputClass} /></div>
+                        <div><label htmlFor="margin-top" className="block text-sm font-medium text-gray-700">Superior (cm)</label><input type="number" id="margin-top" name="top" value={margins.top} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-bottom" className="block text-sm font-medium text-gray-700">Inferior (cm)</label><input type="number" id="margins-bottom" name="bottom" value={margins.bottom} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-left" className="block text-sm font-medium text-gray-700">Esquerda (cm)</label><input type="number" id="margins-left" name="left" value={margins.left} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-right" className="block text-sm font-medium text-gray-700">Direita (cm)</label><input type="number" id="margins-right" name="right" value={margins.right} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
                     </div>
                 </div>
 
+                {/* Seção do Modelo de Conteúdo */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-4">Modelo de Conteúdo</h2>
-                    <div className="flex justify-center"><MainEditor initialValue={template.conteudo} onEditorChange={handleEditorChange} size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }} margins={margins} /></div>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold text-gray-700">Modelo de Conteúdo</h2>
+                        <div>
+                            {/* Input de arquivo escondido */}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                className="hidden"
+                            />
+                            {/* Botão que aciona o input de arquivo */}
+                            <button
+                                type="button"
+                                onClick={triggerFileSelect}
+                                className="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-700"
+                            >
+                                <FileUp size={16} />
+                                Importar de .docx
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex justify-center border-t border-gray-300 pt-6">
+                        <MainEditor
+                            key={JSON.stringify({ margins, layout: template.layout })}
+                            initialValue={template.conteudo}
+                            onEditorChange={handleEditorChange}
+                            size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }}
+                            margins={margins}
+                        />
+                    </div>
                 </div>
 
+                {/* Seção de Variáveis */}
                 <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
                     <h3 className="text-lg font-semibold text-gray-700 mb-3">Variáveis Dinâmicas Disponíveis</h3>
                     <p className="text-sm text-gray-500 mb-4">Clique em uma variável para copiá-la e cole no editor acima.</p>
@@ -256,18 +327,17 @@ const CadastroCertidaoPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div>
-                    <footer className="mt-2 pt-6 flex justify-end gap-4">
-                        <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold">Cancelar</button>
-                        {/* ALTERADO: Cor do botão de ação principal */}
-                        <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
-                            {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                            Salvar Modelo
-                        </button>
-                    </footer>
-                </div>
+                {/* Ações do Formulário */}
+                <footer className="mt-2 pt-6 flex justify-end gap-4">
+                    <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825] disabled:bg-opacity-60 disabled:cursor-not-allowed">
+                        {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+                        Salvar Modelo
+                    </button>
+                </footer>
             </form>
         </div>
+        </>
     );
 };
 

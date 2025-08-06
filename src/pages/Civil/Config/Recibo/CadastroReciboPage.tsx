@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Save, Loader2, ArrowLeft, Copy, X, Search } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Copy, X, Search, FileUp } from 'lucide-react';
 import MainEditor from '../../Components/MainEditor';
 import { type ReciboTemplate, type TipoRecibo } from '../../types';
 import emolumentosData from '../../../../../tabela-emolumentos.json';
 import { mockHeaderFooterTemplates, mockReciboTemplates } from '../../lib/Constants';
+import * as mammoth from 'mammoth';
 
 const mmToPixels = (mm: number): number => {
     return (mm / 25.4) * 96;
 };
 
-// --- FUNÇÕES E ESTADO INICIAL (Lógica Inalterada) ---
+// --- FUNÇÕES E ESTADO INICIAL ---
 const updateNestedState = (prevState: any, path: string, value: any): any => {
     const keys = path.split('.');
     const newState = { ...prevState };
@@ -37,7 +38,7 @@ const initialState: ReciboTemplate = {
     tipoRecibo: 'Segunda Via',
     cabecalhoPadraoId: null,
     rodapePadraoId: null,
-    conteudo: '<p>Comece a editar o corpo do recibo aqui...</p>',
+    conteudo: '<p>Comece a editar o corpo do recibo aqui ou importe um arquivo .docx.</p>',
     margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
     layout: { largura_mm: 210, altura_mm: 148 }
 };
@@ -49,18 +50,21 @@ const CadastroReciboPage: React.FC = () => {
     const [template, setTemplate] = useState<ReciboTemplate>(initialState);
     const [isLoading, setIsLoading] = useState(!!id);
     const [isSaving, setIsSaving] = useState(false);
-    const [seloSearchTerm, setSeloSearchTerm] = useState('');
+    const [margins, setMargins] = useState({ top: '2.0', bottom: '2.0', left: '2.0', right: '2.0' });
     const [isSeloDropdownOpen, setIsSeloDropdownOpen] = useState(false);
     const seloSearchRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const seloSearchTerm = useRef('');
 
     const selosRegistroCivil = useMemo(() => emolumentosData.filter(selo => selo.sistema === 'REGISTRO CIVIL'), []);
     const filteredSelos = useMemo(() => {
-        if (!seloSearchTerm) return selosRegistroCivil;
+        if (!seloSearchTerm.current) return selosRegistroCivil;
+        const searchTermLower = seloSearchTerm.current.toLowerCase();
         return selosRegistroCivil.filter(selo =>
-            selo.descricao_selo.toLowerCase().includes(seloSearchTerm.toLowerCase()) ||
-            String(selo.id_selo).includes(seloSearchTerm)
+            selo.descricao_selo.toLowerCase().includes(searchTermLower) ||
+            String(selo.id_selo).includes(seloSearchTerm.current)
         );
-    }, [seloSearchTerm, selosRegistroCivil]);
+    }, [seloSearchTerm.current, selosRegistroCivil]);
     const selectedSelo = useMemo(() => selosRegistroCivil.find(s => s.id_selo === template.id_selo) || null, [template.id_selo, selosRegistroCivil]);
 
     useEffect(() => {
@@ -68,30 +72,42 @@ const CadastroReciboPage: React.FC = () => {
             const templateExistente = mockReciboTemplates.find(t => t.id === id);
             if (templateExistente) {
                 setTemplate(templateExistente);
+                if (templateExistente.margins) {
+                    setMargins(templateExistente.margins);
+                }
             } else {
                 toast.error("Modelo de recibo não encontrado.");
                 navigate('/admin/recibos');
             }
-            setIsLoading(false);
-        } else {
-            setIsLoading(false);
         }
+        setIsLoading(false);
     }, [id, navigate]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setTemplate(prev => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target as HTMLInputElement;
+        let finalValue: string | number | null = value;
+
+        if (type === 'number') {
+            finalValue = value === '' ? 0 : parseFloat(value);
+        }
+        
+        const isNumericId = name.includes('Id') || name.includes('id_selo');
+        if (isNumericId && value) {
+            finalValue = value === '' ? null : parseInt(value, 10);
+        }
+
+        setTemplate(prev => updateNestedState(prev, name, finalValue));
     };
 
     const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setTemplate(prev => updateNestedState(prev, `margins.${name}`, value));
+        setMargins(prevMargins => ({ ...prevMargins, [name]: value }));
     };
 
     const handleSeloSelect = (selo: typeof emolumentosData[0]) => {
         setTemplate(prev => ({ ...prev, id_selo: selo.id_selo }));
         setIsSeloDropdownOpen(false);
-        setSeloSearchTerm('');
+        seloSearchTerm.current = '';
     };
 
     const handleEditorChange = (content: string) => {
@@ -110,6 +126,7 @@ const CadastroReciboPage: React.FC = () => {
             return;
         }
         setIsSaving(true);
+        console.log("Salvando modelo de recibo:", { ...template, margins });
         setTimeout(() => {
             setIsSaving(false);
             toast.success("Modelo salvo com sucesso!");
@@ -117,15 +134,41 @@ const CadastroReciboPage: React.FC = () => {
         }, 1500);
     };
 
+    const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (file.type !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            toast.error("Por favor, selecione um arquivo .docx válido.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const arrayBuffer = e.target?.result as ArrayBuffer;
+            if (arrayBuffer) {
+                try {
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    setTemplate(prev => ({ ...prev, conteudo: result.value }));
+                    toast.success("Modelo .docx importado com sucesso!");
+                } catch (error) {
+                    console.error("Erro ao converter o arquivo .docx:", error);
+                    toast.error("Não foi possível ler o arquivo .docx.");
+                }
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }, []);
+
+    const triggerFileSelect = () => fileInputRef.current?.click();
+
     const pageTitle = id ? "Editar Modelo de Recibo" : "Criar Novo Modelo de Recibo";
     const abas: TipoRecibo[] = ["Segunda Via", "Averbação", "Habilitação de Casamento", "Busca de Registro", "Apostilamento", "Outros"];
     const allVariables = ['{{ NOME_SOLICITANTE }}', '{{ CPF_SOLICITANTE }}', '{{ NOME_REGISTRADO }}', '{{ MATRICULA_CERTIDAO }}', '{{ TIPO_ATO_REGISTRAL }}', '{{ DATA_DO_ATO }}', '{{ DESCRICAO_SERVICO_PRESTADO }}', '{{ TABELA_DE_ITENS }}', '{{ VALOR_TOTAL_NUMERICO }}', '{{ VALOR_TOTAL_EXTENSO }}', '{{ DATA_EMISSAO_RECIBO }}'];
-    
-    // ALTERADO: Centralização dos estilos de formulário
+
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
 
     if (isLoading) {
-        // ALTERADO: Cor do loader
         return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-[#dd6825]" size={32} /></div>;
     }
 
@@ -137,7 +180,6 @@ const CadastroReciboPage: React.FC = () => {
                     <ArrowLeft size={16} />
                     Voltar para a Lista
                 </button>
-                {/* ALTERADO: Cor do título principal */}
                 <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando: {template.titulo}</p>}
             </header>
@@ -148,7 +190,7 @@ const CadastroReciboPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título do Modelo*</label>
-                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} required/>
+                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} required />
                         </div>
                         <div>
                             <label htmlFor="tipoRecibo" className="block text-sm font-medium text-gray-700">Tipo de Recibo*</label>
@@ -176,7 +218,7 @@ const CadastroReciboPage: React.FC = () => {
                             ) : (
                                 <>
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-                                    <input type="text" id="selo" value={seloSearchTerm} onChange={(e) => setSeloSearchTerm(e.target.value)} onFocus={() => setIsSeloDropdownOpen(true)}
+                                    <input type="text" id="selo" defaultValue={seloSearchTerm.current} onChange={(e) => seloSearchTerm.current = e.target.value} onFocus={() => setIsSeloDropdownOpen(true)}
                                         placeholder="Digite o ID ou a descrição do selo" className={`${commonInputClass} pl-10`} autoComplete="off" />
                                     {isSeloDropdownOpen && (
                                         <div className="absolute z-10 w-full bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
@@ -197,7 +239,6 @@ const CadastroReciboPage: React.FC = () => {
                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Taxa Judiciária:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_taxa_judiciaria)}</span></div>
                             <div className="pt-3 mt-3 flex justify-between items-center">
                                 <span className="font-bold text-gray-800">Total:</span>
-                                {/* ALTERADO: Cor do valor total */}
                                 <span className="font-bold font-mono text-[#dd6825] text-base">{formatCurrency(selectedSelo.valor_emolumento + selectedSelo.valor_taxa_judiciaria)}</span>
                             </div>
                         </div>
@@ -220,16 +261,37 @@ const CadastroReciboPage: React.FC = () => {
                     </div>
                     <h3 className="text-md font-medium text-gray-700 mb-4">Margens (cm)</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div><label htmlFor="margin-top" className="block text-sm font-medium text-gray-700">Superior</label><input type="number" step="0.1" name="top" value={template.margins.top} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margin-bottom" className="block text-sm font-medium text-gray-700">Inferior</label><input type="number" step="0.1" name="bottom" value={template.margins.bottom} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margin-left" className="block text-sm font-medium text-gray-700">Esquerda</label><input type="number" step="0.1" name="left" value={template.margins.left} onChange={handleMarginChange} className={commonInputClass} /></div>
-                        <div><label htmlFor="margin-right" className="block text-sm font-medium text-gray-700">Direita</label><input type="number" step="0.1" name="right" value={template.margins.right} onChange={handleMarginChange} className={commonInputClass} /></div>
+                        <div><label htmlFor="margin-top" className="block text-sm font-medium text-gray-700">Superior (cm)</label><input type="number" id="margin-top" name="top" value={margins.top} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-bottom" className="block text-sm font-medium text-gray-700">Inferior (cm)</label><input type="number" id="margins-bottom" name="bottom" value={margins.bottom} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-left" className="block text-sm font-medium text-gray-700">Esquerda (cm)</label><input type="number" id="margins-left" name="left" value={margins.left} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-right" className="block text-sm font-medium text-gray-700">Direita (cm)</label><input type="number" id="margins-right" name="right" value={margins.right} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
                     </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-4">Editor de Conteúdo do Recibo</h2>
-                    <div className="flex justify-center"><MainEditor initialValue={template.conteudo} onEditorChange={handleEditorChange} size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }} margins={template.margins} /></div>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold text-gray-700">Editor de Conteúdo do Recibo</h2>
+                        <div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={triggerFileSelect}
+                                className="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-700"
+                            >
+                                <FileUp size={16} />
+                                Importar de .docx
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex justify-center border-t border-gray-300 pt-6">
+                        <MainEditor key={JSON.stringify({ margins, layout: template.layout })} initialValue={template.conteudo} onEditorChange={handleEditorChange} size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }} margins={margins} />
+                    </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
@@ -240,7 +302,6 @@ const CadastroReciboPage: React.FC = () => {
 
                 <footer className="mt-2 pt-6 flex justify-end gap-4">
                     <button type="button" onClick={() => navigate('/admin/recibos')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Cancelar</button>
-                    {/* ALTERADO: Cor do botão de ação principal */}
                     <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] disabled:bg-[#dd6825]/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Salvar Modelo

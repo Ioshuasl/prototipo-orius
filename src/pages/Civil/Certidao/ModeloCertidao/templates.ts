@@ -1,5 +1,5 @@
 export const certidaoNascimentoHTML = `
-    <div class="certidao">
+    <div class="certidao" style="padding: 170px 80px;>
         <h2 style="text-align: center; font-size: 18pt; font-weight: bold; margin-bottom: 0px; color: #000;">CERTIDÃO DE NASCIMENTO</h2>
         <div style="display:flex; flex-direction: column;align-items: center; flex: 1;">
             <p style="margin: 0px;">Nome:</p>

@@ -10,19 +10,22 @@ export default function CivilRegistryLayout() {
   };
 
   return (
-    <div className="relative flex bg-gray-50 min-h-screen font-sans">
-      
-      <Sidebar 
-        isCollapsed={isSidebarCollapsed} 
-        onToggle={handleToggleSidebar} 
-      />
+    <>
+      <title>Orius | Registro Civil </title>
+      <div className="relative flex bg-gray-50 min-h-screen font-sans">
 
-      <main className={`flex-1 p-8 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'ml-20' : 'ml-[250px]'}`}>
-        <div>
-          <Outlet />
-        </div>
-      </main>
-      
-    </div>
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggle={handleToggleSidebar}
+        />
+
+        <main className={`flex-1 p-8 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'ml-20' : 'ml-[250px]'}`}>
+          <div>
+            <Outlet />
+          </div>
+        </main>
+
+      </div>
+    </>
   );
 }

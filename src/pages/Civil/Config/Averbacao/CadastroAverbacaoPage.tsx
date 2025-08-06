@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Save, Loader2, ArrowLeft, Search, X, Copy } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Copy, X, Search, FileUp } from 'lucide-react';
 import MainEditor from '../../Components/MainEditor';
 import { type TipoAto, type AverbacaoTemplate } from '../../types';
 import { mockAverbacaoTemplates, mockHeaderFooterTemplates } from '../../lib/Constants';
-import emolumentosData from '../../../../../tabela-emolumentos.json'
+import emolumentosData from '../../../../../tabela-emolumentos.json';
+import * as mammoth from 'mammoth';
 
-// --- Lógica e Estados Iniciais (Inalterados) ---
+// --- Funções Utilitárias ---
 const updateNestedState = (prevState: any, path: string, value: any): any => {
     const keys = path.split('.');
     const newState = { ...prevState };
@@ -38,20 +39,24 @@ const initialState: AverbacaoTemplate = {
     id_selo: null,
     cabecalhoPadraoId: null,
     rodapePadraoId: null,
-    conteudo: '<p>Comece a editar o texto da averbação aqui...</p>',
+    conteudo: '<p>Comece a editar o texto da averbação aqui ou importe um arquivo .docx.</p>',
     margins: { top: '2.5', right: '2.0', bottom: '2.5', left: '2.0' },
     layout: { largura_mm: 210, altura_mm: 150 }
 };
 
+// --- Componente Principal ---
 const CadastroAverbacaoPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+
     const [template, setTemplate] = useState<AverbacaoTemplate>(initialState);
     const [isLoading, setIsLoading] = useState(!!id);
     const [isSaving, setIsSaving] = useState(false);
     const [seloSearchTerm, setSeloSearchTerm] = useState('');
     const [isSeloDropdownOpen, setIsSeloDropdownOpen] = useState(false);
     const seloSearchRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null); // Ref para o input de arquivo
+    const [margins, setMargins] = useState({ top: '2.5', bottom: '2.5', left: '2.0', right: '2.0' });
 
     const selosRegistroCivil = useMemo(() => {
         return emolumentosData.filter(selo => selo.sistema === 'REGISTRO CIVIL');
@@ -64,7 +69,7 @@ const CadastroAverbacaoPage: React.FC = () => {
             String(selo.id_selo).includes(seloSearchTerm)
         );
     }, [seloSearchTerm, selosRegistroCivil]);
-    
+
     const selectedSelo = useMemo(() => {
         return selosRegistroCivil.find(s => s.id_selo === template.id_selo) || null;
     }, [template.id_selo, selosRegistroCivil]);
@@ -72,12 +77,12 @@ const CadastroAverbacaoPage: React.FC = () => {
     useEffect(() => {
         if (id) {
             const templateExistente = mockAverbacaoTemplates.find(t => t.id === id);
-            if (templateExistente) { setTemplate(templateExistente); } 
+            if (templateExistente) { setTemplate(templateExistente); }
             else { toast.error("Modelo de averbação não encontrado."); navigate(-1); }
             setIsLoading(false);
         }
     }, [id, navigate]);
-    
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (seloSearchRef.current && !seloSearchRef.current.contains(event.target as Node)) {
@@ -88,6 +93,7 @@ const CadastroAverbacaoPage: React.FC = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // --- Handlers ---
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         const isNumericId = name.includes('Id') || name.includes('id_selo');
@@ -96,7 +102,7 @@ const CadastroAverbacaoPage: React.FC = () => {
     };
 
     const handleSeloSelect = (selo: typeof emolumentosData[0]) => {
-        setTemplate(prev => ({...prev, id_selo: selo.id_selo}));
+        setTemplate(prev => ({ ...prev, id_selo: selo.id_selo }));
         setIsSeloDropdownOpen(false);
         setSeloSearchTerm('');
     };
@@ -104,6 +110,11 @@ const CadastroAverbacaoPage: React.FC = () => {
     const handleCopyVariable = (variable: string) => {
         navigator.clipboard.writeText(variable);
         toast.success(`Variável "${variable}" copiada!`);
+    };
+
+    const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setMargins(prevMargins => ({ ...prevMargins, [name]: value }));
     };
 
     const handleEditorChange = (content: string) => {
@@ -124,12 +135,39 @@ const CadastroAverbacaoPage: React.FC = () => {
             navigate(-1);
         }, 1500);
     };
-    
+
+    const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (file.type !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            toast.error("Por favor, selecione um arquivo .docx válido.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const arrayBuffer = e.target?.result as ArrayBuffer;
+            if (arrayBuffer) {
+                try {
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    setTemplate(prev => ({ ...prev, conteudo: result.value }));
+                    toast.success("Modelo .docx importado com sucesso!");
+                } catch (error) {
+                    console.error("Erro ao converter o arquivo .docx:", error);
+                    toast.error("Não foi possível ler o arquivo .docx.");
+                }
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }, []);
+
+    const triggerFileSelect = () => fileInputRef.current?.click();
+
+    // --- Constantes para Renderização ---
     const pageTitle = id ? "Editar Modelo de Averbação" : "Criar Novo Modelo de Averbação";
     const abas: TipoAto[] = ["Nascimento", "Casamento", "Óbito", "Natimorto", "Livro E"];
     const allVariables = ['{{ NOME_REGISTRADO }}', '{{ DATA_ATO }}', '{{ LIVRO_ATO }}', '{{ FOLHA_ATO }}', '{{ TERMO_ATO }}', '{{ MATRICULA }}'];
-
-    // ALTERADO: Centralização dos estilos de formulário
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
 
     if (isLoading) {
@@ -140,11 +178,10 @@ const CadastroAverbacaoPage: React.FC = () => {
         <div className="mx-auto">
             <title>{pageTitle} | Orius Tecnologia</title>
             <header className="mb-6 pb-4">
-                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
                     <ArrowLeft size={16} />
                     Voltar para a Lista
                 </button>
-                {/* ALTERADO: Cor do título principal */}
                 <h1 className="text-3xl font-bold text-[#4a4e51]">{pageTitle}</h1>
                 {id && <p className="text-gray-500 mt-1">Modificando: {template.titulo}</p>}
             </header>
@@ -155,7 +192,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título do Modelo*</label>
-                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} />
+                            <input type="text" id="titulo" name="titulo" value={template.titulo} onChange={handleInputChange} className={commonInputClass} required />
                         </div>
                         <div>
                             <label htmlFor="tipoAto" className="block text-sm font-medium text-gray-700">Ato Original*</label>
@@ -163,7 +200,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                                 {abas.map(aba => <option key={aba} value={aba}>{aba}</option>)}
                             </select>
                         </div>
-                         <div className="md:col-span-2">
+                        <div className="md:col-span-2">
                             <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">Descrição</label>
                             <textarea id="descricao" name="descricao" value={template.descricao} onChange={handleInputChange} rows={2} className={commonInputClass} />
                         </div>
@@ -178,7 +215,7 @@ const CadastroAverbacaoPage: React.FC = () => {
                             {selectedSelo ? (
                                 <div className="w-full border border-gray-300 rounded-md p-2 bg-gray-100 flex justify-between items-center">
                                     <span className="text-sm text-gray-700"><strong>{selectedSelo.id_selo}:</strong> {selectedSelo.descricao_selo}</span>
-                                    <button type="button" onClick={() => setTemplate(prev => ({...prev, id_selo: null}))} className="text-gray-500 hover:text-red-600"><X size={16} /></button>
+                                    <button type="button" onClick={() => setTemplate(prev => ({ ...prev, id_selo: null }))} className="text-gray-500 hover:text-red-600"><X size={16} /></button>
                                 </div>
                             ) : (
                                 <>
@@ -189,7 +226,6 @@ const CadastroAverbacaoPage: React.FC = () => {
                                     {isSeloDropdownOpen && (
                                         <div className="absolute z-10 w-full bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
                                             {filteredSelos.length > 0 ? filteredSelos.map(selo => (
-                                                // ALTERADO: Cor do hover no dropdown
                                                 <div key={selo.id_selo} onClick={() => handleSeloSelect(selo)} className="p-2 hover:bg-[#dd6825]/10 cursor-pointer text-sm">
                                                     <strong>{selo.id_selo}</strong> - {selo.descricao_selo}
                                                 </div>
@@ -202,11 +238,10 @@ const CadastroAverbacaoPage: React.FC = () => {
                     </div>
                     {selectedSelo && (
                         <div className="mt-2 pt-4 space-y-3 text-sm">
-                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Valor do Emolumento:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_emolumento)}</span></div>
+                            <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Valor do Emolumento:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_emolumento)}</span></div>
                             <div className="flex justify-between items-center"><span className="font-medium text-gray-600">Taxa Judiciária:</span><span className="font-mono text-gray-800">{formatCurrency(selectedSelo.valor_taxa_judiciaria)}</span></div>
                             <div className="pt-3 mt-3 flex justify-between items-center">
                                 <span className="font-bold text-gray-800">Total:</span>
-                                {/* ALTERADO: Cor do valor total */}
                                 <span className="font-bold font-mono text-[#dd6825] text-base">{formatCurrency(selectedSelo.valor_emolumento + selectedSelo.valor_taxa_judiciaria)}</span>
                             </div>
                         </div>
@@ -232,11 +267,52 @@ const CadastroAverbacaoPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                
+
+                {/* Seção de Layout e Margens */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-4">Texto da Averbação</h2>
-                    <div className="flex justify-center">
-                        <MainEditor initialValue={template.conteudo} onEditorChange={handleEditorChange} size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }} margins={template.margins} />
+                    <h2 className="text-lg font-semibold text-gray-700 mb-4">Layout e Margens</h2>
+                    <div className="grid grid-cols-2 gap-6 mb-2 pb-2">
+                        <div><label htmlFor="layout-width" className="block text-sm font-medium text-gray-700">Largura (mm)</label><input type="number" id="layout-width" name="layout.largura_mm" value={template.layout.largura_mm} onChange={handleInputChange} className={commonInputClass} /></div>
+                        <div><label htmlFor="layout-height" className="block text-sm font-medium text-gray-700">Altura (mm)</label><input type="number" id="layout-height" name="layout.altura_mm" value={template.layout.altura_mm} onChange={handleInputChange} className={commonInputClass} /></div>
+                    </div>
+                    <h3 className="text-md font-medium text-gray-700 mb-4">Margens (cm)</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div><label htmlFor="margin-top" className="block text-sm font-medium text-gray-700">Superior (cm)</label><input type="number" id="margin-top" name="top" value={margins.top} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-bottom" className="block text-sm font-medium text-gray-700">Inferior (cm)</label><input type="number" id="margins-bottom" name="bottom" value={margins.bottom} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-left" className="block text-sm font-medium text-gray-700">Esquerda (cm)</label><input type="number" id="margins-left" name="left" value={margins.left} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                        <div><label htmlFor="margins-right" className="block text-sm font-medium text-gray-700">Direita (cm)</label><input type="number" id="margins-right" name="right" value={margins.right} onChange={handleMarginChange} step="0.1" className={commonInputClass} /></div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold text-gray-700">Texto da Averbação</h2>
+                        <div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={triggerFileSelect}
+                                className="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-700"
+                            >
+                                <FileUp size={16} />
+                                Importar de .docx
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex justify-center border-t border-gray-300 pt-6">
+                        <MainEditor
+                            key={JSON.stringify({ margins, layout: template.layout })}
+                            initialValue={template.conteudo}
+                            onEditorChange={handleEditorChange}
+                            size={{ width: mmToPixels(template.layout.largura_mm), height: mmToPixels(template.layout.altura_mm) }}
+                            margins={margins}
+                        />
                     </div>
                 </div>
 
@@ -245,11 +321,10 @@ const CadastroAverbacaoPage: React.FC = () => {
                     <p className="text-sm text-gray-500 mb-4">Clique para copiar e cole no editor acima.</p>
                     <div className="flex flex-wrap gap-2">{allVariables.map(variable => (<button key={variable} type="button" onClick={() => handleCopyVariable(variable)} className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-mono px-2 py-1 rounded-md transition-colors">{variable}<Copy size={12} /></button>))}</div>
                 </div>
-                
-                 <footer className="pt-6 flex justify-end gap-4">
+
+                <footer className="pt-6 flex justify-end gap-4">
                     <button type="button" onClick={() => navigate(-1)} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Cancelar</button>
-                    {/* ALTERADO: Cor do botão de ação principal */}
-                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">
+                    <button type="submit" disabled={isSaving} className="px-6 py-2 bg-[#dd6825] text-white rounded-lg font-semibold flex items-center gap-2 hover:bg-[#c25a1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825] disabled:bg-opacity-60 disabled:cursor-not-allowed">
                         {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         Salvar Modelo
                     </button>
