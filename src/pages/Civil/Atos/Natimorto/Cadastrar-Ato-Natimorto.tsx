@@ -15,7 +15,7 @@ const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', d
 const initialTestemunhaState: IPessoaFisica = { ...initialPersonState, estadoCivil: '', regimeBens: '', dataNascimento: '' };
 
 const initialState: INatimortoFormData = {
-    controleRegistro: {
+    dadosAto: {
         isLivroAntigo: false,
         dataRegistro: todayString,
         protocolo: '',
@@ -65,7 +65,7 @@ export default function CadastrarAtoNatimortoForm() {
     const [activeTab, setActiveTab] = useState(tabs[0].id);
     const [searchingCpf, setSearchingCpf] = useState<string | null>(null);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-    const isControlReadOnly = !formData.controleRegistro.isLivroAntigo;
+    const isControlReadOnly = !formData.dadosAto.isLivroAntigo;
     const [modalContent, setModalContent] = useState<{ title: string; content: React.ReactNode } | null>(null);
     const openInfoModal = (title: string, content: React.ReactNode) => setModalContent({ title, content });
     const closeInfoModal = () => setModalContent(null);
@@ -252,26 +252,26 @@ export default function CadastrarAtoNatimortoForm() {
                                         <SectionTitle>Controle do Ato</SectionTitle>
                                         {/* ALTERADO: Cor do checkbox */}
                                         <div className="flex items-center mb-5">
-                                            <input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.controleRegistro.isLivroAntigo} onChange={handleInputChange} />
-                                            <label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label>
+                                            <input type="checkbox" name="dadosAto.isLivroAntigo" id="dadosAto.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.dadosAto.isLivroAntigo} onChange={handleInputChange} />
+                                            <label htmlFor="dadosAto.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label>
                                         </div>
                                         <div className="pt-5">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados do Registro</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                                                <div><label htmlFor="controleRegistro.dataRegistro" className={commonLabelClass}>Data do Registro {requiredSpan}</label><input type="date" name="controleRegistro.dataRegistro" id="controleRegistro.dataRegistro" className={controlInputClass} value={formData.controleRegistro.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                                                <div><label htmlFor="controleRegistro.protocolo" className={commonLabelClass}>Nº do Protocolo</label><input type="text" name="controleRegistro.protocolo" id="controleRegistro.protocolo" className={controlInputClass} value={formData.controleRegistro.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                                                <div><label htmlFor="dadosAto.dataRegistro" className={commonLabelClass}>Data do Registro {requiredSpan}</label><input type="date" name="dadosAto.dataRegistro" id="dadosAto.dataRegistro" className={controlInputClass} value={formData.dadosAto.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.protocolo" className={commonLabelClass}>Nº do Protocolo</label><input type="text" name="dadosAto.protocolo" id="dadosAto.protocolo" className={controlInputClass} value={formData.dadosAto.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                                             </div>
                                         </div>
                                         <div className="mt-6 pt-6">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados da Lavratura</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5">
-                                                <div><label htmlFor="controleRegistro.dataLavratura" className={commonLabelClass}>Data da Lavratura {requiredSpan}</label><input type="date" name="controleRegistro.dataLavratura" id="controleRegistro.dataLavratura" className={controlInputClass} value={formData.controleRegistro.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.dataLavratura" className={commonLabelClass}>Data da Lavratura {requiredSpan}</label><input type="date" name="dadosAto.dataLavratura" id="dadosAto.dataLavratura" className={controlInputClass} value={formData.dadosAto.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
                                                 <div>
-                                                    <label htmlFor="controleRegistro.livro" className={`${commonLabelClass} flex items-center`}>Livro {requiredSpan}<InfoButton title="Livro Específico para Natimorto" content="O registro de natimorto não é lavrado no livro comum de óbitos (Livro C), mas sim em um livro próprio e exclusivo para este fim, o Livro C-Auxiliar." /></label>
-                                                    <input type="text" name="controleRegistro.livro" id="controleRegistro.livro" className={`${commonInputClass} bg-gray-100 cursor-not-allowed`} value={formData.controleRegistro.livro} readOnly />
+                                                    <label htmlFor="dadosAto.livro" className={`${commonLabelClass} flex items-center`}>Livro {requiredSpan}<InfoButton title="Livro Específico para Natimorto" content="O registro de natimorto não é lavrado no livro comum de óbitos (Livro C), mas sim em um livro próprio e exclusivo para este fim, o Livro C-Auxiliar." /></label>
+                                                    <input type="text" name="dadosAto.livro" id="dadosAto.livro" className={`${commonInputClass} bg-gray-100 cursor-not-allowed`} value={formData.dadosAto.livro} readOnly />
                                                 </div>
-                                                <div><label htmlFor="controleRegistro.folha" className={commonLabelClass}>Folha {requiredSpan}</label><input type="text" name="controleRegistro.folha" id="controleRegistro.folha" className={controlInputClass} value={formData.controleRegistro.folha} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                                                <div><label htmlFor="controleRegistro.numeroTermo" className={commonLabelClass}>Nº do Termo {requiredSpan}</label><input type="text" name="controleRegistro.numeroTermo" id="controleRegistro.numeroTermo" className={controlInputClass} value={formData.controleRegistro.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.folha" className={commonLabelClass}>Folha {requiredSpan}</label><input type="text" name="dadosAto.folha" id="dadosAto.folha" className={controlInputClass} value={formData.dadosAto.folha} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.numeroTermo" className={commonLabelClass}>Nº do Termo {requiredSpan}</label><input type="text" name="dadosAto.numeroTermo" id="dadosAto.numeroTermo" className={controlInputClass} value={formData.dadosAto.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
                                             </div>
                                         </div>
                                         {/* ALTERADO: Cor do botão de ação principal */}

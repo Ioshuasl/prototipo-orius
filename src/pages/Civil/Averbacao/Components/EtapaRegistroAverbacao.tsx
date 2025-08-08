@@ -7,7 +7,7 @@ import { type ProcessoAverbacaoState } from '../EmissaoAverbacao';
 import InfoModal from '../../Components/InfoModal';
 import { infoFormatoAverbacao } from '../../lib/contextualInfo';
 import PreviewModal from './PreviewModal';
-import MainEditor from '../../Components/MainEditor';
+import MainEditor from '../../../Components/MainEditor';
 
 // --- Funções e Lógica (Inalteradas) ---
 const getQrCodeStyle = (position: string, size: number): React.CSSProperties => {

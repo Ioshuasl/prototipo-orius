@@ -10,17 +10,14 @@ interface PreviewModalProps {
   isVerso?: boolean;                // Agora é opcional
 }
 
-export default function PreviewModal({ isOpen, onClose, content, previewType, title, isVerso = false }: PreviewModalProps) {
+export default function PreviewModal({ isOpen, onClose, content, title }: PreviewModalProps) {
   if (!isOpen) {
     return null;
   }
 
-  const isA4 = previewType === 'a4';
-  
   // Define as dimensões e margens com base no tipo de preview
   const previewWidth = '180mm';
   const previewHeight = '100mm';
-  const printMargin = '10mm';
 
   const handlePrint = () => {
     const printWindow = window.open('', '', 'width=800,height=600');
@@ -28,7 +25,7 @@ export default function PreviewModal({ isOpen, onClose, content, previewType, ti
       toast.error("Não foi possível abrir a janela de impressão.");
       return;
     }
-    
+
     printWindow.document.write(`
         <html><head><title>${title}</title>
         <style>
@@ -84,7 +81,7 @@ export default function PreviewModal({ isOpen, onClose, content, previewType, ti
               height: previewHeight,
               // --- ESTA É A CORREÇÃO ---
               // Adicionamos a 'âncora' de posicionamento que estava faltando.
-              position: 'relative', 
+              position: 'relative',
               padding: '10px'
             }}
           >

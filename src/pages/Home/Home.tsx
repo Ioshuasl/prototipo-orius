@@ -54,7 +54,7 @@ const systemModules = [
   {
     title: 'Caixa',
     description: 'Controle o fluxo financeiro, pagamentos e emissão de recibos.',
-    path: '/caixa',
+    path: '/caixa/dashboard',
     icon: <Banknote className="h-10 w-10 text-[#dd6825]" />,
     permissionKey: 'caixa',
   },

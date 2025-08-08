@@ -46,13 +46,26 @@ import CRCDashboard from './pages/Civil/Integracao/CRC/CRCDashboard'
 import SIRCDashboard from './pages/Civil/Integracao/SIRC/SIRCDashboard'
 import ConfiguracaoIntegracoes from './pages/Civil/Config/Integracoes/ConfiguracaoIntegracoes'
 import EsqueceuSenha from './pages/Auth/EsqueceuSenha'
+import CaixaLayout from './pages/Caixa/Layouts/CaixaLayout';
+import CaixaDashboard from './pages/Caixa/Dashboard';
+import RTDLayout from './pages/RTD/Layouts/RTDLayout';
+import RTDDashboard from './pages/RTD/Dashboard';
+import ProtestoLayout from './pages/Protesto/Layouts/ProtestoLayout';
+import ProtestoDashboard from './pages/Protesto/Dashboard';
+import NotasLayout from './pages/Notas/Layouts/NotasLayout';
+import NotasDashboard from './pages/Notas/Dashboard';
+import RegistroImoveisLayout from './pages/Imoveis/Layouts/RegistroImoveisLayout';
+import RegistroImoveisDashboard from './pages/Imoveis/Dashboard';
+import ServiceManagementPage from './pages/Caixa/Servicos/Gerenciamento-Servicos';
+import SealBatchManagementPage from './pages/Caixa/Selos/Lotes/Gerenciamento-LotesSelos';
+import VisualizacaoLoteSelos from './pages/Caixa/Selos/Lotes/VisualizacaoLoteSelos';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
     <div className='p-8'>
       <h1 className='text-3xl font-bold'>{title}</h1>
       <p className='mt-4'>Em desenvolvimento...</p>
-      <Link to="/home" className='text-blue-500 hover:underline mt-4 inline-block'>Voltar ao Dashboard</Link>
+      <Link to="/home" className='text-blue-500 hover:underline mt-4 inline-block'>Voltar para o Painel Inicial</Link>
     </div>
   );
 }
@@ -81,7 +94,9 @@ function App() {
         />
 
         {/* Rotas dos sistemas Registro de Imóveis */}
-        <Route path="/registro-imoveis/dashboard" element={<PlaceholderPage title="Registro de Imóveis" />} />
+        <Route path="/registro-imoveis" element={<RegistroImoveisLayout />} >
+          <Route path='dashboard' element={<RegistroImoveisDashboard />} />
+        </Route>
 
         {/* Rotas dos sistemas Registro Civil */}
         {/* Rota principal do layout de Registro Civil */}
@@ -145,6 +160,7 @@ function App() {
 
           {/* Rotas de Configuração */}
           <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
+
           <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
           <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
           <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
@@ -179,21 +195,57 @@ function App() {
 
         </Route>
 
-        {/* Rotas dos sistemas Registro de Pessoas Físicas */}
-
-        {/* Rotas dos sistemas Registro de Pessoas Jurídicas */}
-
         {/* Rotas dos sistemas Tabelionato de notas */}
-        <Route path="/tabelionato-notas/dashboard" element={<PlaceholderPage title="Tabelionato de Notas" />} />
+        <Route path="/tabelionato-notas" element={<NotasLayout />} >
+          <Route path='dashboard' element={<NotasDashboard />} />
+        </Route>
 
         {/* Rotas dos sistemas Protesto */}
-        <Route path="/protesto-titulos/dashboard" element={<PlaceholderPage title="Protesto de Títulos" />} />
+        <Route path="/protesto-titulos" element={<ProtestoLayout />} >
+          <Route path='dashboard' element={<ProtestoDashboard />} />
+        </Route>
 
         {/* Rotas dos sistemas RTD */}
-        <Route path="/registro-titulos-documentos/dashboard" element={<PlaceholderPage title="Registro de Títulos e Documentos" />} />
+        <Route path="/registro-titulos-documentos" element={<RTDLayout />} >
+          <Route path='dashboard' element={<RTDDashboard />} />
+        </Route>
 
         {/* Rotas dos sistemas Caixa */}
-        <Route path="/caixa/dashboard" element={<PlaceholderPage title="Caixa" />} />
+        <Route path="/caixa" element={<CaixaLayout />}>
+
+          <Route path='dashboard' element={<CaixaDashboard />} />
+
+          <Route path='servicos-realizados' element={<ServiceManagementPage />} />
+
+          <Route path='lotes-selo' element={<SealBatchManagementPage />} />
+          <Route path='lotes-selo/:id' element={<VisualizacaoLoteSelos />} />
+          <Route path='exportar-selo' element={<PlaceholderPage title='Exportação dos selos' />} />
+          <Route path='guia' element={<PlaceholderPage title='Guias' />} />
+
+          <Route path='impressao/relatorio-receita-depesa' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
+          <Route path='impressao/relatorio-servicos-realizados' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
+          <Route path="impressao/relatorio-atividades" element={<RelatorioAtividadesPage />} />
+
+          <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
+
+          <Route path="config/users" element={<GerenciamentoUsuarios />} />
+          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage />} />
+          <Route path="config/users/:id" element={<CadastroUsuarioPage />} />
+
+          <Route path="config/roles-permissions" element={<GerenciamentoCargos />} />
+          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage />} />
+          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage />} />
+
+          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates />} />
+          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage />} />
+          <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
+
+          <Route path="config/recibo" element={<GerenciamentoRecibos />} />
+          <Route path="config/recibo/cadastrar" element={<CadastroReciboPage />} />
+          <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
+
+          <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
+        </Route>
       </Routes>
       <ToastContainer
         position="top-right"

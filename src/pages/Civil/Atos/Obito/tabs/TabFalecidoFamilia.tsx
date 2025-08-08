@@ -42,7 +42,7 @@ export default function TabFalecidoFamilia({
     requiredSpan,
     ufs
 }: TabFalecidoFamiliaProps) {
-    const { falecido, familia, controleRegistro } = formData;
+    const { falecido, familia, naturezaRegistro } = formData;
     
     return (
         <div className="space-y-12">
@@ -100,7 +100,7 @@ export default function TabFalecidoFamilia({
                 </div>
             </fieldset>
 
-            <fieldset disabled={controleRegistro.naturezaRegistro !== 'Comum'}>
+            <fieldset disabled={naturezaRegistro !== 'Comum'}>
                 <SectionTitle>Filiação e Dados Familiares</SectionTitle>
                 <div className="space-y-10">
                     <div className="p-4 border border-gray-300 rounded-lg bg-gray-50/50">

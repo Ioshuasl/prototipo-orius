@@ -1,0 +1,596 @@
+erDiagram
+    %% --- Bloco de Entidades: Pessoa ---
+    pessoa {
+        int id PK
+        enum tipo "Tipo (física/jurídica)"
+        varchar cep
+        varchar tipo_logradouro
+        varchar logradouro
+        varchar numero
+        varchar complemento
+        varchar bairro
+        varchar cidade
+        char uf
+    }
+
+    pessoa_fisica {
+        int pessoa_id PK,FK
+        varchar nome
+        varchar cpf
+        date data_nascimento
+        enum doc_identidade_tipo
+        varchar doc_identidade_num
+        varchar profissao
+        varchar nacionalidade
+        varchar naturalidade_cidade
+        char naturalidade_uf
+        enum sexo
+        enum cor
+        varchar estado_civil
+        varchar nome_pai
+        varchar nome_mae
+        varchar regime_bens
+    }
+
+    pessoa_juridica {
+        int pessoa_id PK,FK
+        varchar razao_social
+        varchar nome_fantasia
+        varchar cnpj
+        varchar situacao
+        varchar socio_administrativo
+    }
+
+    socio {
+        int id PK
+        int pessoa_juridica_id FK
+        varchar nome
+        varchar qualificacao
+    }
+
+    %% --- Bloco de Entidades: Ato ---
+    base_ato {
+        int id PK
+        boolean is_livro_antigo
+        date data_registro
+        varchar protocolo
+        date data_lavratura
+        varchar livro
+        varchar folha
+        varchar numero_termo
+        timestamp criado_em
+    }
+
+    ato_documento_apresentado {
+        int id PK
+        int base_ato_id FK
+        varchar descricao
+        varchar nome_arquivo
+    }
+
+    ato_historico {
+        int id PK
+        int base_ato_id FK
+        timestamp data
+        text evento
+        varchar usuario
+    }
+
+    ato_testemunha {
+        int id PK
+        int base_ato_id FK
+        int pessoa_id FK
+    }
+
+    ato_filho_comum {
+        int id PK
+        int base_ato_id FK
+        int pessoa_id FK
+        text observacao
+    }
+
+    ato_procurador {
+        int id PK
+        int base_ato_id FK
+        int procurador_id FK
+        int representando_id FK
+        text observacao
+    }
+
+    ato_nascimento {
+        int id PK
+        int base_ato_id FK
+        varchar dnv
+        date data_nascimento
+        time hora_nascimento
+        varchar local_nascimento
+        boolean is_gemeo
+        boolean sem_assistencia_medica
+        varchar prenome_registrando
+        varchar sobrenome_registrando
+        enum sexo_registrando
+        enum naturalidade_registrando
+        varchar cpf_registrando
+        int mae_id FK
+        int pai_id FK
+        int declarante_id FK
+    }
+
+    ato_casamento {
+        int id PK
+        int base_ato_id FK
+        int conjuge1_id FK
+        int conjuge2_id FK
+        varchar nome_apos_casamento_conjuge1
+        varchar nome_apos_casamento_conjuge2
+        int pai_conjuge1_id FK
+        int mae_conjuge1_id FK
+        int pai_conjuge2_id FK
+        int mae_conjuge2_id FK
+        enum tipo_celebracao
+        date data_publicacao_proclamas
+        date data_celebracao
+        enum local_celebracao
+        varchar juiz_de_paz
+        varchar culto_religioso
+        varchar celebrante_religioso
+        varchar qualidade_celebrante
+        enum tipo_regime_bens
+        date pacto_data
+        varchar pacto_serventia
+        varchar pacto_livro
+        varchar pacto_folha
+        boolean is_conversao_uniao_estavel
+        date data_inicio_uniao_estavel
+        boolean is_por_procuracao
+        boolean conjuge1_tem_procurador
+        boolean conjuge2_tem_procurador
+        boolean conjuge1_teve_casamento_anterior
+        boolean conjuge2_teve_casamento_anterior
+        varchar nome_precedente_conjuge1
+        date data_dissolucao_conjuge1
+        varchar nome_precedente_conjuge2
+        date data_dissolucao_conjuge2
+        boolean tem_filhos_em_comum
+        boolean tem_nubente_estrangeiro
+        boolean afastamento_causa_suspensiva
+        text justificativa_afastamento_cs
+        boolean dispensa_proclamas
+        text justificativa_dispensa_proclamas
+        boolean is_molestia_grave
+        boolean molestia_grave_com_habilitacao
+        boolean is_nuncupativo
+        varchar processo_nuncupativo
+        varchar juizo_nuncupativo
+        boolean suprir_omissao_termo_religioso
+        text declaracao_suprimento
+        boolean nubente_nao_assina
+        varchar nome_rogatario
+        boolean nubente_surdo_mudo
+        varchar nome_interprete_libras
+        boolean nubente_nao_fala_portugues
+        varchar nome_tradutor_publico
+        boolean declaracao_de_pobreza
+    }
+    
+    ato_nascimento_estrangeiro {
+        int id PK
+        int base_ato_id FK
+        varchar dnv
+        date data_nascimento
+        time hora_nascimento
+        varchar local_nascimento
+        boolean is_gemeo
+        varchar prenome_registrando
+        varchar sobrenome_registrando
+        varchar sexo_registrando
+        text naturalidade_registrando
+        varchar cpf_registrando
+        int mae_id FK
+        int pai_id FK
+        int declarante_id FK
+        text observacao_obrigatoria
+    }
+
+    ato_traslado_exterior {
+        int id PK
+        int base_ato_id FK
+        varchar tipo_traslado
+        int requerente_id FK
+        varchar tipo_certidao_origem
+        text detalhes_certidao
+        varchar serventia_certidao
+        date data_emissao_certidao
+        varchar matricula_ou_referencia
+        text observacao_obrigatoria
+    }
+
+    ato_natimorto {
+        int id PK
+        int base_ato_id FK
+        text local_do_fato
+        date data_do_fato
+        time hora_do_fato
+        enum sexo
+        boolean nome_atribuido
+        text nome_completo
+        boolean parto_duplo
+        text causa_morte_fetal
+        text medico_atestante
+        text numero_do
+    }
+
+    ato_natimorto_filiacao {
+        int id PK
+        int natimorto_id FK
+        int pessoa_id FK
+        enum tipo_filiacao
+    }
+
+    %% --- Bloco de Entidades: Óbito ---
+    ato_obito {
+        int id PK
+        int base_ato_id FK
+        varchar natureza_registro
+        int processo_judicial_id FK
+        text justificativa_registro_tardio
+        int falecido_id FK
+        varchar idade_falecido
+        boolean era_eleitor
+        varchar nascimento_verificado
+        int falecimento_id FK
+        int familia_id FK
+        boolean bens
+        int declarante_id FK
+        timestamp criado_em
+    }
+
+    processo_judicial {
+        int id PK
+        varchar numero
+        varchar vara_comarca
+        date data_sentenca
+        varchar juiz
+    }
+
+    falecimento {
+        int id PK
+        date data_falecimento
+        time hora_falecimento
+        varchar local_ocorrencia
+        int endereco_id FK
+        text descricao_outro_local
+        varchar tipo_morte
+        text causa_morte
+        varchar atestante_1
+        varchar atestante_2
+        varchar destinacao_corpo
+        text local_destinacao
+        boolean is_apos_sepultamento
+        varchar fonte_declaracao
+        int autorizacao_cremacao_id FK
+    }
+    
+    endereco {
+        int id PK
+        varchar logradouro
+    }
+
+    autorizacao_cremacao {
+        int id PK
+        varchar tipo
+        text autorizacao_judicial
+    }
+
+    documentacao_falecido {
+        int id PK
+        int falecido_id FK
+        varchar numero_do
+        varchar pis_pasep
+        varchar inscricao_inss
+        varchar beneficio_inss
+        varchar cpf
+        varchar rg
+        varchar rg_orgao_emissor
+        varchar titulo_eleitor
+        varchar registro_nascimento_casamento
+        varchar carteira_trabalho
+        boolean era_beneficiario_inss
+    }
+
+    obito_familia {
+        int id PK
+        int pai_id FK
+        int mae_id FK
+        boolean era_casado
+        varchar conjuge_nome
+        boolean era_viuvo
+        varchar conjuge_pre_falecido_nome
+        text cartorio_casamento
+        boolean deixou_filhos
+    }
+
+    obito_familia_filhos {
+        int id PK
+        int familia_id FK
+        varchar nome
+        varchar idade
+    }
+
+    obito_declarante {
+        int id PK
+        int pessoa_id FK
+        varchar relacao_com_falecido
+        boolean is_autoridade
+        varchar tipo_autoridade
+        int dados_autoridade_id FK
+    }
+
+    autoridade {
+        int id PK
+        varchar nome
+        varchar cargo
+        varchar lotacao
+        varchar cnpj
+    }
+
+    %% --- Bloco de Entidades: Livro E ---
+    ato_livro_e {
+        int id PK
+        int base_ato_id FK
+        enum tipo_ato
+    }
+
+    dados_sentenca {
+        int id PK
+        date data_sentenca
+        text juizo
+        text nome_magistrado
+        date data_transito_em_julgado
+    }
+
+    dados_escritura_publica {
+        int id PK
+        date data_escritura
+        text serventia
+        text livro
+        text folha
+    }
+
+    ato_livro_e_emancipacao {
+        int id PK
+        int ato_livro_e_id FK
+        enum origem
+        int dados_sentenca_id FK
+        int dados_escritura_id FK
+        int emancipado_id FK
+        text nome_pai
+        text nome_mae
+        text nome_tutor
+    }
+
+    ato_livro_e_interdicao {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int interdito_id FK
+        int curador_id FK
+        text causa_interdicao
+        text limites_curatela
+    }
+
+    ato_livro_e_ausencia {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int ausente_id FK
+        int curador_id FK
+        text causa_ausencia
+        text limites_curatela
+    }
+
+    ato_livro_e_morte_presumida {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int ausente_id FK
+        date data_prob_falecimento
+    }
+
+    ato_livro_e_opcao_nacionalidade {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int optante_id FK
+    }
+
+    ato_livro_e_tutela {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int tutelado_id FK
+        int tutor_id FK
+        text limitacoes
+    }
+
+    ato_livro_e_guarda {
+        int id PK
+        int ato_livro_e_id FK
+        int dados_sentenca_id FK
+        int menor_id FK
+        int guardiao_id FK
+    }
+
+    %% --- Bloco de Entidades: Pedido e Template ---
+    pedido {
+        int id PK
+        text protocolo
+        enum tipo_documento
+        enum status
+        enum etapa_atual
+        int ato_id FK
+        int template_id FK
+        text requerente_tipo
+        text requerente_nome
+        text requerente_cpf
+        text requerente_razao_social
+        text requerente_cnpj
+        text conteudo_final_html
+        text conteudo_verso_html
+        text selo_numero
+        timestamp selo_data
+        timestamp data_emissao
+        numeric emolumentos
+        numeric fundos
+        numeric taxas
+        numeric total
+        enum metodo_pagamento
+        enum status_pagamento
+        timestamp data_pagamento
+        text comprovante_url
+        text motivo_cancelamento
+        timestamp data_criacao
+        timestamp data_ultima_atualizacao
+    }
+
+    template {
+        int id PK
+        enum tipo_documento
+        enum tipo_ato
+        text titulo
+        text descricao
+        int selo_id FK
+        int cabecalho_padrao_id FK
+        int rodape_padrao_id FK
+        text conteudo
+        text margem_top
+        text margem_right
+        text margem_bottom
+        text margem_left
+        int layout_largura_mm
+        int layout_altura_mm
+        boolean ativo
+    }
+    
+    tabela_emolumentos {
+        int id PK
+        int tipo_ato_selo
+        varchar descricao
+        enum tipo
+        numeric emolumento
+        numeric taxa_judiciaria
+        numeric valor_total
+    }
+
+    bloco_template {
+        int id PK
+        text nome
+        enum tipo
+        text conteudo
+    }
+
+    selo_avulso {
+        int id PK
+        varchar protocolo
+        date data_solicitacao
+        enum status
+        enum tipo_requerente
+        varchar nome_requerente
+        varchar nome_parte_principal
+        numeric valor_total
+        enum metodo_pagamento
+        enum status_pagamento
+    }
+
+    selo_avulso_item {
+        int id PK
+        int selo_avulso_id FK
+        int id_selo FK
+        varchar descricao
+        int quantidade
+        numeric valor_unitario
+        numeric valor_total
+        varchar numero_selo_gerado
+    }
+
+
+    %% --- Relacionamentos ---
+
+    %% Bloco Pessoa
+    pessoa ||--o| pessoa_fisica : "especialização"
+    pessoa ||--o| pessoa_juridica : "especialização"
+    pessoa_juridica ||--o{ socio : "possui"
+
+    %% Bloco Ato
+    base_ato ||--o| ato_nascimento : "especialização"
+    base_ato ||--o| ato_casamento : "especialização"
+    base_ato ||--o| ato_obito : "especialização"
+    base_ato ||--o| ato_natimorto : "especialização"
+    base_ato ||--o| ato_livro_e : "especialização"
+    base_ato ||--o| ato_nascimento_estrangeiro : "especialização"
+    base_ato ||--o| ato_traslado_exterior : "especialização"
+    base_ato ||--o{ ato_documento_apresentado : "contém"
+    base_ato ||--o{ ato_historico : "contém"
+    base_ato ||--o{ ato_testemunha : "contém"
+    base_ato ||--o{ ato_filho_comum : "contém"
+    base_ato ||--o{ ato_procurador : "contém"
+    ato_natimorto ||--o{ ato_natimorto_filiacao : "tem filiação"
+
+    %% Bloco Livro E
+    ato_livro_e ||--o| ato_livro_e_emancipacao : "detalha"
+    ato_livro_e ||--o| ato_livro_e_interdicao : "detalha"
+    ato_livro_e ||--o| ato_livro_e_ausencia : "detalha"
+    ato_livro_e ||--o| ato_livro_e_morte_presumida : "detalha"
+    ato_livro_e ||--o| ato_livro_e_opcao_nacionalidade : "detalha"
+    ato_livro_e ||--o| ato_livro_e_tutela : "detalha"
+    ato_livro_e ||--o| ato_livro_e_guarda : "detalha"
+    ato_livro_e_emancipacao ||--o| dados_sentenca : "baseado em"
+    ato_livro_e_emancipacao ||--o| dados_escritura_publica : "baseado em"
+    ato_livro_e_interdicao ||--|| dados_sentenca : "baseado em"
+    ato_livro_e_ausencia ||--|| dados_sentenca : "baseado em"
+    ato_livro_e_morte_presumida ||--|| dados_sentenca : "baseado em"
+    ato_livro_e_opcao_nacionalidade ||--|| dados_sentenca : "baseado em"
+    ato_livro_e_tutela ||--|| dados_sentenca : "baseado em"
+    ato_livro_e_guarda ||--|| dados_sentenca : "baseado em"
+
+    %% Bloco Óbito
+    ato_obito ||--|{ processo_judicial : "refere-se a"
+    ato_obito ||--|| falecimento : "detalha"
+    ato_obito ||--|| obito_familia : "descreve"
+    ato_obito ||--|| obito_declarante : "declarado por"
+    falecimento ||--o| autorizacao_cremacao : "pode ter"
+    falecimento ||--|| endereco : "ocorrido em"
+    obito_familia ||--o{ obito_familia_filhos : "possui"
+    obito_declarante ||--o| autoridade : "pode ser"
+    
+    %% Bloco Pedido e Template
+    pedido ||--o| template : "usa"
+    template ||--o| bloco_template : "usa cabeçalho"
+    template ||--o| bloco_template : "usa rodapé"
+    template ||--o| tabela_emolumentos : "usa emolumentos"
+    base_ato ||--o{ pedido : "gera"
+    selo_avulso ||--o{ selo_avulso_item : "contém"
+    selo_avulso_item }|--|| tabela_emolumentos : "refere-se a"
+
+    %% Relacionamentos Cruzados (Entidades -> Pessoa)
+    pessoa_fisica ||--o{ ato_livro_e_emancipacao : "é emancipado"
+    pessoa_fisica ||--o{ ato_livro_e_interdicao : "é interdito/curador"
+    pessoa_fisica ||--o{ ato_livro_e_ausencia : "é ausente/curador"
+    pessoa_fisica ||--o{ ato_livro_e_morte_presumida : "é ausente"
+    pessoa_fisica ||--o{ ato_livro_e_opcao_nacionalidade : "é optante"
+    pessoa_fisica ||--o{ ato_livro_e_tutela : "é tutelado/tutor"
+    pessoa_fisica ||--o{ ato_livro_e_guarda : "é menor/guardião"
+    pessoa_fisica ||--o{ ato_natimorto_filiacao : "é pai/mãe em"
+    pessoa_fisica ||--o{ ato_nascimento : "é mãe/pai em"
+    pessoa ||--o{ ato_nascimento : "é declarante em"
+    pessoa_fisica ||--o{ ato_casamento : "é cônjuge em"
+    pessoa_fisica ||--o{ ato_testemunha : "é testemunha em"
+    pessoa_fisica ||--o{ ato_filho_comum : "é filho comum em"
+    pessoa_fisica ||--o{ ato_procurador : "é procurador/representado em"
+    pessoa_fisica ||--|| documentacao_falecido : "tem documentação"
+    ato_obito ||--|| pessoa_fisica : "é o falecido"
+    obito_familia ||--o| pessoa_fisica : "é pai/mãe"
+    obito_declarante ||--o| pessoa_fisica : "é declarante"
+    ato_nascimento_estrangeiro ||--o| pessoa_fisica : "é mãe/pai em"
+    ato_traslado_exterior ||--o| pessoa_fisica : "é requerente em"
+

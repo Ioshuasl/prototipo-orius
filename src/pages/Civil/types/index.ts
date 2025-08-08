@@ -68,6 +68,22 @@ export interface IAnexo {
     arquivo: File | null;
 }
 
+interface IBaseAto {
+    dadosAto: IDadosAto;
+    documentosApresentados: IDocumentoApresentado[],
+    historico: IHistoricoEntry[]
+}
+
+interface IDadosAto {
+    isLivroAntigo: boolean;
+    dataRegistro: string;
+    protocolo: string;
+    dataLavratura: string;
+    livro: string;
+    folha: string;
+    numeroTermo: string;
+}
+
 export interface IHistoricoEntry {
     data: string;
     evento: string;
@@ -80,15 +96,13 @@ export interface IDocumentoApresentado {
     nomeArquivo?: string;
 }
 
-export interface INascimentoFormData {
-    controleRegistro: { isLivroAntigo: boolean; dataRegistro: string; protocolo: string; dataLavratura: string; livro: string; folha: string; numeroTermo: string; };
+// interface relacionado aos atos de nascimento
+export interface INascimentoFormData extends IBaseAto {
     nascimento: { dnv: string; dataNascimento: string; horaNascimento: string; localNascimento: string; isGemeo: boolean; semAssistenciaMedica: boolean; };
     registrando: { prenome: string; sobrenome: string; sexo: 'Masculino' | 'Feminino' | ''; naturalidade: 'Local do Parto' | 'Residência da Mãe' | ''; cpf: string; };
     filiacao: { mae: IPessoaFisica; pai: IPessoaFisica; };
     declarante: Partial<TPessoaTipo>;
     testemunhas: IPessoaFisica[];
-    documentosApresentados: IDocumentoApresentado[];
-    historico: IHistoricoEntry[];
 }
 
 export interface IConjugeData extends IPessoaFisica {
@@ -100,16 +114,8 @@ interface IFilhoComum {
     dataNascimento: string;
 }
 
-export interface ICasamentoFormData {
-    controleRegistro: {
-        isLivroAntigo: boolean;
-        dataRegistro: string;
-        protocolo: string;
-        dataLavratura: string;
-        livro: string;
-        folha: string;
-        numeroTermo: string;
-    };
+// interface relacionado aos atos de casamento
+export interface ICasamentoFormData extends IBaseAto {
     conjuge1: IConjugeData;
     conjuge2: IConjugeData;
     filiacao: {
@@ -169,9 +175,6 @@ export interface ICasamentoFormData {
         nomeTradutorPublico?: string;
         declaracaoDePobreza: boolean;
     };
-    documentosApresentados: IDocumentoApresentado[];
-    anexos: { [key: string]: File | null };
-    historico: { data: string; evento: string; usuario: string; }[];
 }
 
 export interface IProcessoJudicial {
@@ -249,27 +252,16 @@ export interface IBensInfo {
     infoTestamento?: string; // Para armazenar detalhes do testamento, se houver.
 }
 
-// Interface principal do formulário de óbito
-export interface IObitoFormData {
-    controleRegistro: {
-        isLivroAntigo: boolean;
-        dataRegistro: string;
-        protocolo: string;
-        dataLavratura: string;
-        livro: string;
-        folha: string;
-        numeroTermo: string;
-        // --- CAMPOS NOVOS/ATUALIZADOS ---
-        naturezaRegistro: 'Comum' | 'Presumida' | 'Catastrofe';
-        processoJudicial: IProcessoJudicial;
-        justificativaRegistroTardio: string;
-    };
+// interface relacionado aos atos de nascimento
+export interface IObitoFormData extends IBaseAto {
+    naturezaRegistro: 'Comum' | 'Presumida' | 'Catastrofe';
+    processoJudicial: IProcessoJudicial;
+    justificativaRegistroTardio: string;
     falecimento: IFalecimentoInfo;
     falecido: IPessoaFisica & {
         eraEleitor: boolean;
         idade: string;
         documentos: IDocumentacaoFalecido;
-        // --- CAMPO NOVO ---
         nascimentoVerificado: INascimentoVerificado;
     };
     familia: IFamiliaInfo;
@@ -280,23 +272,12 @@ export interface IObitoFormData {
         tipoAutoridade: 'Policial' | 'InstituicaoDeEnsino' | '';
         dadosAutoridade: IDadosAutoridade;
     };
-    documentosApresentados: IDocumentoApresentado[];
-    anexos: { [key: string]: File | null };
-    historico: IHistoricoEntry[];
 }
 
 export type RuleKey = "naturezaRegistro" | "registroTardio" | "fonteDeclaracao" | "cremacao" | "menorNaoRegistrado";
 
-export interface INatimortoFormData {
-    controleRegistro: {
-        isLivroAntigo: boolean;
-        dataRegistro: string;
-        protocolo: string;
-        dataLavratura: string;
-        livro: string; // Será pré-selecionado como "Livro C-Auxiliar"
-        folha: string;
-        numeroTermo: string;
-    };
+// interface relacionado aos atos de natimorto
+export interface INatimortoFormData extends IBaseAto {
     natimorto: {
         localDoFato: string;
         dataDoFato: string;
@@ -314,8 +295,6 @@ export interface INatimortoFormData {
         pai: IPessoaFisica;
     };
     testemunhas: IPessoaFisica[]; // Exatamente duas testemunhas
-    documentosApresentados: IDocumentoApresentado[];
-    historico: IHistoricoEntry[];
 }
 
 //Livro E
@@ -499,21 +478,13 @@ export interface ITrasladoExterior {
         dataEmissao: string;
         matriculaOuReferencia: string;
     };
-    dadosAto: ITrasladoNascimentoData | ITrasladoCasamentoData | ITrasladoObitoData | null;
+    dadosAtoTraslado: ITrasladoNascimentoData | ITrasladoCasamentoData | ITrasladoObitoData | null;
 }
 
-export interface ILivroEFormData {
+// interface relacionado aos atos do livro E
+export interface ILivroEFormData extends IBaseAto {
     tipoAto: TipoAtoLivroE;
-    controleRegistro: {
-        isLivroAntigo: boolean;
-        dataRegistro: string;
-        protocolo: string;
-        dataLavratura: string;
-        livro: string; // Fixo como "Livro E"
-        folha: string;
-        numeroTermo: string;
-    };
-    dadosAto: {
+    dadosLivroE: {
         emancipacao?: IEmancipacao;
         interdicao?: IInterdicao;
         ausencia?: IAusencia;
@@ -525,8 +496,6 @@ export interface ILivroEFormData {
         nascimentoPaisEstrangeiros?: INascimentoPaisEstrangeiros;
         trasladoExterior?: ITrasladoExterior;
     };
-    documentosApresentados: IDocumentoApresentado[];
-    historico: IHistoricoEntry[];
 }
 
 //interfaces e tipos para certidão
@@ -567,7 +536,7 @@ export type StatusPedido = 'Montagem' | 'Solicitacao' | 'Emitido' | 'Pagamento P
 export interface PedidoState {
     etapa: Etapa;
     status: StatusPedido;
-    atoEncontrado: any | null;
+    ato_id: any | null; // vai referenciar algum ato seja ele nascimento, casamento, natimorto, obito ou livro E
     requerente: { tipo: 'fisica' | 'juridica'; nome?: string; cpf?: string; razaoSocial?: string; cnpj?: string; };
     configuracao: { tipoCertidao: number | ''; formato: 'Física (Papel de Segurança)' | 'Digital (PDF)'; valores: { emolumentos: number; fundos: number; taxas: number; total: number; }; };
     textoCertidao: string;
@@ -621,8 +590,6 @@ export interface ITemplate {
     dataModificacao: string;
 }
 
-export type TipoAto = "Nascimento" | "Casamento" | "Óbito" | "Natimorto" | "Livro E";
-
 // Esta seria a nossa "entidade" para um Tipo de Certidão
 export interface ITipoCertidao {
     id: number;
@@ -646,6 +613,89 @@ export interface ITipoCertidao {
     camposDisponiveis: string[]; // Ex: ['{{nome_registrando}}', '{{cpf_registrando}}', etc.]
 }
 
+export type EtapaPedido = 'SOLICITACAO' | 'EMISSAO' | 'PAGAMENTO';
+
+export type TipoAto = "Nascimento" | "Casamento" | "Óbito" | "Natimorto" | "Livro E";
+
+export interface Size {
+    largura_mm: number;
+    altura_mm: number;
+}
+
+export interface Margin {
+        top: string;
+        right: string;
+        bottom: string;
+        left: string;
+}
+
+export interface BlocoTemplate {
+    id: string;
+    nome: string;
+    tipo: 'cabecalho' | 'rodape';
+    conteudo: string;
+}
+
+export type TipoDocumento = "Certidão" | "Averbação"
+
+export interface Template {
+    id: string;
+    tipoDocumento: TipoDocumento
+    tipoAto: TipoAto;
+    titulo: string;
+    descricao: string;
+    selo_id: number | null;
+    cabecalhoPadraoId: string | null;
+    rodapePadraoId: string | null;
+    conteudo: string;
+    margins: Margin;
+    layout: Size;
+    ativo: boolean;
+}
+
+export interface Pedido {
+    id: string; // ID único do pedido
+    protocolo: string; // Gerado ao final da etapa de SOLICITACAO
+    tipoDocumento: TipoDocumento;
+    status: StatusPedido;
+    etapaAtual: EtapaPedido;
+    ato_id: string;
+    requerente: {
+        tipo: 'fisica' | 'juridica';
+        nome?: string;
+        cpf?: string;
+        razaoSocial?: string;
+        cnpj?: string;
+    };
+    templateId: string;
+    documento: {
+        conteudoFinalHtml: string | null;
+        conteudoVersoHtml: string | null;
+        selo: {
+            numero: string;
+            data: string; // Data da selagem em formato ISO
+        } | null;
+
+        dataEmissao: string | null; // Data da conclusão da emissão
+    };
+    pagamento: {
+        valores: {
+            emolumentos: number;
+            fundos: number;
+            taxas: number;
+            total: number;
+        };
+        metodo: 'dinheiro' | 'credito' | 'debito' | 'pix' | 'boleto' | 'isento' | null;
+        status: 'pendente' | 'pago';
+        dataPagamento: string | null;
+        comprovanteUrl?: string; // Armazena a URL do comprovante após o upload
+    };
+    motivoCancelamento?: string; // Justificativa caso o status seja 'Cancelado'
+
+    dataCriacao: string;
+    dataUltimaAtualizacao: string;
+}
+
 export interface CertidaoTemplate {
     id: string;
     tipoAto: TipoAto;
@@ -655,16 +705,8 @@ export interface CertidaoTemplate {
     cabecalhoPadraoId: string | null;
     rodapePadraoId: string | null;
     conteudo: string;
-    margins: {
-        top: string;
-        right: string;
-        bottom: string;
-        left: string;
-    };
-    layout: {
-        largura_mm: number;
-        altura_mm: number;
-    };
+    margins: Margin;
+    layout: Size;
 }
 
 export interface AverbacaoTemplate {
@@ -677,16 +719,8 @@ export interface AverbacaoTemplate {
     cabecalhoPadraoId: string | null;
     rodapePadraoId: string | null;
     conteudo: string;
-    margins: {
-        top: string;
-        right: string;
-        bottom: string;
-        left: string;
-    };
-    layout: {
-        largura_mm: number;
-        altura_mm: number;
-    };
+    margins: Margin;
+    layout: Size;
 }
 
 export type TipoRecibo =
@@ -707,52 +741,34 @@ export type ReciboTemplate = {
     cabecalhoPadraoId: string | null;
     rodapePadraoId: string | null;
     conteudo: string;
-    margins: {
-        top: string;
-        right: string;
-        bottom: string;
-        left: string;
-    };
-    layout: {
-        largura_mm: number;
-        altura_mm: number;
-    };
+    margins: Margin;
+    layout: Size;
 };
 
 export type SeloAvulsoStatus = 'Em Aberto' | 'Finalizado' | 'Cancelado';
 
 export interface ISeloAvulsoItem {
-    id: number; // ID único para o item na lista (para controle de UI)
-    id_selo: number; // O código do ato/selo na tabela de emolumentos
-    descricao: string; // Descrição do serviço (ex: "Averbação de Divórcio")
+    id: number;
+    id_selo: number;
+    descricao: string;
     quantidade: number;
-    valorUnitario: number; // O valor de um único selo
-    valorTotal: number; // quantidade * valorUnitario
-    numeroSeloGerado?: string; // O número do selo digital gerado após a emissão
+    valorUnitario: number;
+    valorTotal: number;
+    numeroSeloGerado?: string;
 }
 
 export interface ISeloAvulsoFormData {
-    // --- Controle do Pedido ---
-    protocolo: string; // Protocolo gerado para este pedido de selo avulso
-    dataSolicitacao: string; // Data em que o pedido foi criado
+    protocolo: string;
+    dataSolicitacao: string;
     status: SeloAvulsoStatus;
-
-    // --- Dados do Solicitante (Requerente) ---
     requerente: { tipo: 'fisica' | 'juridica'; nome?: string; cpf?: string; razaoSocial?: string; cnpj?: string; };
-
-    // --- Dados de Referência do Ato Original ---
     referenciaAto: {
-        nomePartePrincipal: string; // Nome da pessoa a quem o ato se refere (ex: nome do nascido, cônjuges, etc.)
-        tipoAto: AtoOriginalTipo | ''; // Tipo de ato do registro original
-        dataRegistro: string; // Data em que o ato original foi lavrado
+        nomePartePrincipal: string;
+        tipoAto: AtoOriginalTipo | '';
+        dataRegistro: string;
     };
-
-    // --- Lista de Selos Solicitados ---
-    // Estruturado como um array para permitir múltiplos selos em um único pedido
     selosSolicitados: ISeloAvulsoItem[];
-
-    // --- Informações Adicionais e Financeiras ---
-    observacaoGeral?: string; // Um campo de observação geral para o pedido
+    observacaoGeral?: string;
     valores: {
         emolumentos: number;
         fundos: number;

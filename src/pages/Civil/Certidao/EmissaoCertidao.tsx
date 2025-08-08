@@ -13,7 +13,7 @@ import { mockAtosDatabase } from '../lib/Constants';
 const initialPedidoState: PedidoState = {
     etapa: 'SOLICITACAO',
     status: 'Montagem',
-    atoEncontrado: null,
+    ato_id: null,
     requerente: { tipo: 'fisica' },
     configuracao: {
         tipoCertidao: '',
@@ -47,7 +47,7 @@ export default function EmissaoCertidao() {
             }
 
             if (ato) {
-                setPedido(prev => ({ ...prev, atoEncontrado: ato }));
+                setPedido(prev => ({ ...prev, ato_id: ato }));
                 setHeaderTitle(`Certidão de ${ato.nomePrincipal}`);
                 toast.success("Ato encontrado com sucesso!");
             } else {
@@ -67,8 +67,8 @@ export default function EmissaoCertidao() {
             return;
         }
 
-        const textoFrenteCertidao = preencherTemplate(pedido.atoEncontrado, pedido.configuracao);
-        const textoVersoCertidao = preencherTemplateVerso(pedido.atoEncontrado);
+        const textoFrenteCertidao = preencherTemplate(pedido.ato_id, pedido.configuracao);
+        const textoVersoCertidao = preencherTemplateVerso(pedido.ato_id);
 
         const emolumentos = 45.50;
         const fundos = 10.25;
@@ -99,7 +99,7 @@ export default function EmissaoCertidao() {
             textoCertidao: '', 
             textoCertidaoVerso: '', 
         }));
-        setHeaderTitle(`Certidão de ${pedido.atoEncontrado.nomePrincipal}`); 
+        setHeaderTitle(`Certidão de ${pedido.ato_id.nomePrincipal}`); 
         toast.info("Retornando para a etapa de solicitação.");
     };
 
@@ -185,7 +185,7 @@ export default function EmissaoCertidao() {
             <RevisaoAtoModal
                 isOpen={isRevisaoModalOpen}
                 onClose={() => setIsRevisaoModalOpen(false)}
-                ato={pedido.atoEncontrado}
+                ato={pedido.ato_id}
             />
         </div>
     );

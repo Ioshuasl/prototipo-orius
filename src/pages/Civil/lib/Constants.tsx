@@ -1,5 +1,6 @@
 import { type IPessoaFisica, type IPessoaJuridica, type CertidaoOption, type AverbacaoOption, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade, type ITemplate, type CertidaoTemplate, type AverbacaoTemplate, type ReciboTemplate, type ISeloAvulsoFormData } from "../types";
 import { certidaoCasamentoHTML, certidaoInteiroTeorHTML, certidaoNascimentoHTML, certidaoObitoHTML } from '../Certidao/ModeloCertidao/templates';
+import { recibo_averbacao, recibo_simples } from "../../Caixa/Config/Recibo/template";
 
 export const ufs = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
 export const regimesDeBens = ['Comunhão Parcial de Bens', 'Comunhão Universal de Bens', 'Separação Total de Bens', 'Separação Obrigatória de Bens', 'Participação Final nos Aquestos', 'Não se aplica'];
@@ -639,15 +640,15 @@ export const mockAverbacaoTemplates: AverbacaoTemplate[] = [
 export const mockReciboTemplates: ReciboTemplate[] = [
     {
         id: 'REC-1',
-        titulo: 'Recibo Padrão - 2ª Via de Nascimento',
-        descricao: 'Modelo de recibo para emissão de segundas vias de certidões de nascimento.',
+        titulo: 'Recibo de Serviço Padrão',
+        descricao: 'Recibo genérico para qualquer tipo de serviço realizado pelo cartório.',
         tipoRecibo: 'Segunda Via',
-        id_selo: 1001,
+        id_selo: null,
         cabecalhoPadraoId: 'CAB-1',
         rodapePadraoId: 'ROD-1',
-        conteudo: '<p>Recibo referente à segunda via da certidão de nascimento de {{ NOME_REGISTRADO }}.</p>',
+        conteudo: recibo_simples,
         margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
-        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+        layout: { largura_mm: 210, altura_mm: 297 } // Tamanho A4
     },
     {
         id: 'REC-2',
@@ -657,31 +658,7 @@ export const mockReciboTemplates: ReciboTemplate[] = [
         id_selo: 2050,
         cabecalhoPadraoId: 'CAB-1',
         rodapePadraoId: null,
-        conteudo: '<p>Recibo dos serviços de averbação de divórcio na matrícula {{ MATRICULA_CERTIDAO }}.</p>',
-        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
-        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
-    },
-    {
-        id: 'REC-3',
-        titulo: 'Recibo - 2ª Via de Casamento',
-        descricao: 'Modelo de recibo para emissão de segundas vias de certidões de casamento.',
-        tipoRecibo: 'Segunda Via',
-        id_selo: 1002,
-        cabecalhoPadraoId: 'CAB-1',
-        rodapePadraoId: 'ROD-1',
-        conteudo: '<p>Recibo referente à segunda via da certidão de casamento de {{ NOME_REGISTRADO }}.</p>',
-        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
-        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
-    },
-     {
-        id: 'REC-4',
-        titulo: 'Recibo para Busca de Registro',
-        descricao: 'Recibo para o serviço de busca de registros nos livros do cartório.',
-        tipoRecibo: 'Busca de Registro',
-        id_selo: 4001,
-        cabecalhoPadraoId: 'CAB-1',
-        rodapePadraoId: 'ROD-1',
-        conteudo: '<p>Recibo referente ao serviço de busca de atos de registro civil.</p>',
+        conteudo: recibo_averbacao,
         margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
         layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
     }

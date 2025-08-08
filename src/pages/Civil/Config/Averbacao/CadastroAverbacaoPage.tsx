@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Save, Loader2, ArrowLeft, Copy, X, Search, FileUp } from 'lucide-react';
-import MainEditor from '../../Components/MainEditor';
+import MainEditor from '../../../Components/MainEditor';
 import { type TipoAto, type AverbacaoTemplate } from '../../types';
 import { mockAverbacaoTemplates, mockHeaderFooterTemplates } from '../../lib/Constants';
 import emolumentosData from '../../../../../tabela-emolumentos.json';

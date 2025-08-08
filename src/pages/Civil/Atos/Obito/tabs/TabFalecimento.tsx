@@ -46,10 +46,10 @@ export default function TabFalecimento({
     requiredSpan
 }: TabFalecimentoProps) {
     // Desestruturando o formData para facilitar o acesso no JSX
-    const { controleRegistro, falecimento, declarante, falecido } = formData;
+    const { naturezaRegistro, falecimento, declarante, falecido } = formData;
 
     return (
-        <fieldset className="space-y-12" disabled={controleRegistro.naturezaRegistro !== 'Comum'}>
+        <fieldset className="space-y-12" disabled={naturezaRegistro !== 'Comum'}>
             <div>
                 <SectionTitle>Dados do Falecimento</SectionTitle>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

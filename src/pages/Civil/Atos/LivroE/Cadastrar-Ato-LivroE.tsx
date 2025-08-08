@@ -25,8 +25,8 @@ const initialEnderecoState: IEndereco = { cep: '', tipoLogradouro: '', logradour
 const initialPersonState: Partial<IPessoaFisica> = { nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: '', docIdentidadeNum: '', estadoCivil: '', regimeBens: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialEnderecoState }, nomePai: '', nomeMae: '', };
 const initialStateLivroE: ILivroEFormData = {
     tipoAto: '',
-    controleRegistro: { isLivroAntigo: false, dataRegistro: new Date().toISOString().split('T')[0], protocolo: '', dataLavratura: '', livro: 'Livro E', folha: '', numeroTermo: '' },
-    dadosAto: {},
+    dadosAto: { isLivroAntigo: false, dataRegistro: new Date().toISOString().split('T')[0], protocolo: '', dataLavratura: '', livro: 'Livro E', folha: '', numeroTermo: '' },
+    dadosLivroE: {},
     documentosApresentados: [
         { descricao: 'Certidão de Nascimento do Requerente', arquivo: null }
     ],
@@ -62,7 +62,7 @@ const createInitialStateForAto = (tipo: TipoAtoLivroE) => {
                 observacaoObrigatoria: 'O registrando não possui a nacionalidade brasileira, nos termos do art. 12, inciso I, alínea ‘a’ da Constituição da República Federativa do Brasil.'
             } as INascimentoPaisEstrangeiros;
         case 'trasladoExterior':
-            return { tipoTraslado: '', requerente: { ...initialPersonState }, dadosCertidaoOrigem: { serventia: '', dataEmissao: '', matriculaOuReferencia: '' }, dadosAto: null } as ITrasladoExterior;
+            return { tipoTraslado: '', requerente: { ...initialPersonState }, dadosCertidaoOrigem: { serventia: '', dataEmissao: '', matriculaOuReferencia: '' }, dadosAtoTraslado: null } as ITrasladoExterior;
         default: return {};
     }
 };
@@ -93,7 +93,7 @@ const createInitialStateForTraslado = (tipoTraslado: 'nascimento' | 'casamento' 
 
 const tabs = [
     { id: 'controle', label: 'Controle e Lavratura', icon: FileSignature },
-    { id: 'dadosAto', label: 'Dados do Ato', icon: BookText },
+    { id: 'dadosLivroE', label: 'Dados do Ato', icon: BookText },
     { id: 'anexos', label: 'Anexos', icon: Paperclip },
 ];
 
@@ -114,13 +114,13 @@ export default function CadastrarAtoLivroE() {
     };
 
     useEffect(() => {
-        if (formData.controleRegistro.isLivroAntigo) {
-            setFormData(prev => ({ ...prev, controleRegistro: { ...prev.controleRegistro, dataRegistro: '', protocolo: '' } }));
+        if (formData.dadosAto.isLivroAntigo) {
+            setFormData(prev => ({ ...prev, dadosAto: { ...prev.dadosAto, dataRegistro: '', protocolo: '' } }));
         } else {
             const today = new Date().toISOString().split('T')[0];
-            setFormData(prev => ({ ...prev, controleRegistro: { ...prev.controleRegistro, dataRegistro: today } }));
+            setFormData(prev => ({ ...prev, dadosAto: { ...prev.dadosAto, dataRegistro: today } }));
         }
-    }, [formData.controleRegistro.isLivroAntigo]);
+    }, [formData.dadosAto.isLivroAntigo]);
 
     const addDynamicItem = (path: string) => {
         const keys = path.split('.');
@@ -165,11 +165,11 @@ export default function CadastrarAtoLivroE() {
         setFormData(prev => ({
             ...prev,
             tipoAto: novoTipo,
-            dadosAto: {
+            dadosLivroE: {
                 [novoTipo]: createInitialStateForAto(novoTipo)
             }
         }));
-        setActiveTab('dadosAto');
+        setActiveTab('dadosLivroE');
     };
 
     const setNestedValue = (obj: any, path: string[], value: any): any => {
@@ -190,10 +190,10 @@ export default function CadastrarAtoLivroE() {
         const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
         setFormData(prev => {
             const stateAfterValueUpdate = setNestedValue(prev, keys, finalValue);
-            if (name === 'dadosAto.trasladoExterior.tipoTraslado') {
+            if (name === 'dadosLivroE.trasladoExterior.tipoTraslado') {
                 const tipoTraslado = value as 'nascimento' | 'casamento' | 'obito';
                 const initialSubState = createInitialStateForTraslado(tipoTraslado);
-                return setNestedValue(stateAfterValueUpdate, ['dadosAto', 'trasladoExterior', 'dadosAto'], initialSubState);
+                return setNestedValue(stateAfterValueUpdate, ['dadosLivroE', 'trasladoExterior', 'dadosLivroE'], initialSubState);
             }
             return stateAfterValueUpdate;
         });
@@ -321,16 +321,16 @@ export default function CadastrarAtoLivroE() {
             );
         }
         switch (tipoAto) {
-            case 'emancipacao': return <FormEmancipacao data={formData.dadosAto.emancipacao!} {...commonProps} />;
-            case 'interdicao': return <FormInterdicao data={formData.dadosAto.interdicao!} {...commonProps} />;
-            case 'ausencia': return <FormAusencia data={formData.dadosAto.ausencia!} {...commonProps} />;
-            case 'mortePresumida': return <FormMortePresumida data={formData.dadosAto.mortePresumida!} {...commonProps} />;
-            case 'tutela': return <FormTutela data={formData.dadosAto.tutela!} {...commonProps} />;
-            case 'guarda': return <FormGuarda data={formData.dadosAto.guarda!} {...commonProps} />;
-            case 'opcaoNacionalidade': return <FormOpcaoNacionalidade data={formData.dadosAto.opcaoNacionalidade!} {...commonProps} />;
-            case 'uniaoEstavel': return <FormUniaoEstavel data={formData.dadosAto.uniaoEstavel!} {...commonProps} />;
-            case 'nascimentoPaisEstrangeiros': return <FormNascimentoPaisEstrangeiros data={formData.dadosAto.nascimentoPaisEstrangeiros!} {...commonProps} />;
-            case 'trasladoExterior': return <FormTrasladoExterior data={formData.dadosAto.trasladoExterior!} {...commonProps} />;
+            case 'emancipacao': return <FormEmancipacao data={formData.dadosLivroE.emancipacao!} {...commonProps} />;
+            case 'interdicao': return <FormInterdicao data={formData.dadosLivroE.interdicao!} {...commonProps} />;
+            case 'ausencia': return <FormAusencia data={formData.dadosLivroE.ausencia!} {...commonProps} />;
+            case 'mortePresumida': return <FormMortePresumida data={formData.dadosLivroE.mortePresumida!} {...commonProps} />;
+            case 'tutela': return <FormTutela data={formData.dadosLivroE.tutela!} {...commonProps} />;
+            case 'guarda': return <FormGuarda data={formData.dadosLivroE.guarda!} {...commonProps} />;
+            case 'opcaoNacionalidade': return <FormOpcaoNacionalidade data={formData.dadosLivroE.opcaoNacionalidade!} {...commonProps} />;
+            case 'uniaoEstavel': return <FormUniaoEstavel data={formData.dadosLivroE.uniaoEstavel!} {...commonProps} />;
+            case 'nascimentoPaisEstrangeiros': return <FormNascimentoPaisEstrangeiros data={formData.dadosLivroE.nascimentoPaisEstrangeiros!} {...commonProps} />;
+            case 'trasladoExterior': return <FormTrasladoExterior data={formData.dadosLivroE.trasladoExterior!} {...commonProps} />;
             default: return <div className="text-center text-gray-500 py-10">Formulário para "{tiposDeAtoLivroE.find(t => t.value === tipoAto)?.label}" ainda não implementado.</div>;
         }
     };
@@ -373,7 +373,7 @@ export default function CadastrarAtoLivroE() {
                                 </div>
                             )}
 
-                            {activeTab === 'dadosAto' && (
+                            {activeTab === 'dadosLivroE' && (
                                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                     {renderFormByTipoAto()}
                                 </div>

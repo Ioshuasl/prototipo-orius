@@ -16,7 +16,7 @@ const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', d
 
 
 const initialState: INascimentoFormData = {
-    controleRegistro: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
+    dadosAto: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
     nascimento: { dnv: '', dataNascimento: '', horaNascimento: '', localNascimento: '', isGemeo: false, semAssistenciaMedica: false },
     registrando: { prenome: '', sobrenome: '', sexo: '', naturalidade: '', cpf: '' },
     filiacao: { mae: { ...initialPersonState }, pai: { ...initialPersonState } },
@@ -64,13 +64,13 @@ export default function RegistroNascimentoForm() {
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
 
     useEffect(() => {
-        if (formData.controleRegistro.isLivroAntigo) {
-            setFormData(prev => ({ ...prev, controleRegistro: { ...prev.controleRegistro, dataRegistro: '', dataLavratura: '' } }));
+        if (formData.dadosAto.isLivroAntigo) {
+            setFormData(prev => ({ ...prev, dadosAto: { ...prev.dadosAto, dataRegistro: '', dataLavratura: '' } }));
         } else {
             const today = new Date().toISOString().split('T')[0];
-            setFormData(prev => ({ ...prev, controleRegistro: { ...prev.controleRegistro, dataRegistro: today, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' } }));
+            setFormData(prev => ({ ...prev, dadosAto: { ...prev.dadosAto, dataRegistro: today, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' } }));
         }
-    }, [formData.controleRegistro.isLivroAntigo]);
+    }, [formData.dadosAto.isLivroAntigo]);
 
     useEffect(() => {
         if (formData.nascimento.semAssistenciaMedica) {
@@ -358,7 +358,7 @@ export default function RegistroNascimentoForm() {
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
 
-    const isControlReadOnly = !formData.controleRegistro.isLivroAntigo;
+    const isControlReadOnly = !formData.dadosAto.isLivroAntigo;
     const controlInputClass = `${commonInputClass} ${isControlReadOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`;
     const SectionTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">{children}</h3>;
     const SubSectionTitle = ({ children }: { children: React.ReactNode }) => <h4 className="font-bold text-gray-600 mb-3 mt-4">{children}</h4>;
@@ -404,21 +404,21 @@ export default function RegistroNascimentoForm() {
                                 {activeTab === 'controle' && (
                                     <fieldset><legend className="sr-only">Dados de Controle</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                         {/* ALTERADO: Cor do checkbox. */}
-                                        <div className="flex items-center mb-5"><input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.controleRegistro.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label></div>
+                                        <div className="flex items-center mb-5"><input type="checkbox" name="dadosAto.isLivroAntigo" id="dadosAto.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.dadosAto.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="dadosAto.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label></div>
                                         <div className="pt-5 ">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados do Registro</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                                                <div><label htmlFor="controleRegistro.dataRegistro" className={commonLabelClass}>Data do Registro {isControlReadOnly ? null : requiredSpan}</label><input type="date" name="controleRegistro.dataRegistro" id="controleRegistro.dataRegistro" className={controlInputClass} value={formData.controleRegistro.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                                                <div><label htmlFor="controleRegistro.protocolo" className={commonLabelClass}>Nº do Protocolo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="controleRegistro.protocolo" id="controleRegistro.protocolo" className={controlInputClass} value={formData.controleRegistro.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                                                <div><label htmlFor="dadosAto.dataRegistro" className={commonLabelClass}>Data do Registro {isControlReadOnly ? null : requiredSpan}</label><input type="date" name="dadosAto.dataRegistro" id="dadosAto.dataRegistro" className={controlInputClass} value={formData.dadosAto.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.protocolo" className={commonLabelClass}>Nº do Protocolo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="dadosAto.protocolo" id="dadosAto.protocolo" className={controlInputClass} value={formData.dadosAto.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                                             </div>
                                         </div>
                                         <div className="mt-6 pt-6 ">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados da Lavratura</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5">
-                                                <div><label htmlFor="controleRegistro.dataLavratura" className={commonLabelClass}>Data da Lavratura {isControlReadOnly ? null : requiredSpan}</label><input type="date" name="controleRegistro.dataLavratura" id="controleRegistro.dataLavratura" className={controlInputClass} value={formData.controleRegistro.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                                                <div><label htmlFor="controleRegistro.livro" className={commonLabelClass}>Livro {isControlReadOnly ? null : requiredSpan}</label><select name="controleRegistro.livro" id="controleRegistro.livro" className={controlInputClass} value={formData.controleRegistro.livro} onChange={handleInputChange} disabled={isControlReadOnly}><option value="">{isControlReadOnly ? 'Automático' : 'Selecione...'}</option>{livrosDisponiveis.map(livro => <option key={livro} value={livro}>{livro}</option>)}</select></div>
-                                                <div><label htmlFor="controleRegistro.folha" className={commonLabelClass}>Folha {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="controleRegistro.folha" id="controleRegistro.folha" className={controlInputClass} value={formData.controleRegistro.folha} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
-                                                <div><label htmlFor="controleRegistro.numeroTermo" className={commonLabelClass}>Nº do Termo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="controleRegistro.numeroTermo" id="controleRegistro.numeroTermo" className={controlInputClass} value={formData.controleRegistro.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                                                <div><label htmlFor="dadosAto.dataLavratura" className={commonLabelClass}>Data da Lavratura {isControlReadOnly ? null : requiredSpan}</label><input type="date" name="dadosAto.dataLavratura" id="dadosAto.dataLavratura" className={controlInputClass} value={formData.dadosAto.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                                                <div><label htmlFor="dadosAto.livro" className={commonLabelClass}>Livro {isControlReadOnly ? null : requiredSpan}</label><select name="dadosAto.livro" id="dadosAto.livro" className={controlInputClass} value={formData.dadosAto.livro} onChange={handleInputChange} disabled={isControlReadOnly}><option value="">{isControlReadOnly ? 'Automático' : 'Selecione...'}</option>{livrosDisponiveis.map(livro => <option key={livro} value={livro}>{livro}</option>)}</select></div>
+                                                <div><label htmlFor="dadosAto.folha" className={commonLabelClass}>Folha {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="dadosAto.folha" id="dadosAto.folha" className={controlInputClass} value={formData.dadosAto.folha} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                                                <div><label htmlFor="dadosAto.numeroTermo" className={commonLabelClass}>Nº do Termo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="dadosAto.numeroTermo" id="dadosAto.numeroTermo" className={controlInputClass} value={formData.dadosAto.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                                             </div>
                                         </div>
                                         {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato". */}

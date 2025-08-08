@@ -20,12 +20,12 @@ const initialAddressState: IEndereco = { cep: '', tipoLogradouro: '', logradouro
 const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: 'RG', docIdentidadeNum: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialAddressState }, sexo: 'Masculino', cor: 'Parda', estadoCivil: 'Solteiro(a)' }
 
 const initialState: IObitoFormData = {
-    controleRegistro: {
+    dadosAto: {
         isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '',
-        naturezaRegistro: 'Comum',
-        processoJudicial: { numero: '', varaComarca: '', dataSentenca: '', juiz: '' },
-        justificativaRegistroTardio: '',
     },
+    naturezaRegistro: 'Comum',
+    processoJudicial: { numero: '', varaComarca: '', dataSentenca: '', juiz: '' },
+    justificativaRegistroTardio: '',
     falecimento: {
         dataFalecimento: todayString, horaFalecimento: '', localOcorrencia: 'Hospital', enderecoOcorrencia: { ...initialAddressState }, descricaoOutroLocal: '',
         destinacaoCorpo: 'Sepultamento',
@@ -49,7 +49,6 @@ const initialState: IObitoFormData = {
         dadosAutoridade: { nome: '', cargo: '', lotacao: '', cnpj: '' }
     },
     documentosApresentados: [{ descricao: 'Declaração de Óbito (DO)', arquivo: null, nomeArquivo: '' }],
-    anexos: {},
     historico: [
         { data: '2025-07-04T15:01:10Z', evento: 'Emitida 2ª via da Certidão de Casamento.', usuario: 'escrevente.2' },
         { data: '2025-01-10T11:45:00Z', evento: 'Ato de casamento lavrado e registrado no Livro B-101, Folha 15, Termo 5890.', usuario: 'oficial.master' },
@@ -144,8 +143,8 @@ export default function AtoObitoForm() {
     // --- Lógica de estado e Handlers (inalterada) ---
     const [formData, setFormData] = useState<IObitoFormData>(initialState)
     const [activeTab, setActiveTab] = useState(tabs[0].id)
-    const { controleRegistro, falecimento, falecido } = formData;
-    const isControlReadOnly = !controleRegistro.isLivroAntigo;
+    const { dadosAto, falecimento, falecido } = formData;
+    const isControlReadOnly = !dadosAto.isLivroAntigo;
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [searchingCpf, setSearchingCpf] = useState<string | null>(null);
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
@@ -154,8 +153,8 @@ export default function AtoObitoForm() {
     const [modalState, setModalState] = useState({ isOpen: false, title: '', content: null as React.ReactNode });
 
     useEffect(() => {
-        if (controleRegistro.dataRegistro && falecimento.dataFalecimento) {
-            const dataReg = new Date(controleRegistro.dataRegistro);
+        if (dadosAto.dataRegistro && falecimento.dataFalecimento) {
+            const dataReg = new Date(dadosAto.dataRegistro);
             const dataFal = new Date(falecimento.dataFalecimento);
             const diffTime = dataReg.getTime() - dataFal.getTime();
             const diffDays = diffTime / (1000 * 3600 * 24);
@@ -174,7 +173,7 @@ export default function AtoObitoForm() {
         } else {
             setIsMenorDeUmAno(false);
         }
-    }, [controleRegistro.dataRegistro, falecimento.dataFalecimento, falecido.dataNascimento]);
+    }, [dadosAto.dataRegistro, falecimento.dataFalecimento, falecido.dataNascimento]);
 
     const openInfoModal = (ruleKey: keyof typeof regrasDeNegocio) => {
         const { title, content } = regrasDeNegocio[ruleKey];

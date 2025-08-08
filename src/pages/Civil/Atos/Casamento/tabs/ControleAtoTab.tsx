@@ -12,8 +12,8 @@ interface ControleAtoTabProps {
 }
 
 export default function ControleAtoTab({ formData, handleInputChange, handleLavrarAto, livrosDisponiveis, SectionTitle }: ControleAtoTabProps) {
-    const { controleRegistro } = formData;
-    const isControlReadOnly = !controleRegistro.isLivroAntigo;
+    const { dadosAto } = formData;
+    const isControlReadOnly = !dadosAto.isLivroAntigo;
     
     // ALTERADO: Classes de foco agora usam a cor laranja da marca.
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
@@ -26,20 +26,20 @@ export default function ControleAtoTab({ formData, handleInputChange, handleLavr
             <SectionTitle>Controle do Ato</SectionTitle>
             <div className="flex items-center mb-5">
                 {/* ALTERADO: Cor do checkbox para o laranja da marca. */}
-                <input type="checkbox" name="controleRegistro.isLivroAntigo" id="controleRegistro.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={controleRegistro.isLivroAntigo} onChange={handleInputChange} />
-                <label htmlFor="controleRegistro.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label>
+                <input type="checkbox" name="dadosAto.isLivroAntigo" id="dadosAto.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={dadosAto.isLivroAntigo} onChange={handleInputChange} />
+                <label htmlFor="dadosAto.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                <div><label htmlFor="controleRegistro.dataRegistro" className={commonLabelClass}>Data do Registro {requiredSpan}</label><input type="date" name="controleRegistro.dataRegistro" id="controleRegistro.dataRegistro" className={controlInputClass} value={controleRegistro.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                <div><label htmlFor="controleRegistro.protocolo" className={commonLabelClass}>Nº do Protocolo {requiredSpan}</label><input type="text" name="controleRegistro.protocolo" id="controleRegistro.protocolo" className={controlInputClass} value={controleRegistro.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                <div><label htmlFor="dadosAto.dataRegistro" className={commonLabelClass}>Data do Registro {requiredSpan}</label><input type="date" name="dadosAto.dataRegistro" id="dadosAto.dataRegistro" className={controlInputClass} value={dadosAto.dataRegistro} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                <div><label htmlFor="dadosAto.protocolo" className={commonLabelClass}>Nº do Protocolo {requiredSpan}</label><input type="text" name="dadosAto.protocolo" id="dadosAto.protocolo" className={controlInputClass} value={dadosAto.protocolo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
             </div>
             <div className="mt-6 pt-6">
                 <h4 className="font-semibold text-gray-600 mb-3">Dados da Lavratura</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5">
-                    <div><label htmlFor="controleRegistro.dataLavratura" className={commonLabelClass}>Data da Lavratura {requiredSpan}</label><input type="date" name="controleRegistro.dataLavratura" id="controleRegistro.dataLavratura" className={controlInputClass} value={controleRegistro.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
-                    <div><label htmlFor="controleRegistro.livro" className={commonLabelClass}>Livro {requiredSpan}</label><select name="controleRegistro.livro" id="controleRegistro.livro" className={controlInputClass} value={controleRegistro.livro} onChange={handleInputChange} disabled={isControlReadOnly}><option value="">{isControlReadOnly ? 'Automático' : 'Selecione...'}</option>{livrosDisponiveis.map(livro => <option key={livro} value={livro}>{livro}</option>)}</select></div>
-                    <div><label htmlFor="controleRegistro.folha" className={commonLabelClass}>Folha {requiredSpan}</label><input type="text" name="controleRegistro.folha" id="controleRegistro.folha" className={controlInputClass} value={controleRegistro.folha} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
-                    <div><label htmlFor="controleRegistro.numeroTermo" className={commonLabelClass}>Nº do Termo {requiredSpan}</label><input type="text" name="controleRegistro.numeroTermo" id="controleRegistro.numeroTermo" className={controlInputClass} value={controleRegistro.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                    <div><label htmlFor="dadosAto.dataLavratura" className={commonLabelClass}>Data da Lavratura {requiredSpan}</label><input type="date" name="dadosAto.dataLavratura" id="dadosAto.dataLavratura" className={controlInputClass} value={dadosAto.dataLavratura} onChange={handleInputChange} readOnly={isControlReadOnly} /></div>
+                    <div><label htmlFor="dadosAto.livro" className={commonLabelClass}>Livro {requiredSpan}</label><select name="dadosAto.livro" id="dadosAto.livro" className={controlInputClass} value={dadosAto.livro} onChange={handleInputChange} disabled={isControlReadOnly}><option value="">{isControlReadOnly ? 'Automático' : 'Selecione...'}</option>{livrosDisponiveis.map(livro => <option key={livro} value={livro}>{livro}</option>)}</select></div>
+                    <div><label htmlFor="dadosAto.folha" className={commonLabelClass}>Folha {requiredSpan}</label><input type="text" name="dadosAto.folha" id="dadosAto.folha" className={controlInputClass} value={dadosAto.folha} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
+                    <div><label htmlFor="dadosAto.numeroTermo" className={commonLabelClass}>Nº do Termo {requiredSpan}</label><input type="text" name="dadosAto.numeroTermo" id="dadosAto.numeroTermo" className={controlInputClass} value={dadosAto.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                 </div>
                 <div className="mt-6 pt-6 flex justify-end">
                     {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato" para o laranja da marca. */}

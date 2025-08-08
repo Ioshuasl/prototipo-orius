@@ -22,7 +22,7 @@ const initialParentState: IPessoaFisica = { ...initialPersonState, estadoCivil: 
 const initialTestemunhaState: IPessoaFisica = { ...initialPersonState, estadoCivil: '', regimeBens: '', dataNascimento: '' };
 
 const initialState: ICasamentoFormData = {
-    controleRegistro: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
+    dadosAto: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
     conjuge1: { ...initialConjugeState },
     conjuge2: { ...initialConjugeState },
     filiacao: {
@@ -55,7 +55,6 @@ const initialState: ICasamentoFormData = {
         { descricao: 'Certidão de Nascimento do Cônjuge 1', arquivo: null },
         { descricao: 'Certidão de Nascimento do Cônjuge 2', arquivo: null }
     ],
-    anexos: {},
     historico: [
         { data: '2025-07-04T15:01:10Z', evento: 'Emitida 2ª via da Certidão de Casamento.', usuario: 'escrevente.2' },
         { data: '2025-01-10T11:45:00Z', evento: 'Ato de casamento lavrado e registrado no Livro B-101, Folha 15, Termo 5890.', usuario: 'oficial.master' },
@@ -371,7 +370,7 @@ export default function RegistroCasamentoForm() {
                     };
                     setFormData(prev => ({
                         ...prev,
-                        controleRegistro: { ...prev.controleRegistro, dataLavratura: hoje.toISOString().split('T')[0], livro: 'B-AUX', folha: '1', numeroTermo: '1' },
+                        controleRegistro: { ...prev.dadosAto, dataLavratura: hoje.toISOString().split('T')[0], livro: 'B-AUX', folha: '1', numeroTermo: '1' },
                         historico: [novoEventoHistorico, ...prev.historico]
                     }));
                     resolve(true);
