@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Package, FileText, CalendarDays, Wallet, ReceiptText, User, Repeat, XCircle, Box, AlertTriangle, CheckCircle, Upload, Pencil, X, Loader2 } from 'lucide-react';
-import { mockSealBatches } from './Gerenciamento-LotesSelos';
+import { ChevronLeft, Package, FileText, CalendarDays, X, ReceiptText, Repeat, XCircle, Box, AlertTriangle, CheckCircle, Upload, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { mockSealBatches } from '../../lib/Constants';
 
+// --- INTERFACES E FUNÇÕES AUXILIARES ---
 type SealSituation = 'Disponível' | 'Utilizando' | 'Exportado' | 'Cancelado' | 'Redimensionado';
 
 interface SealValues {
@@ -106,7 +107,7 @@ export default function VisualizacaoLoteSelos() {
         alert(`Simulando salvamento das alterações para o selo: ${editedSealData?.sealNumber}`);
         setIsEditModalOpen(false);
     };
-    
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -188,7 +189,6 @@ export default function VisualizacaoLoteSelos() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{getActionDate(seal)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{seal.linkedSeals?.join(', ') || 'N/A'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    {/* --- Lógica para os botões de ação dinâmica --- */}
                                                     {seal.sealSituation === 'Utilizando' && (
                                                         <div className="flex items-center gap-2">
                                                             <button
@@ -216,7 +216,7 @@ export default function VisualizacaoLoteSelos() {
                                                             aria-label="Cancelar Selo"
                                                             title="Cancelar Selo"
                                                         >
-                                                            <X className="h-5 w-5" />
+                                                            <Trash2 className="h-5 w-5" />
                                                         </button>
                                                     )}
                                                     {seal.sealSituation === 'Redimensionado' && (
@@ -226,10 +226,9 @@ export default function VisualizacaoLoteSelos() {
                                                             aria-label="Cancelar Redimensionamento"
                                                             title="Cancelar Redimensionamento"
                                                         >
-                                                            <X className="h-5 w-5" />
+                                                            <Trash2 className="h-5 w-5" />
                                                         </button>
                                                     )}
-                                                    {/* Selo 'Disponível' e 'Cancelado' não têm botões */}
                                                 </td>
                                             </tr>
                                         ))}
@@ -243,7 +242,7 @@ export default function VisualizacaoLoteSelos() {
 
             {/* --- MODAL DE EDIÇÃO DO SELO --- */}
             {isEditModalOpen && editedSealData && (
-                <div className="fixed inset-0 z-50 flex justify-center items-center p-4 animate-fade-in-fast bg-gray-900/50 backdrop-blur-sm">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
                         <div className="flex justify-between items-center p-4 border-b border-gray-200">
                             <h2 className="text-xl font-bold text-gray-800">Editar Selo: {editedSealData.sealNumber}</h2>

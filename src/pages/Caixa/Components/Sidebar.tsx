@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Settings, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, BarChart2, CircleDollarSign, SlidersHorizontal, StampIcon, PrinterIcon } from 'lucide-react';
+import { Settings, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, BarChart2, CircleDollarSign, SlidersHorizontal, StampIcon, PrinterIcon, BanknoteIcon } from 'lucide-react';
 import logo from '../../../assets/logo-orius-sidebar.png'
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
@@ -49,6 +49,11 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Exportar Selos', path: 'exportar-selo'},
             { label: 'Guias', path: 'guia'}
         ]
+    },
+    {
+        title: 'Financeiro',
+        icon: BanknoteIcon,
+        path: 'financeiro'
     },
     {
         title: 'Impressões',

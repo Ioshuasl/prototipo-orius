@@ -59,6 +59,10 @@ import RegistroImoveisDashboard from './pages/Imoveis/Dashboard';
 import ServiceManagementPage from './pages/Caixa/Servicos/Gerenciamento-Servicos';
 import SealBatchManagementPage from './pages/Caixa/Selos/Lotes/Gerenciamento-LotesSelos';
 import VisualizacaoLoteSelos from './pages/Caixa/Selos/Lotes/VisualizacaoLoteSelos';
+import ExportacaoSelos from './pages/Caixa/Selos/Exportacao/ExportacaoSelos';
+import GerenciamentoGuias from './pages/Caixa/Selos/Guias/GerenciamentoGuias';
+import VisualizacaoGuia from './pages/Caixa/Selos/Guias/VisualizacaoGuia';
+import ExtratoFinanceiro from './pages/Caixa/FInanceiro/ExtratoFinanceiro';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -219,8 +223,11 @@ function App() {
 
           <Route path='lotes-selo' element={<SealBatchManagementPage />} />
           <Route path='lotes-selo/:id' element={<VisualizacaoLoteSelos />} />
-          <Route path='exportar-selo' element={<PlaceholderPage title='Exportação dos selos' />} />
-          <Route path='guia' element={<PlaceholderPage title='Guias' />} />
+          <Route path='exportar-selo' element={<ExportacaoSelos />} />
+          <Route path='guia' element={<GerenciamentoGuias />} />
+          <Route path='guia/:id' element={<VisualizacaoGuia />} />
+
+          <Route path='financeiro' element={<ExtratoFinanceiro />} />
 
           <Route path='impressao/relatorio-receita-depesa' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
           <Route path='impressao/relatorio-servicos-realizados' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
