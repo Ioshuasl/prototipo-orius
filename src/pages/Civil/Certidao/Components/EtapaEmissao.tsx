@@ -380,19 +380,43 @@ export default function EtapaEmissao({ pedido, setPedido, onConcluir, onVoltar }
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    {/* Ações do Documento não muda */}
                     <div className="p-4 bg-gray-50 rounded-lg border border-gray-300">
                         <h4 className="font-semibold text-gray-700 mb-4">Ações do Documento</h4>
                         <div className="flex flex-col gap-3">
-                            <button onClick={() => { /* ... */ }} className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100">
+                            <button
+                                onClick={() => {
+                                    if (!mostrarVerso) {
+                                        const div = document.getElementById('certidao');
+                                        if (div) {
+                                            setPreviewHtml(div.innerHTML);
+                                            setIsPreviewModalOpen(true);
+                                        } else {
+                                            toast.error("Não foi possível encontrar o conteúdo da certidão.");
+                                        }
+                                    } else {
+                                        const div = document.getElementById('certidao-verso');
+                                        if (div) {
+                                            setPreviewHtml(div.innerHTML);
+                                            setIsPreviewModalOpen(true);
+                                        } else {
+                                            toast.error("Não foi possível encontrar o conteúdo da certidão.");
+                                        }
+                                    }
+
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"                            >
                                 <Eye size={16} /> Visualizar Impressão
                             </button>
-                            <button onClick={handleImprimirRascunho} className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100">
+                            <button
+                                onClick={handleImprimirRascunho}
+                                className="flex-1 flex items-center justify-center gap-2 text-sm bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"
+                                >
                                 <Printer size={16} /> Imprimir Certidão ({mostrarVerso ? 'Verso' : 'Frente'})
                             </button>
                         </div>
                     </div>
-                    
-                    {/* ALTERADO: Estilo da seção de selagem */}
+
                     <div className="p-4 bg-[#dd6825]/10 border border-[#dd6825]/30 rounded-lg">
                         <h4 className="font-semibold text-[#c25a1f] mb-4">Selagem da Certidão</h4>
                         <div className="space-y-4">

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Upload, Search, X, CheckCircle, SlidersHorizontal, ChevronUp, FilterX } from 'lucide-react';
-import { type Seal } from '../../types/types';
+import { type Seal } from '../../types';
 import tabelaEmolumentos from '../../../../../tabela-emolumentos.json';
 import { mockSealBatches } from '../../lib/Constants';
 

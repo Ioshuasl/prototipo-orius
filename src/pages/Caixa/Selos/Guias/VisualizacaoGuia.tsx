@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, AlertTriangle, Loader2, FileText, CalendarDays, DollarSign, Package, XCircle, Trash2 } from 'lucide-react';
-
-// --- IMPORTAÇÕES E DADOS REUTILIZÁVEIS ---
+import { ChevronLeft, AlertTriangle, Loader2 } from 'lucide-react';
 import { mockSealBatches } from '../../lib/Constants';
-import tabelaEmolumentos from '../../../../../tabela-emolumentos.json';
 
 // Interfaces para os dados da guia (usadas para tipar os dados gerados)
 interface SeloUtilizado {
@@ -40,14 +37,6 @@ interface Guia {
     selosUtilizados: SeloUtilizado[];
     selosInutilizados: SeloInutilizado[];
 }
-
-const getSealValues = (tipoAtoSelo: number) => {
-    const data = tabelaEmolumentos.find(item => item.id_selo === tipoAtoSelo);
-    return {
-        emolumentos: data?.valor_emolumento || 0,
-        taxaJudiciaria: data?.valor_taxa_judiciaria || 0,
-    };
-};
 
 const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
@@ -166,7 +155,7 @@ export default function VisualizacaoGuia() {
                 <h1 className="text-3xl font-bold text-gray-800">Guia não encontrada</h1>
                 <p className="text-md text-gray-600 mt-2">A guia com o ID "{id}" não foi encontrada. Verifique se o ID está correto.</p>
                 <button
-                    onClick={() => navigate('/caixa/guias')}
+                    onClick={() => navigate(-1)}
                     className="mt-6 flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300"
                 >
                     <ChevronLeft className="h-5 w-5" /> Voltar para Guias
@@ -191,7 +180,7 @@ export default function VisualizacaoGuia() {
                     <div className="mx-auto space-y-6">
                         <header className="flex items-center justify-between">
                             <button
-                                onClick={() => navigate('/caixa/guias')}
+                                onClick={() => navigate(-1)}
                                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -232,7 +221,7 @@ export default function VisualizacaoGuia() {
 
                         {/* SEÇÃO 2: SELOS UTILIZADOS NA GUIA */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                            <h2 className="text-2xl font-bold text-gray-800 p-6 border-b border-gray-200">Lotes de Selos Utilizados</h2>
+                            <h2 className="text-2xl font-bold bg-blue-600 text-white p-6 border-b border-gray-200 rounded-md">Lotes de Selos Utilizados</h2>
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
@@ -271,7 +260,7 @@ export default function VisualizacaoGuia() {
 
                         {/* SEÇÃO 3: SELOS INUTILIZADOS */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                            <h2 className="text-2xl font-bold text-gray-800 p-6 border-b border-gray-200">Selos Inutilizados no Decêndio</h2>
+                            <h2 className="text-2xl font-bold bg-red-600 text-white p-6 border-b border-gray-200 rounded-md">Selos Inutilizados no Decêndio</h2>
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">

@@ -25,7 +25,7 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
         }
     };
     
-    // ALTERADO: Estilos de foco agora usam a cor laranja da marca.
+    // Classes de estilização comuns para inputs e labels
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825] h-10";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
 
@@ -48,6 +48,7 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                     </select>
                 </div>
 
+                {/* Renderização condicional dos campos de busca */}
                 {tipoBusca === 'livroFolha' ? (
                     <>
                         <div className="flex-grow-[1]">
@@ -72,7 +73,7 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                         </div>
                     </>
                 ) : (
-                    <div className="flex-grow-[3]">
+                    <div className="flex-grow-[3]"> {/* Este campo ocupará mais espaço */}
                         <label className={commonLabelClass}>Número</label>
                         <input
                             type="text"
@@ -83,8 +84,8 @@ export default function BuscaAtoCertidao({ onSearch, isSearching }: BuscaAtoCert
                     </div>
                 )}
                 
+                {/* O botão fica no final da linha */}
                 <div>
-                    {/* ALTERADO: Cor do botão de busca para o cinza escuro da marca. */}
                     <button
                         type="submit"
                         disabled={isSearching}

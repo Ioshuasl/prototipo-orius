@@ -19,37 +19,51 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
 
     const handleRequerenteChange = (field: string, value: any) => {
         setPedido((prev: any) => {
+
             if (field === 'tipo') {
-                return { ...prev, requerente: { tipo: value } };
+                return {
+                    ...prev,
+                    requerente: { tipo: value }
+                };
             }
-            return { ...prev, requerente: { ...prev.requerente, [field]: value } };
+            return {
+                ...prev,
+                requerente: {
+                    ...prev.requerente,
+                    [field]: value,
+                }
+            };
         });
     };
 
     const handleConfiguracaoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = parseInt(e.target.value, 10);
+
         setPedido((prev: any) => ({
             ...prev,
-            configuracao: { ...prev.configuracao, tipoCertidao: selectedId }
+            configuracao: {
+                ...prev.configuracao,
+                tipoCertidao: selectedId,
+            }
         }));
     };
 
     const handleVoltarClick = () => {
-        if (window.confirm("Tem certeza que deseja desistir da emissão desta certidão? Todo o progresso será perdido.")) {
+        const confirmar = window.confirm("Tem certeza que deseja desistir da emissão desta certidão? Todo o progresso será perdido.");
+
+        if (confirmar) {
             onDesistir();
         }
     };
 
     return (
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-8">
-            {/* ALTERADO: Cor do título da etapa */}
             <h2 className="text-xl font-semibold text-[#4a4e51] border-b pb-4">Etapa 1: Solicitação</h2>
 
             <BuscaAtoCertidao onSearch={handleSearch} isSearching={isSearching} />
 
             {atoEncontrado && (
                 <div className="space-y-6 animate-fade-in">
-                    {/* ALTERADO: Estilo do box de informação do ato encontrado */}
                     <div className="p-4 bg-[#dd6825]/10 border border-[#dd6825]/30 rounded-lg flex justify-between items-center">
                         <div>
                             <p className="text-sm text-[#c25a1f]">Ato Encontrado:</p>
@@ -81,7 +95,6 @@ export default function EtapaSolicitacao({ pedido, setPedido, onConcluir, onRevi
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Tipo de Certidão</label>
-                                {/* ALTERADO: Estilo de foco do select */}
                                 <select
                                     value={configuracao.tipoCertidao}
                                     onChange={handleConfiguracaoChange}

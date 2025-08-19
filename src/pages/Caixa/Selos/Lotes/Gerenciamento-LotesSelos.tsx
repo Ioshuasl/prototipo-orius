@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Upload, AlertTriangle, Eye, X } from 'lucide-react';
 import tabelaEmolumentos from '../../../../../tabela-emolumentos.json';
-import { type SealBatch } from '../../types/types';
+import { type SealBatch } from '../../types';
 import { mockSealBatches } from '../../lib/Constants';
 
 // --- ESTRUTURA DE TIPOS E DADOS SIMULADOS ---

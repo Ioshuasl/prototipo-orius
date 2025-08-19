@@ -1,33 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SlidersHorizontal, ChevronUp, ChevronLeft, PlusCircle, FileText, CalendarDays, TrendingUp, TrendingDown, DollarSign, ListX, X, FilterX, Search, PrinterIcon } from 'lucide-react';
-import { mockSealBatches } from '../lib/Constants';
-
-// Interfaces para os dados de transação
-interface FinancialTransaction {
-    id: number;
-    description: string;
-    value: number;
-    type: 'Receita' | 'Despesa';
-    date: Date;
-    details?: any;
-}
-
-// Gerando despesas simuladas
-const mockDespesas: FinancialTransaction[] = [
-    { id: 101, description: 'Salários - Agosto', value: 15000.00, type: 'Despesa', date: new Date(2025, 7, 5) },
-    { id: 102, description: 'Aluguel do escritório', value: 3500.00, type: 'Despesa', date: new Date(2025, 7, 10) },
-    { id: 103, description: 'Energia Elétrica', value: 450.00, type: 'Despesa', date: new Date(2025, 7, 15) },
-];
-const mockReceitas: FinancialTransaction[] = mockSealBatches.flatMap(batch => 
-    batch.seals.filter(seal => seal.sealSituation === 'Utilizando').map((seal) => ({
-        id: parseInt(`${batch.id}${seal.sealNumber.replace('-', '')}`),
-        description: `Serviço de ${batch.descricao.split(' - ')[0]}`,
-        value: seal.sealValue.total,
-        type: 'Receita',
-        date: seal.resizingDate || new Date(),
-    }))
-);
+import { mockDespesas, mockReceitas } from '../lib/Constants';
+import { type FinancialTransaction } from '../types';
 
 // Combina e ordena as transações
 const mockTransacoes: FinancialTransaction[] = [...mockReceitas, ...mockDespesas]

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { PlusCircle, Edit, Trash2, FileText } from 'lucide-react';
-import { type ReciboTemplate, type TipoRecibo } from '../../types';
+import { type ReciboTemplate, type TipoRecibo } from '../../types'
 import { mockReciboTemplates } from '../../lib/Constants';
 
 // --- SUBCOMPONENTE CARD ---
@@ -63,7 +63,7 @@ const GerenciamentoRecibos: React.FC = () => {
                 <div>
                     {/* ALTERADO: Cor do título principal */}
                     <h1 className="text-3xl font-bold text-[#4a4e51]">Modelos de Recibo</h1>
-                    <p className="text-md text-gray-500 mt-1">Gerencie os modelos para emissão de recibos do Registro Civil.</p>
+                    <p className="text-md text-gray-500 mt-1">Gerencie os modelos para emissão de recibos do Caixa.</p>
                 </div>
                 {/* ALTERADO: Cor do botão de ação principal */}
                 <Link to="cadastrar" className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] mt-4 md:mt-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]">

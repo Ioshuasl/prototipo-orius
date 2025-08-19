@@ -63,6 +63,8 @@ import ExportacaoSelos from './pages/Caixa/Selos/Exportacao/ExportacaoSelos';
 import GerenciamentoGuias from './pages/Caixa/Selos/Guias/GerenciamentoGuias';
 import VisualizacaoGuia from './pages/Caixa/Selos/Guias/VisualizacaoGuia';
 import ExtratoFinanceiro from './pages/Caixa/FInanceiro/ExtratoFinanceiro';
+import RelatorioExtratoFinanceiroPage from './pages/Caixa/Impressao/Relatorio-Extrato-Financeiro/RelatorioExtratoFinanceiroPage';
+import RelatorioServicosPage from './pages/Caixa/Impressao/Relatorio-Servico-Realizado/RelatorioServicosPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -229,8 +231,8 @@ function App() {
 
           <Route path='financeiro' element={<ExtratoFinanceiro />} />
 
-          <Route path='impressao/relatorio-receita-depesa' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
-          <Route path='impressao/relatorio-servicos-realizados' element={<PlaceholderPage title='Listar Lotes de Selo' />} />
+          <Route path='impressao/relatorio-receita-depesa' element={<RelatorioExtratoFinanceiroPage />} />
+          <Route path='impressao/relatorio-servicos-realizados' element={<RelatorioServicosPage />} />
           <Route path="impressao/relatorio-atividades" element={<RelatorioAtividadesPage />} />
 
           <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />

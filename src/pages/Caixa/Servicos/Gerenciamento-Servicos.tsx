@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Wallet, Landmark, ReceiptText, BookMarked, CalendarDays, X, FileText } from 'lucide-react';
 import MainEditor from '../../Components/MainEditor';
-import { mockReciboTemplates } from '../../Civil/lib/Constants';
+import { mockReciboTemplates} from '../../Civil/lib/Constants';
 import { generateReciboHtml } from '../../Functions/replaceReciboHtml';
+import { mockServiceRecords } from '../lib/Constants';
 
 // --- ESTRUTURA DE TIPOS E DADOS SIMULADOS ---
 type Sistemas = "Registro Civil" | "Registro de Imóveis" | "Tabelionato de Notas" | "Protesto de Títulos" | "RTD" | "Caixa"
@@ -22,129 +23,6 @@ export interface ServiceRecord {
     withSeal: boolean;
     sealNumber: string[]; // Alterado para um array de strings
 }
-
-const mockServiceRecords: ServiceRecord[] = [
-    {
-        id: 1,
-        protocol: '2025-S-00001',
-        clientName: 'Ana Clara Souza',
-        serviceType: 'Certidão de Nascimento',
-        sistema: 'Registro Civil',
-        registrationDate: new Date(2025, 7, 1, 10, 30),
-        value: 85.50,
-        status: 'Pago',
-        withSeal: true,
-        sealNumber: ['SEL-00001', 'SEL-00002'], // Múltiplos selos
-    },
-    {
-        id: 2,
-        protocol: '2025-S-00002',
-        clientName: 'Pedro Martins',
-        serviceType: 'Escritura de Compra e Venda',
-        sistema: 'Tabelionato de Notas',
-        registrationDate: new Date(2025, 7, 1, 11, 45),
-        value: 1250.00,
-        status: 'Aguardando Pagamento',
-        withSeal: true,
-        sealNumber: ['SEL-00003'], // Um único selo
-    },
-    {
-        id: 3,
-        protocol: '2025-S-00003',
-        clientName: 'Maria Silva',
-        serviceType: 'Cópia Autenticada',
-        sistema: 'Tabelionato de Notas',
-        registrationDate: new Date(2025, 7, 2, 9, 15),
-        value: 15.00,
-        status: 'Pago',
-        withSeal: false,
-        sealNumber: [], // Sem selo
-    },
-    {
-        id: 4,
-        protocol: '2025-S-00004',
-        clientName: 'João Oliveira',
-        serviceType: 'Protesto de Título',
-        sistema: 'Protesto de Títulos',
-        registrationDate: new Date(2025, 7, 2, 14, 0),
-        value: 150.75,
-        status: 'Pago',
-        withSeal: true,
-        sealNumber: ['SEL-00004', 'SEL-00005', 'SEL-00006'], // Múltiplos selos
-    },
-    {
-        id: 5,
-        protocol: '2025-S-00005',
-        clientName: 'Camila Rodrigues',
-        serviceType: 'Reconhecimento de Firma',
-        sistema: "Tabelionato de Notas",
-        registrationDate: new Date(2025, 7, 3, 16, 30),
-        value: 20.00,
-        status: 'Pago',
-        withSeal: false,
-        sealNumber: [],
-    },
-    {
-        id: 6,
-        protocol: '2025-S-00006',
-        clientName: 'Ricardo Almeida',
-        serviceType: 'Escritura de Compra e Venda',
-        sistema: "Tabelionato de Notas",
-        registrationDate: new Date(2025, 7, 3, 11, 0),
-        value: 980.00,
-        status: 'Pago',
-        withSeal: true,
-        sealNumber: ['SEL-00007'],
-    },
-    {
-        id: 7,
-        protocol: '2025-S-00007',
-        clientName: 'Julia Costa',
-        serviceType: 'Certidão de Nascimento',
-        sistema: "Registro Civil",
-        registrationDate: new Date(2025, 7, 4, 8, 45),
-        value: 85.50,
-        status: 'Aguardando Pagamento',
-        withSeal: true,
-        sealNumber: ['SEL-00008', 'SEL-00009'],
-    },
-    {
-        id: 8,
-        protocol: '2025-S-00008',
-        clientName: 'Fernando Pereira',
-        serviceType: 'Protesto de Título',
-        sistema: "Protesto de Títulos",
-        registrationDate: new Date(2025, 7, 4, 17, 10),
-        value: 150.75,
-        status: 'Cancelado',
-        withSeal: true,
-        sealNumber: ['SEL-00010'],
-    },
-    {
-        id: 9,
-        protocol: '2025-S-00009',
-        clientName: 'Luiza Lima',
-        serviceType: 'Cópia Autenticada',
-        sistema: "Tabelionato de Notas",
-        registrationDate: new Date(2025, 7, 5, 10, 0),
-        value: 25.00,
-        status: 'Pago',
-        withSeal: false,
-        sealNumber: [],
-    },
-    {
-        id: 10,
-        protocol: '2025-S-00010',
-        clientName: 'Carlos Eduardo',
-        serviceType: 'Reconhecimento de Firma',
-        sistema: "Tabelionato de Notas",
-        registrationDate: new Date(2025, 7, 5, 12, 50),
-        value: 20.00,
-        status: 'Pago',
-        withSeal: false,
-        sealNumber: [],
-    },
-];
 
 const statusOptions: ServiceStatus[] = ['Pago', 'Aguardando Pagamento', 'Cancelado'];
 const serviceOptions = [...new Set(mockServiceRecords.map(record => record.serviceType))];

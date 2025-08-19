@@ -1,5 +1,130 @@
 import tabelaEmolumentos from '../../../../tabela-emolumentos.json';
-import { type SealBatch, type SealValues, } from '../types/types';
+import { type SealBatch, type SealValues, } from '../types';
+import { recibo_averbacao, recibo_simples } from '../Config/Recibo/template';
+import { type ReciboTemplate, type FinancialTransaction, type ILogAtividade, type IUsuario, type ServiceRecord } from '../types';
+
+export const mockServiceRecords: ServiceRecord[] = [
+    {
+        id: 1,
+        protocol: '2025-S-00001',
+        clientName: 'Ana Clara Souza',
+        serviceType: 'Certidão de Nascimento',
+        sistema: 'Registro Civil',
+        registrationDate: new Date(2025, 7, 1, 10, 30),
+        value: 85.50,
+        status: 'Pago',
+        withSeal: true,
+        sealNumber: ['SEL-00001', 'SEL-00002'], // Múltiplos selos
+    },
+    {
+        id: 2,
+        protocol: '2025-S-00002',
+        clientName: 'Pedro Martins',
+        serviceType: 'Escritura de Compra e Venda',
+        sistema: 'Tabelionato de Notas',
+        registrationDate: new Date(2025, 7, 1, 11, 45),
+        value: 1250.00,
+        status: 'Aguardando Pagamento',
+        withSeal: true,
+        sealNumber: ['SEL-00003'], // Um único selo
+    },
+    {
+        id: 3,
+        protocol: '2025-S-00003',
+        clientName: 'Maria Silva',
+        serviceType: 'Cópia Autenticada',
+        sistema: 'Tabelionato de Notas',
+        registrationDate: new Date(2025, 7, 2, 9, 15),
+        value: 15.00,
+        status: 'Pago',
+        withSeal: false,
+        sealNumber: [], // Sem selo
+    },
+    {
+        id: 4,
+        protocol: '2025-S-00004',
+        clientName: 'João Oliveira',
+        serviceType: 'Protesto de Título',
+        sistema: 'Protesto de Títulos',
+        registrationDate: new Date(2025, 7, 2, 14, 0),
+        value: 150.75,
+        status: 'Pago',
+        withSeal: true,
+        sealNumber: ['SEL-00004', 'SEL-00005', 'SEL-00006'], // Múltiplos selos
+    },
+    {
+        id: 5,
+        protocol: '2025-S-00005',
+        clientName: 'Camila Rodrigues',
+        serviceType: 'Reconhecimento de Firma',
+        sistema: "Tabelionato de Notas",
+        registrationDate: new Date(2025, 7, 3, 16, 30),
+        value: 20.00,
+        status: 'Pago',
+        withSeal: false,
+        sealNumber: [],
+    },
+    {
+        id: 6,
+        protocol: '2025-S-00006',
+        clientName: 'Ricardo Almeida',
+        serviceType: 'Escritura de Compra e Venda',
+        sistema: "Tabelionato de Notas",
+        registrationDate: new Date(2025, 7, 3, 11, 0),
+        value: 980.00,
+        status: 'Pago',
+        withSeal: true,
+        sealNumber: ['SEL-00007'],
+    },
+    {
+        id: 7,
+        protocol: '2025-S-00007',
+        clientName: 'Julia Costa',
+        serviceType: 'Certidão de Nascimento',
+        sistema: "Registro Civil",
+        registrationDate: new Date(2025, 7, 4, 8, 45),
+        value: 85.50,
+        status: 'Aguardando Pagamento',
+        withSeal: true,
+        sealNumber: ['SEL-00008', 'SEL-00009'],
+    },
+    {
+        id: 8,
+        protocol: '2025-S-00008',
+        clientName: 'Fernando Pereira',
+        serviceType: 'Protesto de Título',
+        sistema: "Protesto de Títulos",
+        registrationDate: new Date(2025, 7, 4, 17, 10),
+        value: 150.75,
+        status: 'Cancelado',
+        withSeal: true,
+        sealNumber: ['SEL-00010'],
+    },
+    {
+        id: 9,
+        protocol: '2025-S-00009',
+        clientName: 'Luiza Lima',
+        serviceType: 'Cópia Autenticada',
+        sistema: "Tabelionato de Notas",
+        registrationDate: new Date(2025, 7, 5, 10, 0),
+        value: 25.00,
+        status: 'Pago',
+        withSeal: false,
+        sealNumber: [],
+    },
+    {
+        id: 10,
+        protocol: '2025-S-00010',
+        clientName: 'Carlos Eduardo',
+        serviceType: 'Reconhecimento de Firma',
+        sistema: "Tabelionato de Notas",
+        registrationDate: new Date(2025, 7, 5, 12, 50),
+        value: 20.00,
+        status: 'Pago',
+        withSeal: false,
+        sealNumber: [],
+    },
+];
 
 const getSealValues = (tipoAtoSelo: number): SealValues => {
     const emolumentoData = tabelaEmolumentos.find(item => item.id_selo === tipoAtoSelo);
@@ -627,4 +752,160 @@ export const mockSealBatches: SealBatch[] = [
             },
         ],
     },
+];
+
+export const mockReciboTemplates: ReciboTemplate[] = [
+    {
+        id: 'REC-1',
+        titulo: 'Recibo de Serviço Padrão',
+        descricao: 'Recibo genérico para qualquer tipo de serviço realizado pelo cartório.',
+        tipoRecibo: 'Segunda Via',
+        id_selo: null,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: 'ROD-1',
+        conteudo: recibo_simples,
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 297 } // Tamanho A4
+    },
+    {
+        id: 'REC-2',
+        titulo: 'Recibo para Averbação de Divórcio',
+        descricao: 'Recibo específico para os emolumentos cobrados na averbação de divórcio.',
+        tipoRecibo: 'Averbação',
+        id_selo: 2050,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: null,
+        conteudo: recibo_averbacao,
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    }
+];
+
+export const mockDespesas: FinancialTransaction[] = [
+    { id: 101, description: 'Salários - Agosto', value: 15000.00, type: 'Despesa', date: new Date(2025, 7, 5) },
+    { id: 102, description: 'Aluguel do escritório', value: 3500.00, type: 'Despesa', date: new Date(2025, 7, 10) },
+    { id: 103, description: 'Energia Elétrica', value: 450.00, type: 'Despesa', date: new Date(2025, 7, 15) },
+];
+export const mockReceitas: FinancialTransaction[] = mockSealBatches.flatMap(batch => 
+    batch.seals.filter(seal => seal.sealSituation === 'Utilizando').map((seal) => ({
+        id: parseInt(`${batch.id}${seal.sealNumber.replace('-', '')}`),
+        description: `Serviço de ${batch.descricao.split(' - ')[0]}`,
+        value: seal.sealValue.total,
+        type: 'Receita',
+        date: seal.resizingDate || new Date(),
+    }))
+);
+
+export const mockUsuarios: IUsuario[] = [
+    {
+        id: 101,
+        nome: 'Alice Admin',
+        email: 'alice.admin@cartorio.com',
+        cargoId: 1, // Administrador
+        status: 'Ativo',
+        senha: '123456'
+    },
+    {
+        id: 102,
+        nome: 'Bruno Chefe',
+        email: 'bruno.chefe@cartorio.com',
+        cargoId: 2, // Escrevente Chefe
+        status: 'Ativo',
+        senha: '12345'
+    },
+    {
+        id: 103,
+        nome: 'Carla Auxiliar',
+        email: 'carla.aux@cartorio.com',
+        cargoId: 3, // Escrevente Auxiliar
+        status: 'Ativo',
+        senha: '1234'
+    },
+    {
+        id: 104,
+        nome: 'Daniel Inativo',
+        email: 'daniel.inativo@cartorio.com',
+        cargoId: 3, // Escrevente Auxiliar
+        status: 'Inativo',
+        senha: '123'
+    },
+];
+
+export const mockLogsDatabase: ILogAtividade[] = [
+    { id: 1, userId: 101, dataHora: '2025-07-30 14:20:15', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 187.55.12.1' },
+    { id: 2, userId: 102, dataHora: '2025-07-30 10:05:40', acao: 'CRIAÇÃO DE ATO', detalhes: 'Criou o registro de nascimento, protocolo N-12345.' },
+    { id: 3, userId: 102, dataHora: '2025-07-30 09:30:11', acao: 'LOGIN', detalhes: 'Login bem-sucedido a partir do IP 200.10.20.30' },
+    { id: 4, userId: 101, dataHora: '2025-07-29 18:00:00', acao: 'ATUALIZAÇÃO DE CARGO', detalhes: 'Editou as permissões do cargo "Escrevente Auxiliar".' },
+
+    // NOVOS DADOS ADICIONADOS CONFORME SOLICITADO
+    { 
+        id: 5, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 09:15:00', 
+        acao: 'LAVROU_ATO', 
+        detalhes: 'Lavrou o ato de Casamento, protocolo 2024-C-67890.' 
+    },
+    { 
+        id: 6, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 09:45:30', 
+        acao: 'ALTEROU_ATO', 
+        detalhes: 'Alterou dados (anotações) no registro de Óbito, protocolo 2025-O-54321.' 
+    },
+    { 
+        id: 7, 
+        userId: 103, // Carla Auxiliar
+        dataHora: '2025-08-01 10:30:00', 
+        acao: 'EMITIU_CERTIDAO', 
+        detalhes: 'Emitiu certidão de 2ª via de Nascimento para o protocolo 2025-N-12345.' 
+    },
+    { 
+        id: 8, 
+        userId: 102, // Bruno Chefe
+        dataHora: '2025-08-01 11:05:10', 
+        acao: 'IMPRIMIU_LIVRO_PROTOCOLO', 
+        detalhes: 'Imprimiu o Livro de Protocolo com filtros: Data de 2025-07-15 a 2025-07-21.' 
+    },
+    { 
+        id: 9, 
+        userId: 103, // Carla Auxiliar
+        dataHora: '2025-08-01 14:22:00', 
+        acao: 'EMITIU_SELO_AVULSO', 
+        detalhes: 'Finalizou a solicitação de selo avulso, protocolo SA-2025-00103 (Apostilamento de Haia).' 
+    },
+    { 
+        id: 10, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 15:00:00', 
+        acao: 'ALTEROU_TEMPLATE_CABECALHO', 
+        detalhes: 'Modificou o template de cabeçalho "Cabeçalho Padrão com Brasão" (ID: 1).' 
+    },
+    { 
+        id: 11, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 15:10:25', 
+        acao: 'ALTEROU_TEMPLATE_RODAPE', 
+        detalhes: 'Modificou o template de rodapé "Rodapé Padrão com Endereço" (ID: 3).' 
+    },
+    { 
+        id: 12, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 16:00:00', 
+        acao: 'ALTEROU_CONFIG_AVERBACAO', 
+        detalhes: 'Modificou o modelo de averbação "Divórcio Consensual (Padrão)" (ID: AVRB-CAS-001).' 
+    },
+    { 
+        id: 13, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 16:30:00', 
+        acao: 'ALTEROU_CONFIG_CERTIDAO', 
+        detalhes: 'Modificou o modelo de certidão "Certidão de Casamento - Segunda Via" (ID: CERT-CAS-001).' 
+    },
+    { 
+        id: 14, 
+        userId: 101, // Alice Admin
+        dataHora: '2025-08-01 17:00:00', 
+        acao: 'ALTEROU_DADOS_SERVENTIA', 
+        detalhes: 'Alterou os dados da serventia (CNS, Endereço e CEP).'
+    }
 ];

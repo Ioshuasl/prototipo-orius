@@ -3,15 +3,12 @@ import { X } from 'lucide-react';
 
 export type TemplateCabecalhoId = 'modelo1' | 'modelo2' | 'modelo3' | 'modelo4';
 
-// Define a estrutura do objeto de colunas para ser reutilizável
-export interface Colunas {
-    userId: boolean;
-    dataHora: boolean;
-    acao: boolean;
-    detalhes: boolean;
+export interface ColunasExtrato {
+    data: boolean;
+    tipo: boolean;
+    descricao: boolean;
+    valor: boolean;
 }
-
-// Define a estrutura da configuração completa, agora com o template do cabeçalho
 export interface Margens {
     top: string;
     bottom: string;
@@ -20,25 +17,22 @@ export interface Margens {
 }
 
 // Define a estrutura da configuração completa, agora com o template do cabeçalho
-export interface Configuracao {
-    colunas: Colunas;
+export interface ConfiguracaoExtrato {
+    colunas: ColunasExtrato;
     templateCabecalho: TemplateCabecalhoId;
     margens: Margens;
 }
 
-// Define as props que o modal receberá
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (config: Configuracao) => void;
-    configuracaoAtual: Configuracao;
+    onSave: (config: ConfiguracaoExtrato) => void;
+    configuracaoAtual: ConfiguracaoExtrato;
 }
 
-export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, configuracaoAtual }: ModalProps) {
-    // Estado temporário para as configurações dentro do modal
-    const [tempConfig, setTempConfig] = useState<Configuracao>(configuracaoAtual);
+export default function ModalConfiguracaoImpressaoExtrato({ isOpen, onClose, onSave, configuracaoAtual }: ModalProps) {
+    const [tempConfig, setTempConfig] = useState<ConfiguracaoExtrato>(configuracaoAtual);
 
-    // Sincroniza o estado interno se a prop externa mudar enquanto o modal estiver aberto
     useEffect(() => {
         if (isOpen) {
             setTempConfig(configuracaoAtual);
@@ -49,7 +43,7 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
         return null;
     }
 
-    const handleColumnChange = (coluna: keyof Colunas) => {
+    const handleColumnChange = (coluna: keyof ColunasExtrato) => {
         setTempConfig(prev => ({
             ...prev,
             colunas: {
@@ -91,11 +85,9 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
                     </button>
                 </div>
 
-                {/* Seção de Seleção de Cabeçalho */}
                 <fieldset className="border border-gray-200 rounded-lg p-4">
                     <legend className="text-sm font-medium text-gray-700 px-2">Modelo de Cabeçalho</legend>
                     <div className="mt-2">
-                        <label htmlFor="templateCabecalho" className="sr-only">Escolha o modelo de cabeçalho</label>
                         <select
                             id="templateCabecalho"
                             value={tempConfig.templateCabecalho}
@@ -110,24 +102,7 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
                     </div>
                 </fieldset>
 
-                {/* Seção de Seleção de Colunas */}
-                <fieldset className="border border-gray-200 rounded-lg p-4">
-                    <legend className="text-sm font-medium text-gray-700 px-2">Colunas para Imprimir</legend>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                        {(Object.keys(tempConfig.colunas) as Array<keyof Colunas>).map(col => (
-                            <label key={col} className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={tempConfig.colunas[col]}
-                                    onChange={() => handleColumnChange(col)}
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <span className="text-sm text-gray-800 capitalize">{col}</span>
-                            </label>
-                        ))}
-                    </div>
-                </fieldset>
-
+                {/* --- NOVO: Seção de Configuração de Margens --- */}
                 <fieldset className="border border-gray-200 rounded-lg p-4">
                     <legend className="text-sm font-medium text-gray-700 px-2">Margens da Página (em cm)</legend>
                     <div className="grid grid-cols-4 gap-4 mt-2">
@@ -179,6 +154,23 @@ export default function ModalConfiguracaoImpressao({ isOpen, onClose, onSave, co
                                 step="0.1"
                             />
                         </div>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-4">
+                    <legend className="text-sm font-medium text-gray-700 px-2">Colunas para Imprimir</legend>
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                        {(Object.keys(tempConfig.colunas) as Array<keyof ColunasExtrato>).map(col => (
+                            <label key={col} className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={tempConfig.colunas[col]}
+                                    onChange={() => handleColumnChange(col)}
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-gray-800 capitalize">{col}</span>
+                            </label>
+                        ))}
                     </div>
                 </fieldset>
 
