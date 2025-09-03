@@ -59,6 +59,7 @@ export interface IPessoaJuridica {
     socioAdministrativo?: string;
     qsa?: ISocio[];
     endereco: IEndereco;
+    situacao_tributaria?: 'MEI' | 'Simples Nacional' | 'Outro';
 }
 
 export type TPessoaTipo = IPessoaFisica | IPessoaJuridica;
@@ -100,7 +101,13 @@ export interface IDocumentoApresentado {
 export interface INascimentoFormData extends IBaseAto {
     nascimento: { dnv: string; dataNascimento: string; horaNascimento: string; localNascimento: string; isGemeo: boolean; semAssistenciaMedica: boolean; };
     registrando: { prenome: string; sobrenome: string; sexo: 'Masculino' | 'Feminino' | ''; naturalidade: 'Local do Parto' | 'Residência da Mãe' | ''; cpf: string; };
-    filiacao: { mae: IPessoaFisica; pai: IPessoaFisica; };
+    filiacao: {
+        mae: IPessoaFisica;
+        pais: IPessoaFisica[]; // Renomeado de 'pai' para 'pais' e agora é um array
+        declararSupostoPai?: boolean; // Controle para a funcionalidade
+        maeAusente?: boolean;
+        paiAusente?: boolean;
+    };
     declarante: Partial<TPessoaTipo>;
     testemunhas: IPessoaFisica[];
 }

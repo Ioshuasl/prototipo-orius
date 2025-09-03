@@ -175,7 +175,7 @@ export default function VisualizacaoGuia() {
     return (
         <>
             <title>Visualização da Guia #{guia.id}</title>
-            <div className="flex bg-gray-50 font-sans p-8">
+            <div className="flex bg-gray-50 font-sans">
                 <main className="flex-1">
                     <div className="mx-auto space-y-6">
                         <header className="flex items-center justify-between">
@@ -221,7 +221,7 @@ export default function VisualizacaoGuia() {
 
                         {/* SEÇÃO 2: SELOS UTILIZADOS NA GUIA */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                            <h2 className="text-2xl font-bold bg-blue-600 text-white p-6 border-b border-gray-200 rounded-md">Lotes de Selos Utilizados</h2>
+                            <h2 className="text-xl font-bold bg-blue-600 text-white p-4 border-b border-gray-200 rounded-md">Lotes de Selos Utilizados</h2>
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
@@ -260,7 +260,7 @@ export default function VisualizacaoGuia() {
 
                         {/* SEÇÃO 3: SELOS INUTILIZADOS */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                            <h2 className="text-2xl font-bold bg-red-600 text-white p-6 border-b border-gray-200 rounded-md">Selos Inutilizados no Decêndio</h2>
+                            <h2 className="text-xl font-bold bg-red-600 text-white p-4 border-b border-gray-200 rounded-md">Selos Inutilizados no Decêndio</h2>
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">

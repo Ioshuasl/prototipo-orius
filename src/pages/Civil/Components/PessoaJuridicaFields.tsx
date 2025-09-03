@@ -5,7 +5,7 @@ import { type IPessoaJuridica, type IEndereco } from '../types';
 import AddressFields from './AddressFields';
 
 interface PessoaJuridicaFieldsProps {
-    dadosPessoaJuridica: Partial<IPessoaJuridica>; // Alterado para Partial para mais segurança
+    dadosPessoaJuridica: Partial<IPessoaJuridica>;
     pathPrefix: (string | number)[];
     searchingCnpj: string | null;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -77,6 +77,22 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
                         className={commonInputClass}
                     />
                 </div>
+
+                {/* --- INÍCIO DA ALTERAÇÃO --- */}
+                {/* Este campo só aparece se a situação tributária for preenchida */}
+                {dadosPessoaJuridica.situacao_tributaria && (
+                    <div>
+                        <label className={commonLabelClass}>Situação Tributária</label>
+                        <input
+                            type="text"
+                            value={dadosPessoaJuridica.situacao_tributaria}
+                            readOnly
+                            className={`${commonInputClass} bg-gray-100 cursor-default`}
+                        />
+                    </div>
+                )}
+                {/* --- FIM DA ALTERAÇÃO --- */}
+
             </div>
 
             <div className="md:col-span-4 mt-4">
@@ -84,7 +100,7 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
             </div>
             <div className="space-y-4">
                 {dadosPessoaJuridica.qsa?.map((socio, index) => (
-                    <div key={index} className="flex items-end gap-4 p-3 bg-gray-100 rounded-md">
+                    <div key={index} className="flex items-end gap-4 p-3 border border-gray-300 rounded-md">
                         <div className="flex-grow">
                             <label className={commonLabelClass}>Nome do Sócio/Administrador</label>
                             <input type="text" name={`${basePath}.qsa.${index}.nome`} value={socio.nome} onChange={handleInputChange} className={commonInputClass} />
@@ -93,11 +109,9 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
                             <label className={commonLabelClass}>Qualificação</label>
                             <input type="text" name={`${basePath}.qsa.${index}.qualificacao`} value={socio.qualificacao} onChange={handleInputChange} className={commonInputClass} />
                         </div>
-                        {/* Botão de remover agora chama o handler específico */}
                         <button type="button" onClick={() => onRemoveSocio(index)} className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full transition-colors"><Trash2 size={20} /></button>
                     </div>
                 ))}
-                 {/* Botão de adicionar agora chama o handler específico */}
                  <button type="button" onClick={onAddSocio} className="mt-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800"><PlusCircle size={16} />Adicionar Sócio</button>
             </div>
 
@@ -108,14 +122,8 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
             <AddressFields
                 namePrefix={`${basePath}.endereco`}
                 addressData={dadosPessoaJuridica.endereco ?? {
-                    tipoLogradouro: '',
-                    logradouro: '',
-                    numero: '',
-                    complemento: '',
-                    bairro: '',
-                    cidade: '',
-                    uf: '',
-                    cep: ''
+                    tipoLogradouro: '', logradouro: '', numero: '', complemento: '',
+                    bairro: '', cidade: '', uf: '', cep: ''
                 }}
                 handleInputChange={handleInputChange}
                 handleAddressUpdate={(data) => handleAddressUpdate([...pathPrefix, 'endereco'], data)}

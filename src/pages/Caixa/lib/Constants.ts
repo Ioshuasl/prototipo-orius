@@ -1,7 +1,7 @@
 import tabelaEmolumentos from '../../../../tabela-emolumentos.json';
 import { type SealBatch, type SealValues, } from '../types';
 import { recibo_averbacao, recibo_simples } from '../Config/Recibo/template';
-import { type ReciboTemplate, type FinancialTransaction, type ILogAtividade, type IUsuario, type ServiceRecord } from '../types';
+import { type ReciboTemplate, type FinancialTransaction, type ILogAtividade, type IUsuario, type ServiceRecord, type ICargo, type IPermissao } from '../types';
 
 export const mockServiceRecords: ServiceRecord[] = [
     {
@@ -909,3 +909,48 @@ export const mockLogsDatabase: ILogAtividade[] = [
         detalhes: 'Alterou os dados da serventia (CNS, Endereço e CEP).'
     }
 ];
+
+export const mockPermissoes: IPermissao[] = [
+    // Módulo de Pessoas
+    { chave: 'pessoas:visualizar', nome: 'Visualizar Pessoas', modulo: 'Gerenciamento de Pessoas' },
+    { chave: 'pessoas:criar', nome: 'Criar/Editar Pessoas', modulo: 'Gerenciamento de Pessoas' },
+
+    // Módulo de Atos Civis
+    { chave: 'atos:nascimento:criar', nome: 'Criar Registro de Nascimento', modulo: 'Registros Civis' },
+    { chave: 'atos:casamento:criar', nome: 'Criar Registro de Casamento', modulo: 'Registros Civis' },
+    { chave: 'atos:obito:criar', nome: 'Criar Registro de Óbito', modulo: 'Registros Civis' },
+    { chave: 'atos:livro-e:criar', nome: 'Criar Registro do Livro E', modulo: 'Registros Civis' },
+    { chave: 'atos:certidao:emitir', nome: 'Emitir Certidões', modulo: 'Registros Civis' },
+
+    // Módulo de Administração
+    { chave: 'admin:usuarios:visualizar', nome: 'Visualizar Usuários', modulo: 'Administração do Sistema' },
+    { chave: 'admin:usuarios:gerenciar', nome: 'Criar/Editar/Excluir Usuários', modulo: 'Administração do Sistema' },
+    { chave: 'admin:cargos:visualizar', nome: 'Visualizar Cargos e Permissões', modulo: 'Administração do Sistema' },
+    { chave: 'admin:cargos:gerenciar', nome: 'Criar/Editar/Excluir Cargos', modulo: 'Administração do Sistema' },
+];
+
+export const mockCargos: ICargo[] = [
+    {
+        id: 1,
+        nome: 'Administrador',
+        descricao: 'Acesso total a todas as funcionalidades do sistema.',
+        permissoes: mockPermissoes.map(p => p.chave), // Todas as permissões
+    },
+    {
+        id: 2,
+        nome: 'Escrevente Chefe',
+        descricao: 'Gerencia todos os atos civis e pode gerenciar pessoas.',
+        permissoes: [
+            'pessoas:visualizar', 'pessoas:criar',
+            'atos:nascimento:criar', 'atos:casamento:criar', 'atos:obito:criar',
+            'atos:livro-e:criar', 'atos:certidao:emitir'
+        ],
+    },
+    {
+        id: 3,
+        nome: 'Escrevente Auxiliar',
+        descricao: 'Apenas visualiza e emite certidões dos atos existentes.',
+        permissoes: ['pessoas:visualizar', 'atos:certidao:emitir'],
+    },
+];
+

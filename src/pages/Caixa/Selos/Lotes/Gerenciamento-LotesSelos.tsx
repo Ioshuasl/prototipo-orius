@@ -133,8 +133,8 @@ export default function SealBatchManagementPage() {
         const day = today.getDate();
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
-        if ((day >= 8 && day <= 10) || (day >= 18 && day <= 20) || (day >= lastDayOfMonth -2 && day <= lastDayOfMonth)) {
-             setIsDecendioWarningModalOpen(true);
+        if ((day >= 8 && day <= 10) || (day >= 18 && day <= 20) || (day >= lastDayOfMonth - 2 && day <= lastDayOfMonth)) {
+            setIsDecendioWarningModalOpen(true);
         }
 
         setIsLoading(true);
@@ -199,7 +199,7 @@ export default function SealBatchManagementPage() {
             setSelectedFile(event.target.files[0]);
         }
     };
-    
+
     const handleConfirmImport = () => {
         if (!selectedFile) {
             alert('Por favor, selecione um arquivo XML para importar.');
@@ -249,18 +249,18 @@ export default function SealBatchManagementPage() {
                                 <p className="text-md text-gray-500 mt-1">Gerencie os lotes de selos adquiridos e seus status.</p>
                             </div>
                             <div className='flex gap-4'>
-                            <button
-                                onClick={handleRedimensionarLotes}
-                                className="bg-[#dd6825] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#c25a1f] transition-colors"
-                            >
-                                Redimensionar Lotes
-                            </button>
-                            <button
-                                onClick={() => setIsImportModalOpen(true)}
-                                className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105"
-                            >
-                                <Upload className="h-5 w-5" /> Importar Novo Lote
-                            </button>
+                                <button
+                                    onClick={handleRedimensionarLotes}
+                                    className="bg-[#dd6825] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#c25a1f] transition-colors"
+                                >
+                                    Redimensionar Lotes
+                                </button>
+                                <button
+                                    onClick={() => setIsImportModalOpen(true)}
+                                    className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-all duration-300 hover:scale-105"
+                                >
+                                    <Upload className="h-5 w-5" /> Importar Novo Lote
+                                </button>
                             </div>
                         </header>
 

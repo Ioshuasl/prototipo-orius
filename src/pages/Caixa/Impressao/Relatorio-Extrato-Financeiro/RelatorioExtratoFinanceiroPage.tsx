@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Printer, Settings, ListX, TrendingUp, TrendingDown, DollarSign, FilterX } from 'lucide-react';
 import { mockDespesas, mockReceitas } from '../../lib/Constants';
 import brasao from '../../../../assets/logo-cartorio.png';

@@ -101,13 +101,12 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Cabeçalhos e Rodapés', path: 'config/templates-cabecalho-rodape'},
             { label: 'Recibo', path: 'config/recibo'},
             { label: 'Emolumentos', path: 'config/emolumentos'},
-            { label: 'Integrações', path: 'config/integracoes'}
         ]
     },
     {
         title: 'Parâmetros do Sistema',
         icon: SlidersHorizontal,
-        path: 'parametros'
+        path: 'settings'
     }
 ];
 

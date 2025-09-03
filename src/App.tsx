@@ -44,7 +44,6 @@ import LivroProtocoloPage from './pages/Civil/Impressao/Livro-Protocolo/LivroPro
 import RelatorioAtividadesPage from './pages/Civil/Impressao/Relatorio-Atividade/RelatorioAtividadesPage'
 import CRCDashboard from './pages/Civil/Integracao/CRC/CRCDashboard'
 import SIRCDashboard from './pages/Civil/Integracao/SIRC/SIRCDashboard'
-import ConfiguracaoIntegracoes from './pages/Civil/Config/Integracoes/ConfiguracaoIntegracoes'
 import EsqueceuSenha from './pages/Auth/EsqueceuSenha'
 import CaixaLayout from './pages/Caixa/Layouts/CaixaLayout';
 import CaixaDashboard from './pages/Caixa/Dashboard';
@@ -65,6 +64,9 @@ import VisualizacaoGuia from './pages/Caixa/Selos/Guias/VisualizacaoGuia';
 import ExtratoFinanceiro from './pages/Caixa/FInanceiro/ExtratoFinanceiro';
 import RelatorioExtratoFinanceiroPage from './pages/Caixa/Impressao/Relatorio-Extrato-Financeiro/RelatorioExtratoFinanceiroPage';
 import RelatorioServicosPage from './pages/Caixa/Impressao/Relatorio-Servico-Realizado/RelatorioServicosPage';
+import { SelectCartorio } from './pages/SelectCartorio/SelectCartorio';
+import ParametrosCaixa from './pages/Caixa/Parametros/ParametrosCaixa';
+import ParametrosRegistroCivil from './pages/Civil/Parametros/ParametrosCivil';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -89,6 +91,11 @@ function App() {
           index
           path='/login'
           element={<Login />}
+        />
+        <Route
+          index
+          path='/selecionar-cartorio'
+          element={<SelectCartorio />}
         />
         <Route
           path='/forgot-password'
@@ -197,8 +204,7 @@ function App() {
 
           <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
 
-          <Route path="config/integracoes" element={<ConfiguracaoIntegracoes />} />
-
+          <Route path="settings" element={<ParametrosRegistroCivil />} />
         </Route>
 
         {/* Rotas dos sistemas Tabelionato de notas */}
@@ -254,6 +260,8 @@ function App() {
           <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
 
           <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
+
+          <Route path="settings" element={<ParametrosCaixa />} />
         </Route>
       </Routes>
       <ToastContainer

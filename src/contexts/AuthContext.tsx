@@ -26,7 +26,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (userData: User) => {
     setUser(userData);
-    navigate('/home');
+    // REMOVIDO: A navegação agora é feita diretamente no componente de login,
+    // que lida com o redirecionamento do usuário de suporte.
   };
 
   const logout = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Baby, UploadCloud, Users, FileText, Save, XCircle, BookKey, Award, PlusCircle, Trash2, Paperclip, Sparkles, History } from 'lucide-react';
+import { Baby, UploadCloud, Users, FileText, Save, XCircle, BookKey, Award, PlusCircle, Trash2, Paperclip, Sparkles, History, HelpCircle } from 'lucide-react';
 import PersonFields from '../../Components/PersonFields';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
@@ -7,9 +7,9 @@ import { livrosDisponiveis, mockPessoDatabase } from '../../lib/Constants';
 import { type INascimentoFormData, type IPessoaFisica, type IEndereco, type TPessoaTipo, type IPessoaJuridica } from '../../types';
 import HistoricoModal from '../../Components/HistoricoModal';
 import SeletorDePessoa from '../../Components/SeletorDePessoa';
+import InfoModal from '../../Components/InfoModal';
 
 
-// --- ESTADO INICIAL ---
 const todayString = new Date().toISOString().split('T')[0];
 const initialEnderecoState: IEndereco = { cep: '', tipoLogradouro: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' };
 const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', dataNascimento: '', docIdentidadeTipo: '', docIdentidadeNum: '', estadoCivil: '', regimeBens: '', profissao: '', nacionalidade: 'Brasileira', naturalidadeCidade: '', naturalidadeUF: '', endereco: { ...initialEnderecoState }, nomePai: '', nomeMae: '', };
@@ -19,7 +19,13 @@ const initialState: INascimentoFormData = {
     dadosAto: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
     nascimento: { dnv: '', dataNascimento: '', horaNascimento: '', localNascimento: '', isGemeo: false, semAssistenciaMedica: false },
     registrando: { prenome: '', sobrenome: '', sexo: '', naturalidade: '', cpf: '' },
-    filiacao: { mae: { ...initialPersonState }, pai: { ...initialPersonState } },
+    filiacao: {
+        mae: { ...initialPersonState },
+        pais: [{ ...initialPersonState }],
+        declararSupostoPai: false,
+        maeAusente: false,
+        paiAusente: false,
+    },
     declarante: { ...initialPersonState },
     testemunhas: [],
     documentosApresentados: [
@@ -37,7 +43,6 @@ const initialState: INascimentoFormData = {
     ]
 };
 
-// --- DEFINIÇÃO DAS ABAS ---
 const tabs = [
     { id: 'controle', label: 'Controle do Ato', icon: BookKey },
     { id: 'nascido', label: 'Dados do Nascido', icon: Baby },
@@ -47,7 +52,6 @@ const tabs = [
 ];
 
 const setNestedValue = (obj: any, path: (string | number)[], value: any): any => {
-    // ... (Lógica interna permanece a mesma)
     const key = path[0];
     if (path.length === 1) { return { ...obj, [key]: value }; }
     const nextObj = (obj && typeof obj[key] === 'object' && obj[key] !== null) ? obj[key] : (typeof path[1] === 'number' ? [] : {});
@@ -56,12 +60,12 @@ const setNestedValue = (obj: any, path: (string | number)[], value: any): any =>
 
 
 export default function RegistroNascimentoForm() {
-    // ... (Toda a lógica de estado e handlers permanece a mesma)
     const [formData, setFormData] = useState<INascimentoFormData>(initialState);
     const [activeTab, setActiveTab] = useState(tabs[0].id);
     const [searchingCpf, setSearchingCpf] = useState<string | null>(null);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [searchingCnpj, setSearchingCnpj] = useState<string | null>(null);
+    const [activeModal, setActiveModal] = useState<string | null>(null);
 
     useEffect(() => {
         if (formData.dadosAto.isLivroAntigo) {
@@ -85,7 +89,31 @@ export default function RegistroNascimentoForm() {
             }
         }
     }, [formData.nascimento.semAssistenciaMedica, formData.testemunhas.length]);
-    
+
+    useEffect(() => {
+        if (formData.filiacao.paiAusente) {
+            setFormData(prev => ({
+                ...prev,
+                filiacao: {
+                    ...prev.filiacao,
+                    pai: { ...initialPersonState }
+                }
+            }));
+        }
+    }, [formData.filiacao.paiAusente]);
+
+    useEffect(() => {
+        if (formData.filiacao.maeAusente) {
+            setFormData(prev => ({
+                ...prev,
+                filiacao: {
+                    ...prev.filiacao,
+                    mae: { ...initialPersonState }
+                }
+            }));
+        }
+    }, [formData.filiacao.maeAusente]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
@@ -103,30 +131,103 @@ export default function RegistroNascimentoForm() {
         });
     };
 
+    const handleAddSupostoPai = () => {
+        setFormData(prev => ({
+            ...prev,
+            filiacao: {
+                ...prev.filiacao,
+                pais: [...prev.filiacao.pais, { ...initialPersonState }]
+            }
+        }));
+        toast.info("Um novo campo para suposto pai foi adicionado.");
+    };
+
+    const handleRemoveSupostoPai = (indexToRemove: number) => {
+        // Impede a remoção do último campo
+        if (formData.filiacao.pais.length <= 1) {
+            toast.warn("Pelo menos um suposto pai deve ser mantido.");
+            return;
+        }
+        setFormData(prev => ({
+            ...prev,
+            filiacao: {
+                ...prev.filiacao,
+                pais: prev.filiacao.pais.filter((_, index) => index !== indexToRemove)
+            }
+        }));
+        toast.success(`Suposto pai ${indexToRemove + 1} removido.`);
+    };
+
+    useEffect(() => {
+        // Se a opção for desmarcada e houver mais de um pai, reseta a lista para conter apenas o primeiro.
+        if (!formData.filiacao.declararSupostoPai && formData.filiacao.pais.length > 1) {
+            if (window.confirm("Você tem certeza? Todos os supostos pais adicionais serão removidos.")) {
+                setFormData(prev => ({
+                    ...prev,
+                    filiacao: {
+                        ...prev.filiacao,
+                        pais: [prev.filiacao.pais[0]] // Mantém apenas o primeiro pai da lista
+                    }
+                }));
+            } else {
+                // Se o usuário cancelar, re-marca o checkbox para manter a consistência do estado
+                const fakeEvent = { target: { name: 'filiacao.declararSupostoPai', value: true, type: 'checkbox' } } as any;
+                handleInputChange(fakeEvent);
+            }
+        }
+    }, [formData.filiacao.declararSupostoPai, formData.filiacao.pais]);
+
+    // Efeito para garantir exclusividade entre 'Pai Ausente' e 'Suposto Pai'
+    useEffect(() => {
+        const { paiAusente, declararSupostoPai } = formData.filiacao;
+
+        // Se o usuário marcou 'Pai Ausente', garante que 'Suposto Pai' seja desmarcado.
+        if (paiAusente && declararSupostoPai) {
+            setFormData(prev => ({
+                ...prev,
+                filiacao: {
+                    ...prev.filiacao,
+                    declararSupostoPai: false,
+                    // Garante que a lista de pais seja resetada para apenas um
+                    pais: [{ ...initialPersonState }]
+                }
+            }));
+        }
+
+        // Se o usuário marcou 'Suposto Pai', garante que 'Pai Ausente' seja desmarcado.
+        if (declararSupostoPai && paiAusente) {
+            setFormData(prev => ({
+                ...prev,
+                filiacao: {
+                    ...prev.filiacao,
+                    paiAusente: false
+                }
+            }));
+        }
+    }, [formData.filiacao.paiAusente, formData.filiacao.declararSupostoPai]);
+
     const handleFileChange = (path: (string | number)[], file: File | null) => {
         setFormData(prev => {
             const newState = { ...prev };
             let currentLevel: any = newState;
 
-            // Navega até o penúltimo nível do caminho
             for (let i = 0; i < path.length - 1; i++) {
                 const key = path[i];
                 if (Array.isArray(currentLevel[key])) {
-                    currentLevel[key] = [...currentLevel[key]]; // Cria uma nova cópia do array
+                    currentLevel[key] = [...currentLevel[key]];
                 } else {
-                    currentLevel[key] = { ...currentLevel[key] }; // Cria uma nova cópia do objeto
+                    currentLevel[key] = { ...currentLevel[key] };
                 }
                 currentLevel = currentLevel[key];
             }
 
-            // Atualiza o objeto final no array
             const finalPathKey = path[path.length - 1];
             const index = path[path.length - 2];
 
             if (typeof index === 'number') {
-                const item = { ...currentLevel[index] }; // Cópia do item específico
+                const item = { ...currentLevel[index] };
                 item[finalPathKey as keyof typeof item] = file;
-                item['nomeArquivo'] = file?.name; // Guarda o nome do arquivo
+                item['nomeArquivo'] = file?.name;
                 currentLevel[index] = item;
             }
 
@@ -134,6 +235,53 @@ export default function RegistroNascimentoForm() {
         });
         if (file) {
             toast.info(`Arquivo "${file.name}" selecionado.`);
+        }
+    };
+
+    const handlePreencherDeclarante = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { value } = e.target;
+
+        switch (value) {
+            case 'mae':
+                // Verifica se o nome da mãe foi preenchido antes de copiar
+                if (!formData.filiacao.mae.nome) {
+                    toast.warn("Os dados da mãe ainda não foram preenchidos.");
+                    e.target.value = 'manual'; // Reseta o seletor
+                    return;
+                }
+                setFormData(prev => ({
+                    ...prev,
+                    // Copia todos os dados da mãe para o declarante
+                    declarante: { ...prev.filiacao.mae, tipo: 'fisica' }
+                }));
+                toast.success("Dados da mãe preenchidos como declarante.");
+                break;
+
+            case 'pai':
+                // Verifica se o nome do pai foi preenchido antes de copiar
+                if (!formData.filiacao.pais[0]?.nome) {
+                    toast.warn("Os dados do pai principal ainda não foram preenchidos.");
+                    e.target.value = 'manual'; // Reseta o seletor
+                    return;
+                }
+                setFormData(prev => ({
+                    ...prev,
+                    // Copia todos os dados do pai principal para o declarante
+                    declarante: { ...prev.filiacao.pais[0], tipo: 'fisica' }
+                }));
+                toast.success("Dados do pai preenchidos como declarante.");
+                break;
+
+            case 'manual':
+                // Reseta o declarante para o estado inicial de pessoa física
+                setFormData(prev => ({
+                    ...prev,
+                    declarante: { ...initialPersonState, tipo: 'fisica' }
+                }));
+                break;
+
+            default:
+                break;
         }
     };
 
@@ -157,7 +305,7 @@ export default function RegistroNascimentoForm() {
         }
 
         const currentPathKey = pathPrefix.join('.');
-        setSearchingCnpj(currentPathKey); // Ativa o ícone de "carregando"
+        setSearchingCnpj(currentPathKey);
 
         try {
             const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
@@ -169,14 +317,23 @@ export default function RegistroNascimentoForm() {
             }
 
             const data = await response.json();
-            console.log(data)
+            console.log(data);
 
-            // Mapeia os dados da API para a nossa interface IPessoaJuridica
+            // Define a situação tributária com base na resposta da API.
+            // A verificação de MEI vem primeiro, pois MEI é um subconjunto do Simples Nacional.
+            let situacaoTributaria: 'MEI' | 'Simples Nacional' | 'Outro' = 'Outro';
+            if (data.opcao_pelo_mei === true) {
+                situacaoTributaria = 'MEI';
+            } else if (data.opcao_pelo_simples === true) {
+                situacaoTributaria = 'Simples Nacional';
+            }
+
             const novosDadosPJ: Partial<IPessoaJuridica> = {
                 tipo: 'juridica',
                 razaoSocial: data.razao_social,
                 nomeFantasia: data.nome_fantasia,
                 cnpj: data.cnpj,
+                situacao_tributaria: situacaoTributaria,
                 endereco: {
                     cep: data.cep || '',
                     uf: data.uf || '',
@@ -185,28 +342,28 @@ export default function RegistroNascimentoForm() {
                     logradouro: data.logradouro || '',
                     numero: data.numero || '',
                     complemento: data.complemento || '',
-                    tipoLogradouro: '' // A API não fornece este dado, então mantemos vazio
+                    tipoLogradouro: ''
                 },
-                // Mapeia o array QSA (Quadro de Sócios e Administradores) da API
                 qsa: data.qsa?.map((socio: any) => ({
                     nome: socio.nome_socio,
                     qualificacao: socio.qualificacao_socio,
-                })) || [], // Se a API não retornar QSA, inicializa como um array vazio
+                })) || [],
             };
 
-            // Usa a nossa função segura para atualizar o estado de forma imutável
             setFormData(prev => setNestedValue(prev, pathPrefix as string[], novosDadosPJ));
 
             toast.success(`Dados de "${data.razao_social}" preenchidos!`);
+
+            console.log(novosDadosPJ)
 
         } catch (error) {
             console.error("Falha na requisição do CNPJ:", error);
             toast.error("Não foi possível conectar à API de busca de CNPJ.");
         } finally {
-            setSearchingCnpj(null); // Desativa o ícone de "carregando" ao final
+            setSearchingCnpj(null);
         }
     };
-    
+
     const handleDadosChange = (path: (string | number)[], novosDados: Partial<TPessoaTipo>) => {
         setFormData(prev => {
             const newState = { ...prev };
@@ -214,12 +371,11 @@ export default function RegistroNascimentoForm() {
             for (let i = 0; i < path.length - 1; i++) {
                 currentLevel = currentLevel[path[i]];
             }
-            // Substitui o objeto inteiro (ex: 'declarante') pelos novos dados
             currentLevel[path[path.length - 1]] = novosDados;
             return newState;
         });
     };
-    
+
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         console.log("Formulário Salvo:", formData);
@@ -259,14 +415,10 @@ export default function RegistroNascimentoForm() {
     };
     const handleAddSocio = () => {
         setFormData(prev => {
-            // Garante que o declarante é tratado como PJ
             const declarantePJ = prev.declarante as IPessoaJuridica;
-            // Cria um novo sócio em branco
             const novoSocio = { nome: '', qualificacao: '' };
-            // Cria um novo array de sócios, garantindo que o array original exista
             const qsaAtualizado = [...(declarantePJ.qsa || []), novoSocio];
 
-            // Retorna um novo estado com o declarante atualizado
             return {
                 ...prev,
                 declarante: {
@@ -280,7 +432,6 @@ export default function RegistroNascimentoForm() {
     const handleRemoveSocio = (indexToRemove: number) => {
         setFormData(prev => {
             const declarantePJ = prev.declarante as IPessoaJuridica;
-            // Cria um novo array, filtrando para remover o item no índice desejado
             const qsaAtualizado = declarantePJ.qsa?.filter((_, index) => index !== indexToRemove) || [];
 
             return {
@@ -353,7 +504,6 @@ export default function RegistroNascimentoForm() {
         toast.warn("Documento removido.");
     };
 
-    // ALTERADO: Classe de input comum agora usa as cores da marca para o foco.
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const requiredSpan = <span className="text-red-500">*</span>;
@@ -373,14 +523,12 @@ export default function RegistroNascimentoForm() {
                     <div className="mx-auto">
                         <header className="mb-6 flex justify-between items-center">
                             <div>
-                                {/* ALTERADO: Cor do título principal para o cinza escuro da marca. */}
                                 <h1 className="text-3xl font-bold text-[#4a4e51]">Registrar Novo Ato de Nascimento</h1>
                                 <p className="text-md text-gray-500 mt-1">Preencha os dados abaixo para criar um novo ato.</p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setIsHistoryModalOpen(true)}
-                                // ALTERADO: Cor do anel de foco do botão secundário.
                                 className="flex items-center gap-2 bg-white text-gray-600 font-semibold px-4 py-2 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"
                             >
                                 <History className="h-5 w-5" />
@@ -391,7 +539,6 @@ export default function RegistroNascimentoForm() {
                         <div className="border-b border-gray-200">
                             <nav className="-mb-px flex space-x-6" aria-label="Tabs">
                                 {tabs.map(tab => (
-                                    // ALTERADO: Cor da aba ativa para o laranja da marca.
                                     <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}>
                                         <tab.icon className="h-5 w-5" /> {tab.label}
                                     </button>
@@ -403,8 +550,13 @@ export default function RegistroNascimentoForm() {
                             <div className="tab-content">
                                 {activeTab === 'controle' && (
                                     <fieldset><legend className="sr-only">Dados de Controle</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                        {/* ALTERADO: Cor do checkbox. */}
-                                        <div className="flex items-center mb-5"><input type="checkbox" name="dadosAto.isLivroAntigo" id="dadosAto.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.dadosAto.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="dadosAto.isLivroAntigo" className="ml-3 font-medium text-gray-700">Transcrição de livro antigo?</label></div>
+                                        <div className="flex items-center mb-5"><input type="checkbox" name="dadosAto.isLivroAntigo" id="dadosAto.isLivroAntigo" className="form-checkbox h-5 w-5 text-[#dd6825] rounded" checked={formData.dadosAto.isLivroAntigo} onChange={handleInputChange} /><label htmlFor="dadosAto.isLivroAntigo" className="ml-3 font-medium text-gray-700 flex items-center gap-2">
+                                            Transcrição de livro antigo?
+                                            <button type="button" onClick={() => setActiveModal('livroAntigo')} className="text-gray-400 hover:text-blue-500">
+                                                <HelpCircle size={16} />
+                                            </button>
+                                        </label>
+                                        </div>
                                         <div className="pt-5 ">
                                             <h4 className="font-semibold text-gray-600 mb-3">Dados do Registro</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
@@ -421,7 +573,6 @@ export default function RegistroNascimentoForm() {
                                                 <div><label htmlFor="dadosAto.numeroTermo" className={commonLabelClass}>Nº do Termo {isControlReadOnly ? null : requiredSpan}</label><input type="text" name="dadosAto.numeroTermo" id="dadosAto.numeroTermo" className={controlInputClass} value={formData.dadosAto.numeroTermo} onChange={handleInputChange} readOnly={isControlReadOnly} placeholder={isControlReadOnly ? 'Automático' : ''} /></div>
                                             </div>
                                         </div>
-                                        {/* ALTERADO: Cor do botão de ação principal "Lavrar Ato". */}
                                         <div className="mt-6 pt-6 flex justify-end"><button type="button" onClick={handleLavrarAto} className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#c25a1f] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dd6825]"><Award className="h-5 w-5" />Lavrar Ato</button></div>
                                     </div></fieldset>
                                 )}
@@ -438,46 +589,164 @@ export default function RegistroNascimentoForm() {
                                             <div className="col-span-1">
                                                 <label htmlFor="registrando.cpf" className={commonLabelClass}>CPF {requiredSpan}</label>
                                                 <div className="flex"><IMaskInput mask="000.000.000-00" name="registrando.cpf" id="registrando.cpf" value={formData.registrando.cpf} onAccept={(value) => handleInputChange({ target: { name: 'registrando.cpf', value } } as any)} className={commonInputClass} placeholder="000.000.000-00" />
-                                                    {/* ALTERADO: Cor do ícone do botão de gerar CPF. */}
                                                     <button type="button" onClick={handleGenerateCpf} title="Gerar CPF para o nascido" className="ml-2 mt-1 px-3 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center transition-colors"><Sparkles className="h-5 w-5 text-[#dd6825]" />
                                                     </button>
                                                 </div>
                                             </div>
                                             <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.localNascimento" className={commonLabelClass}>Local do Nascimento</label><input type="text" name="nascimento.localNascimento" id="nascimento.localNascimento" placeholder="Hospital, Casa, etc. e Cidade - UF" className={commonInputClass} value={formData.nascimento.localNascimento} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.naturalidade" className={commonLabelClass}>Naturalidade do Registrando</label><select name="registrando.naturalidade" id="registrando.naturalidade" className={commonInputClass} value={formData.registrando.naturalidade} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Local do Parto">Município do Local do Parto</option><option value="Residência da Mãe">Município de Residência da Mãe</option></select></div>
-                                            {/* ALTERADO: Cor dos checkboxes. */}
-                                            <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} /> Nascimento sem assistência médica</label></div>
+                                            <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.naturalidade" className={`${commonLabelClass} flex items-center gap-2`}>
+                                                Naturalidade do Registrando
+                                                <button type="button" onClick={() => setActiveModal('naturalidade')} className="text-gray-400 hover:text-blue-500">
+                                                    <HelpCircle size={16} />
+                                                </button>
+                                            </label>
+                                                <select name="registrando.naturalidade" id="registrando.naturalidade" className={commonInputClass} value={formData.registrando.naturalidade} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Local do Parto">Município do Local do Parto</option><option value="Residência da Mãe">Município de Residência da Mãe</option></select></div>
+                                            <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} />
+                                                Nascimento sem assistência médica
+                                                <button type="button" onClick={() => setActiveModal('semAssistencia')} className="text-gray-400 hover:text-blue-500">
+                                                    <HelpCircle size={16} />
+                                                </button>
+                                            </label>
+                                            </div>
                                         </div>
                                     </div></fieldset>
                                 )}
+
                                 {activeTab === 'filiacao' && (
-                                    <fieldset><legend className="sr-only">Filiação</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-10">
-                                        <div><h4 className="font-bold text-black mb-4">Dados da Mãe</h4>
-                                            <PersonFields
-                                                personData={formData.filiacao.mae}
-                                                pathPrefix={['filiacao', 'mae']}
-                                                searchingCpf={searchingCpf}
-                                                handleInputChange={handleInputChange}
-                                                handleAddressUpdate={handleAddressUpdate}
-                                                handleCpfSearch={handleCpfSearch}
-                                            />
+                                    <fieldset>
+                                        <legend className="sr-only">Filiação</legend>
+                                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-10">
+
+                                            {/* --- SEÇÃO DA MÃE (Permanece como antes) --- */}
+                                            <div>
+                                                <div className="flex flex-col mb-4 gap-4">
+                                                    <h4 className="font-bold text-black">{formData.filiacao.maeAusente ? 'Mãe Ausente' : 'Dados da Mãe'}</h4>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="checkbox" name="filiacao.maeAusente"
+                                                            checked={formData.filiacao.maeAusente || false}
+                                                            onChange={handleInputChange}
+                                                            className="form-checkbox h-4 w-4 text-[#dd6825] rounded"
+                                                        />
+                                                        <span className="text-sm text-gray-600">Mãe ausente/não declarada</span>
+                                                    </label>
+                                                </div>
+                                                {!formData.filiacao.maeAusente && (
+                                                    <PersonFields
+                                                        personData={formData.filiacao.mae}
+                                                        pathPrefix={['filiacao', 'mae']}
+                                                        searchingCpf={searchingCpf} handleInputChange={handleInputChange}
+                                                        handleAddressUpdate={handleAddressUpdate} handleCpfSearch={handleCpfSearch}
+                                                    />
+                                                )}
+                                            </div>
+
+                                            {/* --- SEÇÃO DO PAI --- */}
+                                            <div className="border-t pt-10 border-gray-300">
+                                                <div className="flex flex-col mb-4 gap-4">
+                                                    <h4 className="font-bold text-black">
+                                                        {
+                                                            formData.filiacao.paiAusente
+                                                                ? 'Pai Ausente'
+                                                                : formData.filiacao.declararSupostoPai
+                                                                    ? 'Supostos Pais'
+                                                                    : 'Dados do Pai'
+                                                        }
+                                                    </h4>
+                                                    <div className="flex items-center gap-6">
+                                                        {/* Checkbox de Suposto Pai */}
+                                                        <label className={`flex items-center gap-2 ${formData.filiacao.paiAusente ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+                                                            <input
+                                                                type="checkbox"
+                                                                name="filiacao.declararSupostoPai"
+                                                                checked={formData.filiacao.declararSupostoPai || false}
+                                                                onChange={handleInputChange}
+                                                                // Desabilitado se 'Pai Ausente' estiver marcado
+                                                                disabled={formData.filiacao.paiAusente}
+                                                                className="form-checkbox h-4 w-4 text-[#dd6825] rounded"
+                                                            />
+                                                            <span className="text-sm text-gray-600 font-semibold">Declarar suposto(s) pai(s)</span>
+                                                        </label>
+
+                                                        {/* Checkbox de Pai Ausente */}
+                                                        <label className={`flex items-center gap-2 ${formData.filiacao.declararSupostoPai ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+                                                            <input
+                                                                type="checkbox"
+                                                                name="filiacao.paiAusente"
+                                                                checked={formData.filiacao.paiAusente || false}
+                                                                onChange={handleInputChange}
+                                                                // Desabilitado se 'Suposto Pai' estiver marcado
+                                                                disabled={formData.filiacao.declararSupostoPai}
+                                                                className="form-checkbox h-4 w-4 text-[#dd6825] rounded"
+                                                            />
+                                                            <span className="text-sm text-gray-600">Pai ausente/não declarado</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                {/* --- LÓGICA PARA RENDERIZAR MÚLTIPLOS PAIS --- */}
+                                                {!formData.filiacao.paiAusente && formData.filiacao.pais.map((pai, index) => (
+                                                    <div key={index} className="relative border border-gray-200 rounded-lg p-6 mt-6">
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <h4 className="font-semibold text-gray-700">
+                                                                {formData.filiacao.declararSupostoPai ? `Dados do ${index + 1}º Suposto Pai` : 'Dados do Pai'}
+                                                            </h4>
+                                                            {/* O botão de remover só aparece no modo "suposto pai" e se não for o primeiro da lista */}
+                                                            {formData.filiacao.declararSupostoPai && formData.filiacao.pais.length > 1 && (
+                                                                <button type="button" onClick={() => handleRemoveSupostoPai(index)} className="flex items-center gap-2 text-sm text-red-600 hover:text-red-800 font-semibold">
+                                                                    <Trash2 className="h-4 w-4" />Remover
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        <PersonFields
+                                                            personData={pai}
+                                                            pathPrefix={['filiacao', 'pais', index]}
+                                                            searchingCpf={searchingCpf}
+                                                            handleInputChange={handleInputChange}
+                                                            handleAddressUpdate={handleAddressUpdate}
+                                                            handleCpfSearch={handleCpfSearch}
+                                                        />
+                                                    </div>
+                                                ))}
+
+                                                {/* O botão de adicionar só aparece no modo "suposto pai" */}
+                                                {formData.filiacao.declararSupostoPai && (
+                                                    <div className="mt-6 flex justify-start">
+                                                        <button type="button" onClick={handleAddSupostoPai} className="flex items-center gap-2 bg-gray-100 text-gray-800 font-semibold px-4 py-2 rounded-lg shadow-sm border border-gray-300 hover:bg-gray-200 transition-colors">
+                                                            <PlusCircle className="h-5 w-5" />Adicionar Suposto Pai
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div><h4 className="font-bold text-black mb-4">Dados do Pai</h4>
-                                            <PersonFields
-                                                personData={formData.filiacao.pai}
-                                                pathPrefix={['filiacao', 'pai']}
-                                                searchingCpf={searchingCpf}
-                                                handleInputChange={handleInputChange}
-                                                handleAddressUpdate={handleAddressUpdate}
-                                                handleCpfSearch={handleCpfSearch}
-                                            />
-                                        </div>
-                                    </div></fieldset>
+                                    </fieldset>
                                 )}
+
                                 {activeTab === 'partes' && (
                                     <div className="space-y-6">
                                         <fieldset><legend className="sr-only">Dados do Declarante</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                             <h3 className="text-xl font-semibold text-gray-800 mb-4">Dados do Declarante</h3>
+
+                                            <div className="mb-6 p-4 rounded-lg border border-gray-300">
+                                                <label htmlFor="preencher-declarante" className="block text-sm font-medium text-gray-700 mb-1">
+                                                    Preenchimento Rápido
+                                                </label>
+                                                <select
+                                                    id="preencher-declarante"
+                                                    onChange={handlePreencherDeclarante}
+                                                    className="mt-1 w-full md:w-1/3 border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                    // O valor 'manual' serve como um placeholder funcional
+                                                    defaultValue="manual"
+                                                >
+                                                    <option value="manual">Preencher manualmente...</option>
+                                                    <option value="mae">Usar dados da Mãe</option>
+                                                    <option value="pai">Usar dados do Pai (Principal)</option>
+                                                </select>
+                                                <p className="text-xs text-gray-500 mt-2">
+                                                    Selecione esta opção para preencher automaticamente os campos do declarante com os dados da mãe ou do pai já informados na aba "Filiação".
+                                                </p>
+                                            </div>
+
                                             <SeletorDePessoa
                                                 dados={formData.declarante}
                                                 pathPrefix={['declarante']}
@@ -545,7 +814,7 @@ export default function RegistroNascimentoForm() {
                                                             <label htmlFor={`doc-file-${index}`} className={commonLabelClass}>
                                                                 Anexo Digital
                                                             </label>
-                                                             {/* ALTERADO: Cor do botão de upload. */}
+                                                            {/* ALTERADO: Cor do botão de upload. */}
                                                             <label htmlFor={`doc-file-${index}`} className="mt-1 cursor-pointer flex items-center justify-center gap-2 w-full md:w-56 px-4 py-2 bg-white text-[#dd6825] border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition">
                                                                 <UploadCloud size={18} />
                                                                 <span>{doc.nomeArquivo ? 'Trocar Arquivo' : 'Escolher Arquivo'}</span>
@@ -575,7 +844,7 @@ export default function RegistroNascimentoForm() {
                                                     </div>
                                                 ))}
                                             </div>
-                                            
+
                                             {/* ALTERADO: Cor do link "Adicionar Documento". */}
                                             <button
                                                 type="button"
@@ -603,6 +872,56 @@ export default function RegistroNascimentoForm() {
                 onClose={() => setIsHistoryModalOpen(false)}
                 historico={formData.historico}
             />
+
+            <InfoModal
+                isOpen={activeModal === 'livroAntigo'}
+                onClose={() => setActiveModal(null)}
+                title="Transcrição de Livro Antigo"
+            >
+                <p className="mb-4">
+                    Marque esta opção apenas quando estiver transcrevendo um registro de um livro físico antigo para o sistema eletrônico.
+                </p>
+                <p>
+                    Ao marcar, os campos de <strong className="font-semibold">controle do ato</strong> (Data do Registro, Protocolo, Livro, Folha, Termo) serão <strong className="font-semibold">habilitados</strong> para preenchimento manual. Caso contrário, esses dados são gerados automaticamente pelo sistema ao lavrar um novo ato.
+                </p>
+            </InfoModal>
+
+            <InfoModal
+                isOpen={activeModal === 'semAssistencia'}
+                onClose={() => setActiveModal(null)}
+                title="Nascimento Sem Assistência Médica"
+            >
+                <p className="mb-4">
+                    Esta opção deve ser marcada quando o parto ocorreu sem a presença de um profissional da saúde, como em partos domiciliares não assistidos, e, portanto, <strong className="font-semibold">não há uma Declaração de Nascido Vivo (DNV)</strong> emitida pelo hospital.
+                </p>
+                <p>
+                    De acordo com a Lei de Registros Públicos, nesses casos, o registro de nascimento dependerá do depoimento de <strong className="font-semibold">duas testemunhas</strong> que presenciaram o parto ou que atestem o fato.
+                </p>
+                <p className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm">
+                    <strong>Atenção:</strong> Ao marcar esta opção, a aba "Partes Envolvidas" exigirá o cadastro de, no mínimo, duas testemunhas para lavrar o ato.
+                </p>
+            </InfoModal>
+
+            <InfoModal
+                isOpen={activeModal === 'naturalidade'}
+                onClose={() => setActiveModal(null)}
+                title="Naturalidade do Registrando"
+            >
+                <p className="mb-4">
+                    Conforme a Lei nº 13.484/2017, os pais têm a opção de escolher a naturalidade do filho.
+                </p>
+                <ul className="list-disc list-inside space-y-2">
+                    <li>
+                        <strong className="font-semibold">Município do Local do Parto:</strong> A cidade onde o hospital ou local de nascimento está localizado.
+                    </li>
+                    <li>
+                        <strong className="font-semibold">Município de Residência da Mãe:</strong> A cidade onde a mãe reside no momento do parto.
+                    </li>
+                </ul>
+                <p className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm">
+                    Esta escolha é um direito garantido por lei. Certifique-se de confirmar a preferência com o declarante.
+                </p>
+            </InfoModal>
         </>
     );
 }

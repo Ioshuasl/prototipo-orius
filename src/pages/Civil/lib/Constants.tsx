@@ -551,8 +551,8 @@ export const mockCertidaoTemplates: CertidaoTemplate[] = [
         titulo: "Certidão de Nascimento - Segunda Via",
         descricao: "Modelo padrão para emissão de segundas vias de certidões de nascimento.",
         id_selo: 3001,
-        cabecalhoPadraoId: "CAB-001",
-        rodapePadraoId: "ROD-001",
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
         conteudo: certidaoNascimentoHTML,
         margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
         layout: { largura_mm: 210, altura_mm: 297 }
@@ -563,8 +563,8 @@ export const mockCertidaoTemplates: CertidaoTemplate[] = [
         titulo: "Certidão de Nascimento - Inteiro Teor",
         descricao: "Modelo completo com todas as informações e averbações do registro.",
         id_selo: 3004,
-        cabecalhoPadraoId: "CAB-001",
-        rodapePadraoId: "ROD-001",
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
         conteudo: certidaoInteiroTeorHTML,
         margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
         layout: { largura_mm: 210, altura_mm: 297 }
@@ -575,8 +575,8 @@ export const mockCertidaoTemplates: CertidaoTemplate[] = [
         titulo: "Certidão de Casamento - Segunda Via",
         descricao: "Modelo padrão para segundas vias de certidões de casamento.",
         id_selo: 3001,
-        cabecalhoPadraoId: "CAB-001",
-        rodapePadraoId: "ROD-001",
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
         conteudo: certidaoCasamentoHTML,
         margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
         layout: { largura_mm: 210, altura_mm: 297 }
@@ -587,8 +587,8 @@ export const mockCertidaoTemplates: CertidaoTemplate[] = [
         titulo: "Certidão de Óbito - Padrão",
         descricao: "Modelo padrão para emissão de certidões de óbito.",
         id_selo: 3005,
-        cabecalhoPadraoId: "CAB-001",
-        rodapePadraoId: "ROD-001",
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
         conteudo: certidaoObitoHTML,
         margins: { top: '2.5', right: '2.5', bottom: '2.5', left: '2.5' },
         layout: { largura_mm: 210, altura_mm: 297 }

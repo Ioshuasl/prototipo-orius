@@ -109,3 +109,16 @@ export interface ServiceRecord {
     withSeal: boolean;
     sealNumber: string[]; // Alterado para um array de strings
 }
+
+export interface IPermissao {
+    chave: string;       // Ex: 'usuarios:criar'
+    nome: string;        // Ex: 'Criar Usuários'
+    modulo: string;      // Ex: 'Usuários e Permissões'
+}
+
+export interface ICargo {
+    id: number;
+    nome: string;
+    descricao: string;
+    permissoes: string[]; // Um array com as chaves das permissões associadas
+}

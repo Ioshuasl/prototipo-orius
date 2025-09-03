@@ -80,7 +80,7 @@ export const menuConfig: MenuItemConfig[] = [
     {
         title: 'Parâmetros do Sistema',
         icon: SlidersHorizontal,
-        path: 'parametros'
+        path: 'settings'
     }
 ];
 
