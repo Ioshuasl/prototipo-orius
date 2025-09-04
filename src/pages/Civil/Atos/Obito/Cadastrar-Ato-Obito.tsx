@@ -8,7 +8,7 @@ import {
 import { type IObitoFormData, type IPessoaFisica, type IEndereco, type IPessoaJuridica, type TPessoaTipo } from '../../types'
 import { livrosDisponiveis, ufs, mockPessoDatabase } from '../../lib/Constants'
 import HistoricoModal from '../../Components/HistoricoModal';
-import InfoModal from '../../Components/InfoModal'
+import InfoModal from '../../../Components/InfoModal'
 import TabControle from './tabs/TabControle'
 import TabFalecidoFamilia from './tabs/TabFalecidoFamilia'
 import TabBens from './tabs/TabBens'

@@ -1,7 +1,7 @@
 import React from 'react';
 import PersonFields from './PersonFields';
 import PessoaJuridicaFields from './PessoaJuridicaFields';
-import { type IPessoaFisica, type IPessoaJuridica, type IEndereco, type TPessoaTipo } from '../types';
+import { type IPessoaFisica, type IPessoaJuridica, type IEndereco, type TPessoaTipo } from '../Civil/types';
 
 // ALTERAÇÃO: Estados iniciais declarados diretamente no arquivo.
 const initialEnderecoState: IEndereco = {

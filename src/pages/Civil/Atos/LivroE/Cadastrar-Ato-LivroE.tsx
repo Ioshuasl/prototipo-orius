@@ -7,7 +7,7 @@ import {
 import { tiposDeAtoLivroE, mockPessoDatabase } from '../../lib/Constants';
 import ControleAtoLivroE from './Components/ControleAtoLivroE';
 import HistoricoModal from '../../Components/HistoricoModal';
-import InfoModal from '../../Components/InfoModal';
+import InfoModal from '../../../Components/InfoModal';
 import FormEmancipacao from './Components/FormEmancipacao';
 import FormInterdicao from './Components/FormInterdicao';
 import FormAusencia from './Components/FormAusencia';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Search, Loader2, Trash2, PlusCircle } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
-import { type IPessoaJuridica, type IEndereco } from '../types';
-import AddressFields from './AddressFields';
+import { type IPessoaJuridica, type IEndereco } from '../Civil/types';
+import AddressFields from '../Civil/Components/AddressFields';
 
 interface PessoaJuridicaFieldsProps {
     dadosPessoaJuridica: Partial<IPessoaJuridica>;

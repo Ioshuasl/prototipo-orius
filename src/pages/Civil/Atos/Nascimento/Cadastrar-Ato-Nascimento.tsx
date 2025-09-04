@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Baby, UploadCloud, Users, FileText, Save, XCircle, BookKey, Award, PlusCircle, Trash2, Paperclip, Sparkles, History, HelpCircle } from 'lucide-react';
-import PersonFields from '../../Components/PersonFields';
+import PersonFields from '../../../Components/PersonFields';
+import AddressFields from '../../Components/AddressFields';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
 import { livrosDisponiveis, mockPessoDatabase } from '../../lib/Constants';
 import { type INascimentoFormData, type IPessoaFisica, type IEndereco, type TPessoaTipo, type IPessoaJuridica } from '../../types';
 import HistoricoModal from '../../Components/HistoricoModal';
-import SeletorDePessoa from '../../Components/SeletorDePessoa';
-import InfoModal from '../../Components/InfoModal';
+import SeletorDePessoa from '../../../Components/SeletorDePessoa';
+import InfoModal from '../../../Components/InfoModal';
 
 
 const todayString = new Date().toISOString().split('T')[0];
@@ -17,7 +18,20 @@ const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', d
 
 const initialState: INascimentoFormData = {
     dadosAto: { isLivroAntigo: false, dataRegistro: todayString, protocolo: '', dataLavratura: '', livro: '', folha: '', numeroTermo: '' },
-    nascimento: { dnv: '', dataNascimento: '', horaNascimento: '', localNascimento: '', isGemeo: false, semAssistenciaMedica: false },
+    nascimento: {
+        dnv: '',
+        dataNascimento: '',
+        horaNascimento: '',
+        localNascimento: '',
+        isGemeo: false,
+        semAssistenciaMedica: false,
+        localOcorrencia: {
+            tipo: '',
+            nomeHospital: '',
+            descricaoOutro: '',
+            endereco: { ...initialEnderecoState }
+        }
+    },
     registrando: { prenome: '', sobrenome: '', sexo: '', naturalidade: '', cpf: '' },
     filiacao: {
         mae: { ...initialPersonState },
@@ -577,39 +591,86 @@ export default function RegistroNascimentoForm() {
                                     </div></fieldset>
                                 )}
                                 {activeTab === 'nascido' && (
-                                    <fieldset><legend className="sr-only">Dados do Nascido</legend><div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5">
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.dnv" className={commonLabelClass}>Nº da DNV {requiredSpan}</label><input type="text" name="nascimento.dnv" id="nascimento.dnv" className={commonInputClass} value={formData.nascimento.dnv} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1 md:col-span-2"></div>
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.prenome" className={commonLabelClass}>Prenome {requiredSpan}</label><input type="text" name="registrando.prenome" id="registrando.prenome" className={commonInputClass} value={formData.registrando.prenome} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.sobrenome" className={commonLabelClass}>Sobrenome</label><input type="text" name="registrando.sobrenome" id="registrando.sobrenome" className={commonInputClass} value={formData.registrando.sobrenome} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1"><label htmlFor="nascimento.dataNascimento" className={commonLabelClass}>Data de Nascimento {requiredSpan}</label><input type="date" name="nascimento.dataNascimento" id="nascimento.dataNascimento" className={commonInputClass} value={formData.nascimento.dataNascimento} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1"><label htmlFor="nascimento.horaNascimento" className={commonLabelClass}>Hora (opcional)</label><input type="time" name="nascimento.horaNascimento" id="nascimento.horaNascimento" className={commonInputClass} value={formData.nascimento.horaNascimento} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1"><label htmlFor="registrando.sexo" className={commonLabelClass}>Sexo</label><select name="registrando.sexo" id="registrando.sexo" className={commonInputClass} value={formData.registrando.sexo} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
-                                            <div className="col-span-1">
-                                                <label htmlFor="registrando.cpf" className={commonLabelClass}>CPF {requiredSpan}</label>
-                                                <div className="flex"><IMaskInput mask="000.000.000-00" name="registrando.cpf" id="registrando.cpf" value={formData.registrando.cpf} onAccept={(value) => handleInputChange({ target: { name: 'registrando.cpf', value } } as any)} className={commonInputClass} placeholder="000.000.000-00" />
-                                                    <button type="button" onClick={handleGenerateCpf} title="Gerar CPF para o nascido" className="ml-2 mt-1 px-3 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center transition-colors"><Sparkles className="h-5 w-5 text-[#dd6825]" />
+                                    <fieldset>
+                                        <legend className="sr-only">Dados do Nascido</legend>
+                                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5">
+                                                <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.dnv" className={commonLabelClass}>Nº da DNV {requiredSpan}</label><input type="text" name="nascimento.dnv" id="nascimento.dnv" className={commonInputClass} value={formData.nascimento.dnv} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1 md:col-span-2"></div>
+                                                <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.prenome" className={commonLabelClass}>Prenome {requiredSpan}</label><input type="text" name="registrando.prenome" id="registrando.prenome" className={commonInputClass} value={formData.registrando.prenome} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.sobrenome" className={commonLabelClass}>Sobrenome</label><input type="text" name="registrando.sobrenome" id="registrando.sobrenome" className={commonInputClass} value={formData.registrando.sobrenome} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1"><label htmlFor="nascimento.dataNascimento" className={commonLabelClass}>Data de Nascimento {requiredSpan}</label><input type="date" name="nascimento.dataNascimento" id="nascimento.dataNascimento" className={commonInputClass} value={formData.nascimento.dataNascimento} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1"><label htmlFor="nascimento.horaNascimento" className={commonLabelClass}>Hora (opcional)</label><input type="time" name="nascimento.horaNascimento" id="nascimento.horaNascimento" className={commonInputClass} value={formData.nascimento.horaNascimento} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1"><label htmlFor="registrando.sexo" className={commonLabelClass}>Sexo</label><select name="registrando.sexo" id="registrando.sexo" className={commonInputClass} value={formData.registrando.sexo} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
+                                                <div className="col-span-1">
+                                                    <label htmlFor="registrando.cpf" className={commonLabelClass}>CPF {requiredSpan}</label>
+                                                    <div className="flex"><IMaskInput mask="000.000.000-00" name="registrando.cpf" id="registrando.cpf" value={formData.registrando.cpf} onAccept={(value) => handleInputChange({ target: { name: 'registrando.cpf', value } } as any)} className={commonInputClass} placeholder="000.000.000-00" />
+                                                        <button type="button" onClick={handleGenerateCpf} title="Gerar CPF para o nascido" className="ml-2 mt-1 px-3 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center transition-colors"><Sparkles className="h-5 w-5 text-[#dd6825]" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.localNascimento" className={commonLabelClass}>Local do Nascimento</label><input type="text" name="nascimento.localNascimento" id="nascimento.localNascimento" placeholder="Hospital, Casa, etc. e Cidade - UF" className={commonInputClass} value={formData.nascimento.localNascimento} onChange={handleInputChange} /></div>
+                                                <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.naturalidade" className={`${commonLabelClass} flex items-center gap-2`}>
+                                                    Naturalidade do Registrando
+                                                    <button type="button" onClick={() => setActiveModal('naturalidade')} className="text-gray-400 hover:text-blue-500">
+                                                        <HelpCircle size={16} />
                                                     </button>
+                                                </label>
+                                                    <select name="registrando.naturalidade" id="registrando.naturalidade" className={commonInputClass} value={formData.registrando.naturalidade} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Local do Parto">Município do Local do Parto</option><option value="Residência da Mãe">Município de Residência da Mãe</option></select></div>
+                                                <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} />
+                                                    Nascimento sem assistência médica
+                                                    <button type="button" onClick={() => setActiveModal('semAssistencia')} className="text-gray-400 hover:text-blue-500">
+                                                        <HelpCircle size={16} />
+                                                    </button>
+                                                </label>
+                                                </div>
+
+                                                <div className="md:col-span-4 mt-4 border-t border-gray-300">
+                                                    <SubSectionTitle>Local de Ocorrência do Parto</SubSectionTitle>
+                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-5 mt-4">
+                                                        <div className="md:col-span-2">
+                                                            <label htmlFor="nascimento.localOcorrencia.tipo" className={commonLabelClass}>Tipo de Local</label>
+                                                            <select name="nascimento.localOcorrencia.tipo" id="nascimento.localOcorrencia.tipo" className={commonInputClass} value={formData.nascimento.localOcorrencia.tipo} onChange={handleInputChange}>
+                                                                <option value="">Selecione...</option>
+                                                                <option value="hospital">Hospital ou Unidade de Saúde</option>
+                                                                <option value="residencia">Residência</option>
+                                                                <option value="outro">Outro Local</option>
+                                                            </select>
+                                                        </div>
+
+                                                        {/* Campo condicional para nome do hospital */}
+                                                        {formData.nascimento.localOcorrencia.tipo === 'hospital' && (
+                                                            <div className="md:col-span-2">
+                                                                <label htmlFor="nascimento.localOcorrencia.nomeHospital" className={commonLabelClass}>Nome do Hospital/Unidade de Saúde</label>
+                                                                <input type="text" name="nascimento.localOcorrencia.nomeHospital" id="nascimento.localOcorrencia.nomeHospital" className={commonInputClass} value={formData.nascimento.localOcorrencia.nomeHospital} onChange={handleInputChange} />
+                                                            </div>
+                                                        )}
+
+                                                        {/* Campo condicional para outro local */}
+                                                        {formData.nascimento.localOcorrencia.tipo === 'outro' && (
+                                                            <div className="md:col-span-2">
+                                                                <label htmlFor="nascimento.localOcorrencia.descricaoOutro" className={commonLabelClass}>Especifique o Local</label>
+                                                                <input type="text" name="nascimento.localOcorrencia.descricaoOutro" id="nascimento.localOcorrencia.descricaoOutro" placeholder="Ex: Via Pública, Veículo" className={commonInputClass} value={formData.nascimento.localOcorrencia.descricaoOutro} onChange={handleInputChange} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Reutilização do componente de endereço */}
+                                                    {formData.nascimento.localOcorrencia.tipo && (
+                                                        <div className="mt-6">
+                                                            <h4 className="font-semibold text-gray-600 mb-3">Endereço da Ocorrência</h4>
+                                                            <AddressFields
+                                                                namePrefix="nascimento.localOcorrencia.endereco"
+                                                                addressData={formData.nascimento.localOcorrencia.endereco}
+                                                                handleInputChange={handleInputChange}
+                                                                handleAddressUpdate={(data) => handleAddressUpdate(['nascimento', 'localOcorrencia', 'endereco'], data)}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="nascimento.localNascimento" className={commonLabelClass}>Local do Nascimento</label><input type="text" name="nascimento.localNascimento" id="nascimento.localNascimento" placeholder="Hospital, Casa, etc. e Cidade - UF" className={commonInputClass} value={formData.nascimento.localNascimento} onChange={handleInputChange} /></div>
-                                            <div className="col-span-1 md:col-span-2"><label htmlFor="registrando.naturalidade" className={`${commonLabelClass} flex items-center gap-2`}>
-                                                Naturalidade do Registrando
-                                                <button type="button" onClick={() => setActiveModal('naturalidade')} className="text-gray-400 hover:text-blue-500">
-                                                    <HelpCircle size={16} />
-                                                </button>
-                                            </label>
-                                                <select name="registrando.naturalidade" id="registrando.naturalidade" className={commonInputClass} value={formData.registrando.naturalidade} onChange={handleInputChange}><option value="" disabled>Selecione...</option><option value="Local do Parto">Município do Local do Parto</option><option value="Residência da Mãe">Município de Residência da Mãe</option></select></div>
-                                            <div className="md:col-span-4 flex gap-8 mt-2 pt-4 "><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.isGemeo" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.isGemeo} onChange={handleInputChange} /> Parto múltiplo (gêmeos)</label><label className="flex items-center gap-2"><input type="checkbox" name="nascimento.semAssistenciaMedica" className="form-checkbox h-4 w-4 text-[#dd6825]" checked={formData.nascimento.semAssistenciaMedica} onChange={handleInputChange} />
-                                                Nascimento sem assistência médica
-                                                <button type="button" onClick={() => setActiveModal('semAssistencia')} className="text-gray-400 hover:text-blue-500">
-                                                    <HelpCircle size={16} />
-                                                </button>
-                                            </label>
-                                            </div>
                                         </div>
-                                    </div></fieldset>
+                                    </fieldset>
                                 )}
 
                                 {activeTab === 'filiacao' && (

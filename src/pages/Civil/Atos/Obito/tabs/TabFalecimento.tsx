@@ -1,7 +1,7 @@
 import React from 'react';
 import { type IObitoFormData, type IEndereco, type RuleKey, type TPessoaTipo, type IPessoaFisica } from '../../../types';
 import AddressFields from '../../../Components/AddressFields';
-import SeletorDePessoa from '../../../Components/SeletorDePessoa';
+import SeletorDePessoa from '../../../../Components/SeletorDePessoa';
 
 // A interface de Props agora inclui os componentes e estilos que serão recebidos
 interface TabFalecimentoProps {

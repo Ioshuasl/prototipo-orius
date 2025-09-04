@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import { type ICasamentoFormData, type IEndereco, type IPessoaFisica } from '../../../types';
 
 // Tipos das props

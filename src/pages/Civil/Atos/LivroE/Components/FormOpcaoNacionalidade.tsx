@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import DadosDocumentoOrigem from './DadosDocumentoOrigem';
 import { type IOpcaoNacionalidade, type IEndereco, type IPersonData } from '../../../types';
 import { infoOpcaoNacionalidade } from '../../../lib/contextualInfo';

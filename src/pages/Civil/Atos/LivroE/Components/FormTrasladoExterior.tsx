@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import { type ITrasladoExterior, type IEndereco, type IPersonData, type ITrasladoNascimentoData, type ITrasladoCasamentoData, type ITrasladoObitoData } from '../../../types';
 import SubFormTrasladoNascimento from './SubFormTrasladoNascimento';
 import SubFormTrasladoCasamento from './SubFormTrasladoCasamento';

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { BookKey, Feather, Users, HelpCircle, UserCheck, Paperclip, Save, XCircle, Award, History, PlusCircle, Trash2, UploadCloud } from 'lucide-react';
 import { type INatimortoFormData, type IPessoaFisica, type IEndereco } from '../../types';
-import PersonFields from '../../Components/PersonFields';
+import PersonFields from '../../../Components/PersonFields';
 import HistoricoModal from '../../Components/HistoricoModal';
 import { mockPessoDatabase } from '../../lib/Constants';
-import InfoModal from '../../Components/InfoModal';
+import InfoModal from '../../../Components/InfoModal';
 
 
 // --- ESTADO INICIAL E LÓGICA (Inalterados) ---

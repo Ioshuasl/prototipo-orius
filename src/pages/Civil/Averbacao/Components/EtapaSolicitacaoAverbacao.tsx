@@ -5,7 +5,7 @@ import BuscaAtoCertidao from './BuscaAtoCertidao';
 import SeletorRequerente from './SeletorRequerente';
 import { toast } from 'react-toastify';
 import { type ProcessoAverbacaoState } from '../EmissaoAverbacao';
-import InfoModal from '../../Components/InfoModal';
+import InfoModal from '../../../Components/InfoModal';
 import * as InfoContents from '../../lib/contextualInfo';
 
 type InfoKey = keyof typeof InfoContents;

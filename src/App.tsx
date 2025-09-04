@@ -67,6 +67,9 @@ import RelatorioServicosPage from './pages/Caixa/Impressao/Relatorio-Servico-Rea
 import { SelectCartorio } from './pages/SelectCartorio/SelectCartorio';
 import ParametrosCaixa from './pages/Caixa/Parametros/ParametrosCaixa';
 import ParametrosRegistroCivil from './pages/Civil/Parametros/ParametrosCivil';
+import GerenciamentoTitulosPage from './pages/Protesto/Titulo/Gerenciamento-Titulos';
+import ImportacaoTitulosPage from './pages/Protesto/Titulo/Importacao-Titulos';
+import TesteCalculoCustasPage from './pages/Protesto/Titulo/testeCalculo';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -215,6 +218,32 @@ function App() {
         {/* Rotas dos sistemas Protesto */}
         <Route path="/protesto-titulos" element={<ProtestoLayout />} >
           <Route path='dashboard' element={<ProtestoDashboard />} />
+          <Route path='titulos' element={<GerenciamentoTitulosPage />} />
+          <Route path='importar-titulos' element={<ImportacaoTitulosPage />} />
+
+          <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
+
+          <Route path="config/users" element={<GerenciamentoUsuarios />} />
+          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage />} />
+          <Route path="config/users/:id" element={<CadastroUsuarioPage />} />
+
+          <Route path="config/roles-permissions" element={<GerenciamentoCargos />} />
+          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage />} />
+          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage />} />
+
+          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates />} />
+          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage />} />
+          <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
+
+          <Route path="config/recibo" element={<GerenciamentoRecibos />} />
+          <Route path="config/recibo/cadastrar" element={<CadastroReciboPage />} />
+          <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
+
+          <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
+
+          <Route path="settings" element={<ParametrosCaixa />} />
+
+          <Route path="calculo" element={<TesteCalculoCustasPage />} />
         </Route>
 
         {/* Rotas dos sistemas RTD */}

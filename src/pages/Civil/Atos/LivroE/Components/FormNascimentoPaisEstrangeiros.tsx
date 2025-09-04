@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import { Sparkles } from 'lucide-react';
 import { type INascimentoPaisEstrangeiros, type IEndereco, type IPersonData } from '../../../types';
 import { toast } from 'react-toastify';

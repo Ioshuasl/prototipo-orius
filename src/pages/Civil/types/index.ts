@@ -99,7 +99,19 @@ export interface IDocumentoApresentado {
 
 // interface relacionado aos atos de nascimento
 export interface INascimentoFormData extends IBaseAto {
-    nascimento: { dnv: string; dataNascimento: string; horaNascimento: string; localNascimento: string; isGemeo: boolean; semAssistenciaMedica: boolean; };
+    nascimento: { 
+        dnv: string; 
+        dataNascimento: string; 
+        horaNascimento: string; localNascimento: string; 
+        isGemeo: boolean; 
+        semAssistenciaMedica: boolean; 
+        localOcorrencia: {
+            tipo: '' | 'hospital' | 'residencia' | 'outro';
+            nomeHospital?: string; // Para quando o tipo for 'hospital'
+            descricaoOutro?: string; // Para quando o tipo for 'outro'
+            endereco: IEndereco;
+        };
+    };
     registrando: { prenome: string; sobrenome: string; sexo: 'Masculino' | 'Feminino' | ''; naturalidade: 'Local do Parto' | 'Residência da Mãe' | ''; cpf: string; };
     filiacao: {
         mae: IPessoaFisica;

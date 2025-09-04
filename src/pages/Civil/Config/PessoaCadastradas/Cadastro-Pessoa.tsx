@@ -5,7 +5,7 @@ import {
     Save, Loader2, ArrowLeft, ListX, FileText, BookOpen, CalendarDays,
     Baby, HeartHandshake, Cross, BookMarked
 } from 'lucide-react';
-import SeletorDePessoa from '../../Components/SeletorDePessoa';
+import SeletorDePessoa from '../../../Components/SeletorDePessoa';
 import { type TPessoaTipo, type IPessoaFisica, type IPessoaJuridica, type IEndereco, type ISocio } from '../../types';
 import { mockPessoasCadastradas, mockAtosDatabase } from '../../lib/Constants';
 

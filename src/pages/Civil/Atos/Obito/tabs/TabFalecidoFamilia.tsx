@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart, Baby, PlusCircle, Trash2 } from 'lucide-react';
 import { type IObitoFormData, type IEndereco, type RuleKey } from '../../../types';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 
 interface TabFalecidoFamiliaProps {
     formData: IObitoFormData;

@@ -4,7 +4,7 @@ import QRCode from 'qrcode';
 import { ArrowLeft, CheckCircle, Printer, ShieldCheck, HelpCircle, Move, Scaling, Eye } from 'lucide-react';
 import { selo_teste } from '../../lib/Constants';
 import { type ProcessoAverbacaoState } from '../EmissaoAverbacao';
-import InfoModal from '../../Components/InfoModal';
+import InfoModal from '../../../Components/InfoModal';
 import { infoFormatoAverbacao } from '../../lib/contextualInfo';
 import PreviewModal from './PreviewModal';
 import MainEditor from '../../../Components/MainEditor';

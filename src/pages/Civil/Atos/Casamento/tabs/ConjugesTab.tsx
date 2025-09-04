@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import { type ICasamentoFormData, type IEndereco } from '../../../types';
 
 // Tipos das props que o componente recebe

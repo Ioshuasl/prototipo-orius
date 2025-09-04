@@ -4,9 +4,9 @@ import {
     PlusCircle, Trash2, History, BookKey, PenSquare, EarOff, Languages, FileBadge
 } from 'lucide-react';
 import { type ICasamentoFormData, type IEndereco, type TPessoaTipo } from '../../../types';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import TriagemCasoEspecialCard from '../../../Components/TriagemCasoEspecialCard';
-import SeletorDePessoa from '../../../Components/SeletorDePessoa';
+import SeletorDePessoa from '../../../../Components/SeletorDePessoa';
 
 interface PartesAdicionaisTabProps {
     formData: ICasamentoFormData;

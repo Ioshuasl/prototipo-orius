@@ -1,9 +1,9 @@
 import React from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
-import { ufs, regimesDeBens, nacionalidades } from '../lib/Constants';
-import { type IPessoaFisica, type IEndereco } from '../types';
-import AddressFields from './AddressFields';
+import { ufs, regimesDeBens, nacionalidades } from '../Civil/lib/Constants';
+import { type IPessoaFisica, type IEndereco } from '../Civil/types';
+import AddressFields from '../Civil/Components/AddressFields';
 
 interface PersonFieldsProps {
     personData: IPessoaFisica;

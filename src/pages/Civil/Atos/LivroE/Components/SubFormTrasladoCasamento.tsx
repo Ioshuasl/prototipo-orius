@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonFields from '../../../Components/PersonFields';
+import PersonFields from '../../../../Components/PersonFields';
 import { regimesDeBens } from '../../../lib/Constants';
 import { type ITrasladoCasamentoData, type IEndereco, type IPersonData } from '../../../types';
 
