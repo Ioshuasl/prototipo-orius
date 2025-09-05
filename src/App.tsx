@@ -70,6 +70,8 @@ import ParametrosRegistroCivil from './pages/Civil/Parametros/ParametrosCivil';
 import GerenciamentoTitulosPage from './pages/Protesto/Titulo/Gerenciamento-Titulos';
 import ImportacaoTitulosPage from './pages/Protesto/Titulo/Importacao-Titulos';
 import TesteCalculoCustasPage from './pages/Protesto/Titulo/testeCalculo';
+import TesteAtoCompletoPage from './pages/Protesto/Titulo/Teste-Ato-Completo';
+import DetalhesTituloProtestoPage from './pages/Protesto/Titulo/TituloPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -219,6 +221,8 @@ function App() {
         <Route path="/protesto-titulos" element={<ProtestoLayout />} >
           <Route path='dashboard' element={<ProtestoDashboard />} />
           <Route path='titulos' element={<GerenciamentoTitulosPage />} />
+          <Route path='titulos/novo' element={<DetalhesTituloProtestoPage />} />
+          <Route path='titulos/:id' element={<DetalhesTituloProtestoPage />} />
           <Route path='importar-titulos' element={<ImportacaoTitulosPage />} />
 
           <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
@@ -244,6 +248,8 @@ function App() {
           <Route path="settings" element={<ParametrosCaixa />} />
 
           <Route path="calculo" element={<TesteCalculoCustasPage />} />
+
+          <Route path="teste" element={<TesteAtoCompletoPage />} />
         </Route>
 
         {/* Rotas dos sistemas RTD */}

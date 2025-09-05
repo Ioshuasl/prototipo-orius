@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Landmark, Wallet, User, Briefcase, CalendarDays, AlertTriangle, BadgeCheck, FileText, Ban, Trash2, Scale, HandCoins, BookCheck, BookX, X, Upload } from 'lucide-react';
+import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Landmark, Wallet, Briefcase, CalendarDays, AlertTriangle, FileText, Ban, Scale, HandCoins, BookCheck, X, Upload } from 'lucide-react';
 import { type ITituloProtesto, type StatusTitulo, type IBank } from '../types';
 import { mockTitulosProtesto, statusOptions,especieOptions } from '../lib/Constants';
-import { toast } from 'react-toastify';
 
 
 export default function GerenciamentoTitulosPage() {
@@ -68,31 +67,40 @@ export default function GerenciamentoTitulosPage() {
     }, [bancoFilterRef]);
 
     useEffect(() => {
-        setIsLoading(true);
-        const filterTimeout = setTimeout(() => {
-            const results = mockTitulosProtesto.filter(record => {
-                const searchTermMatch = filters.searchTerm ?
-                    record.protocolo.includes(filters.searchTerm) ||
-                    record.devedores.some(d =>
-                        (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                        (d.tipo === 'fisica' ? d.cpf : d.cnpj).includes(filters.searchTerm)
-                    ) : true;
+    setIsLoading(true);
+    const filterTimeout = setTimeout(() => {
+        const results = mockTitulosProtesto.filter(record => {
+            const searchTermMatch = filters.searchTerm ?
+                record.protocolo.includes(filters.searchTerm) ||
+                record.devedores.some(d =>
+                    (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+                    (d.tipo === 'fisica' ? d.cpf : d.cnpj).includes(filters.searchTerm)
+                ) : true;
 
-                const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
-                const especieMatch = filters.especieTitulo !== 'Todos' ? record.especieTitulo === filters.especieTitulo : true;
+            const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
+            const especieMatch = filters.especieTitulo !== 'Todos' ? record.especieTitulo === filters.especieTitulo : true;
 
-                const startDateMatch = filters.startDate ? record.dataApontamento >= new Date(filters.startDate) : true;
-                const endDateMatch = filters.endDate ? record.dataApontamento <= new Date(filters.endDate + 'T23:59:59.999') : true;
+            const startDateMatch = filters.startDate 
+                ? record.apontamento && record.apontamento.dataApontamento >= new Date(filters.startDate) 
+                : true;
+            const endDateMatch = filters.endDate 
+                ? record.apontamento && record.apontamento.dataApontamento <= new Date(filters.endDate + 'T23:59:59.999') 
+                : true;
 
-                return searchTermMatch && statusMatch && especieMatch && startDateMatch && endDateMatch;
-            });
-            setFilteredRecords(results.sort((a, b) => b.dataApontamento.getTime() - a.dataApontamento.getTime()));
-            setCurrentPage(1);
-            setIsLoading(false);
-        }, 300);
+            return searchTermMatch && statusMatch && especieMatch && startDateMatch && endDateMatch;
+        });
 
-        return () => clearTimeout(filterTimeout);
-    }, [filters]);
+        const sortedResults = results.sort((a, b) => 
+            (b.apontamento?.dataApontamento?.getTime() ?? 0) - (a.apontamento?.dataApontamento?.getTime() ?? 0)
+        );
+        setFilteredRecords(sortedResults);
+
+        setCurrentPage(1);
+        setIsLoading(false);
+    }, 300);
+
+    return () => clearTimeout(filterTimeout);
+}, [filters]);
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -145,6 +153,7 @@ export default function GerenciamentoTitulosPage() {
 
         return (
             <div className="bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-xl flex flex-col">
+                <Link to={`${record.id}`}>
                 <div className="p-4 border-b border-gray-300">
                     <div className="flex justify-between items-start gap-2">
                         <div>
@@ -161,9 +170,10 @@ export default function GerenciamentoTitulosPage() {
                     <div className="InfoItem"><Wallet className="Icon" /><div><p className="Label">Valor</p><p className="Value">R$ {record.valor.toFixed(2)}</p></div></div>
                     <div className="InfoItem"><Briefcase className="Icon" /><div><p className="Label">Apresentante</p><p className="Value truncate">{presenterName}</p></div></div>
                     <div className="InfoItem"><FileText className="Icon" /><div><p className="Label">Espécie</p><p className="Value">{record.especieTitulo}</p></div></div>
-                    <div className="InfoItem"><CalendarDays className="Icon" /><div><p className="Label">Apontamento</p><p className="Value">{record.dataApontamento.toLocaleDateString('pt-BR')}</p></div></div>
+                    <div className="InfoItem"><CalendarDays className="Icon" /><div><p className="Label">Apontamento</p><p className="Value">{record.apontamento?.dataApontamento.toLocaleDateString('pt-BR')}</p></div></div>
                     <div className="InfoItem"><AlertTriangle className="Icon text-red-500" /><div><p className="Label">Prazo Final</p><p className="Value font-bold text-red-600">{record.dataPrazoFinal ? record.dataPrazoFinal.toLocaleDateString('pt-BR') : 'N/A'}</p></div></div>
                 </div>
+                </Link>
 
                 <div className="p-3 bg-gray-50 border-t border-gray-300 flex justify-end items-center gap-2">
                     {renderActions()}
@@ -199,7 +209,7 @@ export default function GerenciamentoTitulosPage() {
                                     Importar Títulos (CRA)
                                 </Link>
                                 <Link
-                                    to="/protesto/titulos/apontamento"
+                                    to="novo"
                                     className="flex items-center gap-2 bg-[#dd6825] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#c25a1f] transition-colors"
                                 >
                                     <PlusCircle className="h-5 w-5" />

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon, UploadIcon, DollarSign } from 'lucide-react';
+import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon, UploadIcon, Calculator } from 'lucide-react';
 import logo from '../../../assets/logo-orius-sidebar.png'
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
@@ -42,7 +42,7 @@ export const menuConfig: MenuItemConfig[] = [
     },
     {
         title: 'Cálculo',
-        icon: DollarSign,
+        icon: Calculator,
         path: 'calculo'
     },
     {

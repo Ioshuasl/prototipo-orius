@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Calculator } from 'lucide-react';
 import SeletorDePessoa from '../../Components/SeletorDePessoa';
 import { type IEndereco, type IPessoaFisica, type IPessoaJuridica, type ITituloProtesto, type TPessoaTipo } from '../types';
@@ -114,7 +114,7 @@ export default function TesteCalculoCustasPage() {
         }
 
         const tituloParaTeste: ITituloProtesto = {
-            id: 1, protocolo: 'TESTE-001', status: 'Aguardando Qualificação', dataApontamento: new Date(),
+            id: 1, protocolo: 'TESTE-001', status: 'Aguardando Qualificação', apontamento:{dataApontamento: new Date()},
             apresentante: apresentante, devedores: [devedor], especieTitulo: 'Duplicata Mercantil',
             numeroTitulo: 'DM-TESTE', valor: valorTitulo, dataEmissao: new Date(), dataVencimento: new Date(),
             tipoPagamento: tipoPagamento
@@ -130,7 +130,7 @@ export default function TesteCalculoCustasPage() {
     };
 
     return (
-        <div className="p-6 bg-gray-50 font-sans min-h-screen">
+        <div className=" bg-gray-50 font-sans min-h-screen">
             <div className="max-w-5xl mx-auto space-y-6">
                 <header>
                     <h1 className="text-3xl font-bold text-[#4a4e51]">Ferramenta de Teste de Cálculo de Custas</h1>
