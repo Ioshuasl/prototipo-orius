@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Landmark, Wallet, Briefcase, CalendarDays, AlertTriangle, FileText, Ban, Scale, HandCoins, BookCheck, X, Upload } from 'lucide-react';
-import { type ITituloProtesto, type StatusTitulo, type IBank } from '../types';
-import { mockTitulosProtesto, statusOptions,especieOptions } from '../lib/Constants';
+import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Landmark, Wallet, Briefcase, CalendarDays, AlertTriangle, FileText, Ban, Scale, HandCoins, BookCheck, Upload } from 'lucide-react';
+import { type ITituloProtesto, type StatusTitulo } from '../types';
+import { mockTitulosProtesto, statusOptions, especieOptions } from '../lib/Constants';
+import BancoSelect from '../Components/BancoSelect';
 
 
 export default function GerenciamentoTitulosPage() {
@@ -14,111 +15,48 @@ export default function GerenciamentoTitulosPage() {
     const [filtersVisible, setFiltersVisible] = useState(false);
     const recordsPerPage = 9;
     const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
-    const [bancos, setBancos] = useState<IBank[]>([]);
-    const [bancoSearch, setBancoSearch] = useState(''); // Controla o texto visível no input
-    const [bancoSuggestions, setBancoSuggestions] = useState<IBank[]>([]); // Lista de sugestões filtradas
-    const [isBancoDropdownOpen, setIsBancoDropdownOpen] = useState(false); // Controla a visibilidade do dropdown
-    const bancoFilterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const fetchBancos = async () => {
-            try {
-                const response = await fetch('https://brasilapi.com.br/api/banks/v1');
-                if (response.ok) {
-                    const data: IBank[] = await response.json();
+        setIsLoading(true);
+        const filterTimeout = setTimeout(() => {
+            const results = mockTitulosProtesto.filter(record => {
+                const searchTermMatch = filters.searchTerm ?
+                    record.protocolo.includes(filters.searchTerm) ||
+                    record.devedores.some(d =>
+                        (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+                        (d.tipo === 'fisica' ? d.cpf : d.cnpj).includes(filters.searchTerm)
+                    ) : true;
 
-                    const sanitizedData = data.map(banco => ({
-                        ...banco,
-                        code: banco.code === null ? 'TAB' : banco.code
-                    }));
+                const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
+                const especieMatch = filters.especieTitulo !== 'Todos' ? record.especieTitulo === filters.especieTitulo : true;
 
-                    setBancos(sanitizedData);
-                }
-            } catch (error) {
-                console.error("Erro ao buscar a lista de bancos:", error);
-            }
-        };
+                const startDateMatch = filters.startDate
+                    ? record.apontamento && record.apontamento.dataApontamento >= new Date(filters.startDate)
+                    : true;
+                const endDateMatch = filters.endDate
+                    ? record.apontamento && record.apontamento.dataApontamento <= new Date(filters.endDate + 'T23:59:59.999')
+                    : true;
 
-        fetchBancos();
-    }, []); // O array vazio [] garante que isso rode apenas uma vez
+                return searchTermMatch && statusMatch && especieMatch && startDateMatch && endDateMatch;
+            });
 
-    useEffect(() => {
-        if (bancoSearch) {
-            const searchTerm = bancoSearch.toLowerCase();
-            setBancoSuggestions(
-                bancos.filter(b =>
-                    (b.name && b.name.toLowerCase().includes(searchTerm)) ||
-                    b.code.toString().includes(searchTerm)
-                )
+            const sortedResults = results.sort((a, b) =>
+                (b.apontamento?.dataApontamento?.getTime() ?? 0) - (a.apontamento?.dataApontamento?.getTime() ?? 0)
             );
-        } else {
-            setBancoSuggestions(bancos);
-        }
-    }, [bancoSearch, bancos]);
+            setFilteredRecords(sortedResults);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (bancoFilterRef.current && !bancoFilterRef.current.contains(event.target as Node)) {
-                setIsBancoDropdownOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [bancoFilterRef]);
+            setCurrentPage(1);
+            setIsLoading(false);
+        }, 300);
 
-    useEffect(() => {
-    setIsLoading(true);
-    const filterTimeout = setTimeout(() => {
-        const results = mockTitulosProtesto.filter(record => {
-            const searchTermMatch = filters.searchTerm ?
-                record.protocolo.includes(filters.searchTerm) ||
-                record.devedores.some(d =>
-                    (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                    (d.tipo === 'fisica' ? d.cpf : d.cnpj).includes(filters.searchTerm)
-                ) : true;
-
-            const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
-            const especieMatch = filters.especieTitulo !== 'Todos' ? record.especieTitulo === filters.especieTitulo : true;
-
-            const startDateMatch = filters.startDate 
-                ? record.apontamento && record.apontamento.dataApontamento >= new Date(filters.startDate) 
-                : true;
-            const endDateMatch = filters.endDate 
-                ? record.apontamento && record.apontamento.dataApontamento <= new Date(filters.endDate + 'T23:59:59.999') 
-                : true;
-
-            return searchTermMatch && statusMatch && especieMatch && startDateMatch && endDateMatch;
-        });
-
-        const sortedResults = results.sort((a, b) => 
-            (b.apontamento?.dataApontamento?.getTime() ?? 0) - (a.apontamento?.dataApontamento?.getTime() ?? 0)
-        );
-        setFilteredRecords(sortedResults);
-
-        setCurrentPage(1);
-        setIsLoading(false);
-    }, 300);
-
-    return () => clearTimeout(filterTimeout);
-}, [filters]);
+        return () => clearTimeout(filterTimeout);
+    }, [filters]);
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleClearFilters = () => setFilters(initialFilters);
-
-    const handleBancoSelect = (banco: IBank) => {
-        setFilters(prev => ({ ...prev, banco: banco.code.toString() }));
-        setBancoSearch(`${banco.code} - ${banco.name}`);
-        setIsBancoDropdownOpen(false);
-    };
-
-    const handleClearBanco = () => {
-        setFilters(prev => ({ ...prev, banco: 'Todos' }));
-        setBancoSearch('');
-        setIsBancoDropdownOpen(false);
-    };
 
     const paginatedRecords = filteredRecords.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage);
 
@@ -154,25 +92,25 @@ export default function GerenciamentoTitulosPage() {
         return (
             <div className="bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-xl flex flex-col">
                 <Link to={`${record.id}`}>
-                <div className="p-4 border-b border-gray-300">
-                    <div className="flex justify-between items-start gap-2">
-                        <div>
-                            <h3 className="font-bold text-gray-800 text-lg">
-                                Protocolo: {record.protocolo}
-                            </h3>
+                    <div className="p-4 border-b border-gray-300">
+                        <div className="flex justify-between items-start gap-2">
+                            <div>
+                                <h3 className="font-bold text-gray-800 text-lg">
+                                    Protocolo: {record.protocolo}
+                                </h3>
+                            </div>
+                            <StatusBadge status={record.status} />
                         </div>
-                        <StatusBadge status={record.status} />
                     </div>
-                </div>
 
-                <div className="p-4 grid grid-cols-2 gap-4 text-sm flex-grow">
-                    <div className="InfoItem"><Landmark className="Icon" /><div><p className="Label">Protocolo</p><p className="Value">{record.protocolo}</p></div></div>
-                    <div className="InfoItem"><Wallet className="Icon" /><div><p className="Label">Valor</p><p className="Value">R$ {record.valor.toFixed(2)}</p></div></div>
-                    <div className="InfoItem"><Briefcase className="Icon" /><div><p className="Label">Apresentante</p><p className="Value truncate">{presenterName}</p></div></div>
-                    <div className="InfoItem"><FileText className="Icon" /><div><p className="Label">Espécie</p><p className="Value">{record.especieTitulo}</p></div></div>
-                    <div className="InfoItem"><CalendarDays className="Icon" /><div><p className="Label">Apontamento</p><p className="Value">{record.apontamento?.dataApontamento.toLocaleDateString('pt-BR')}</p></div></div>
-                    <div className="InfoItem"><AlertTriangle className="Icon text-red-500" /><div><p className="Label">Prazo Final</p><p className="Value font-bold text-red-600">{record.dataPrazoFinal ? record.dataPrazoFinal.toLocaleDateString('pt-BR') : 'N/A'}</p></div></div>
-                </div>
+                    <div className="p-4 grid grid-cols-2 gap-4 text-sm flex-grow">
+                        <div className="InfoItem"><Landmark className="Icon" /><div><p className="Label">Protocolo</p><p className="Value">{record.protocolo}</p></div></div>
+                        <div className="InfoItem"><Wallet className="Icon" /><div><p className="Label">Valor</p><p className="Value">R$ {record.valor.toFixed(2)}</p></div></div>
+                        <div className="InfoItem"><Briefcase className="Icon" /><div><p className="Label">Apresentante</p><p className="Value truncate">{presenterName}</p></div></div>
+                        <div className="InfoItem"><FileText className="Icon" /><div><p className="Label">Espécie</p><p className="Value">{record.especieTitulo}</p></div></div>
+                        <div className="InfoItem"><CalendarDays className="Icon" /><div><p className="Label">Apontamento</p><p className="Value">{record.apontamento?.dataApontamento.toLocaleDateString('pt-BR')}</p></div></div>
+                        <div className="InfoItem"><AlertTriangle className="Icon text-red-500" /><div><p className="Label">Prazo Final</p><p className="Value font-bold text-red-600">{record.dataPrazoFinal ? record.dataPrazoFinal.toLocaleDateString('pt-BR') : 'N/A'}</p></div></div>
+                    </div>
                 </Link>
 
                 <div className="p-3 bg-gray-50 border-t border-gray-300 flex justify-end items-center gap-2">
@@ -275,48 +213,14 @@ export default function GerenciamentoTitulosPage() {
                                             </div>
 
                                             {/* --- CAMPO DE BUSCA DE BANCO --- */}
-                                            <div ref={bancoFilterRef} className="relative">
-                                                <label htmlFor="banco" className="block text-sm font-medium text-gray-600 mb-1">Buscar por Banco</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        id="banco"
-                                                        value={bancoSearch}
-                                                        onChange={(e) => {
-                                                            setBancoSearch(e.target.value);
-                                                            if (filters.banco !== 'Todos') {
-                                                                setFilters(prev => ({ ...prev, banco: 'Todos' }));
-                                                            }
-                                                        }}
-                                                        onFocus={() => setIsBancoDropdownOpen(true)}
-                                                        placeholder="Digite o código ou nome"
-                                                        className="border border-gray-300 rounded-md pl-3 pr-8 py-2 w-full focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]"
-                                                        disabled={bancos.length === 0}
-                                                    />
-                                                    {bancoSearch && (
-                                                        <button onClick={handleClearBanco} className="absolute inset-y-0 right-0 flex items-center pr-2">
-                                                            <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                                                        </button>
-                                                    )}
-                                                </div>
-
-                                                {isBancoDropdownOpen && (
-                                                    <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                                        {bancoSuggestions.length > 0 ? (
-                                                            bancoSuggestions.map(b => (
-                                                                <li
-                                                                    key={b.code}
-                                                                    onClick={() => handleBancoSelect(b)}
-                                                                    className="px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
-                                                                >
-                                                                    {b.code} - {b.name}
-                                                                </li>
-                                                            ))
-                                                        ) : (
-                                                            <li className="px-3 py-2 text-sm text-gray-500">Nenhum banco encontrado</li>
-                                                        )}
-                                                    </ul>
-                                                )}
+                                            <div>
+                                                <BancoSelect
+                                                    label="Banco"
+                                                    selectedBankCode={filters.banco === 'Todos' ? undefined : parseInt(filters.banco)}
+                                                    onBankSelect={(banco) => {
+                                                        setFilters(prev => ({ ...prev, banco: banco ? banco.code.toString() : 'Todos' }));
+                                                    }}
+                                                />
                                             </div>
 
                                             {/* --- PERÍODO DE APONTAMENTO --- */}

@@ -1,6 +1,6 @@
 export interface ISelo {
     numeroselo: string,
-    codigo: number
+    codigo: number | undefined
 }
 
 export interface IEndereco {
@@ -52,9 +52,16 @@ export interface IPessoaJuridica {
 
 export type TPessoaTipo = IPessoaFisica | IPessoaJuridica;
 
+interface Historico {
+    data: string;
+    evento: string;
+    usuario: string
+}
+
 
 export interface ITituloProtesto {
     id: number;
+    isTituloAntigo: boolean;
     protocolo: string;
     status: StatusTitulo;
     dataPrazoFinal?: Date
@@ -94,9 +101,10 @@ export interface ITituloProtesto {
     cancelamento?: {
         data: Date;
         motivo: 'Ordem Judicial' | 'Anuência do Credor' | 'Pagamento';
-        selosApontamento?: ISelo;
+        selosCancelamento?: ISelo;
     };
     motivoRecusa?: string;
+    historico: Historico[]
 }
 
 export type StatusTitulo =
@@ -112,6 +120,15 @@ export type StatusTitulo =
 
 export interface IBank {
     name: string;
-    code: number | string;
+    code: number;
     fullName: string;
+}
+
+export interface ILivroDeProtesto {
+    id: string; // Ex: "PROTESTO-1"
+    tipo: 'Livro de Protocolo' | 'Livro de Protesto';
+    numero: number;
+    situacao: 'Aberto' | 'Fechado';
+    quantidadeFolhas: 200; // Valor fixo
+    folhaAtual: number;
 }
