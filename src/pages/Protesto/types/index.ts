@@ -52,7 +52,7 @@ export interface IPessoaJuridica {
 
 export type TPessoaTipo = IPessoaFisica | IPessoaJuridica;
 
-interface Historico {
+export interface Historico {
     data: string;
     evento: string;
     usuario: string
@@ -116,7 +116,8 @@ export type StatusTitulo =
     | 'Retirado'
     | 'Sustado Judicialmente'
     | 'Protestado'
-    | 'Cancelado';
+    | 'Cancelado'
+    | 'Liquidado';
 
 export interface IBank {
     name: string;

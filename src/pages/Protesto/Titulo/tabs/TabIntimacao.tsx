@@ -1,13 +1,15 @@
 import React from 'react';
 import { type ITituloProtesto } from '../../types';
-import { Mail } from 'lucide-react';
+import { Mail, HandCoins, Gavel } from 'lucide-react';
 
 interface TabIntimacaoProps {
     titulo: ITituloProtesto;
     setTitulo: React.Dispatch<React.SetStateAction<ITituloProtesto>>; // <-- Prop adicionada
+    onLiquidar: () => void; // <-- Nova prop
+    onProtestar: () => void; // <-- Nova prop
 }
 
-const TabIntimacao: React.FC<TabIntimacaoProps> = ({ titulo, setTitulo }) => {
+const TabIntimacao: React.FC<TabIntimacaoProps> = ({ titulo, setTitulo, onLiquidar, onProtestar }) => {
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
 
@@ -70,6 +72,24 @@ const TabIntimacao: React.FC<TabIntimacaoProps> = ({ titulo, setTitulo }) => {
                     />
                 </div>
             </div>
+            {['Aguardando Intimação', 'Prazo Aberto'].includes(titulo.status) && (
+                 <footer className="mt-6 pt-4 border-t border-gray-200 flex justify-end gap-3">
+                    <button 
+                        onClick={onLiquidar}
+                        className="flex items-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                        <HandCoins size={18} />
+                        Liquidar
+                    </button>
+                    <button 
+                        onClick={onProtestar}
+                        className="flex items-center gap-2 bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                        <Gavel size={18} />
+                        Protestar Título
+                    </button>
+                </footer>
+            )}
         </div>
     );
 };

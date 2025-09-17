@@ -11,159 +11,57 @@ export const mockEndereco4: IEndereco = { cep: '74823-450', logradouro: 'Alameda
 export const carlosPereira: IPessoaFisica = { tipo: 'fisica', nome: 'Carlos Pereira da Silva', cpf: '111.111.111-11', dataNascimento: '1985-05-20', docIdentidadeTipo: 'RG', docIdentidadeNum: '123456 SSP/GO', profissao: 'Engenheiro Civil', nacionalidade: 'Brasileira', naturalidadeCidade: 'Anápolis', naturalidadeUF: 'GO', endereco: mockEndereco2, estadoCivil: 'Casado(a)', sexo: 'Masculino' };
 export const anaJuliaMarques: IPessoaFisica = { tipo: 'fisica', nome: 'Ana Julia Marques', cpf: '444.444.444-44', dataNascimento: '1990-11-15', docIdentidadeTipo: 'CNH', docIdentidadeNum: '01234567890', profissao: 'Advogada', nacionalidade: 'Brasileira', naturalidadeCidade: 'Goiânia', naturalidadeUF: 'GO', endereco: mockEndereco1, estadoCivil: 'Solteiro(a)', sexo: 'Feminino' };
 export const ricardoMartins: IPessoaFisica = { tipo: 'fisica', nome: 'Ricardo Martins Andrade', cpf: '555.555.555-55', dataNascimento: '1978-01-30', docIdentidadeTipo: 'RG', docIdentidadeNum: '654321 SSP/DF', profissao: 'Comerciante', nacionalidade: 'Brasileira', naturalidadeCidade: 'Brasília', naturalidadeUF: 'DF', endereco: mockEndereco4, estadoCivil: 'Divorciado(a)', sexo: 'Masculino' };
-export const fernandoCosta: IPessoaFisica = { tipo: 'fisica', nome: 'Fernando Costa', cpf: '777.777.777-77', dataNascimento: '1992-03-12', docIdentidadeTipo: 'RG', docIdentidadeNum: '789123 SSP/GO', profissao: 'Programador', nacionalidade: 'Brasileira', naturalidadeCidade: 'Rio Verde', naturalidadeUF: 'GO', endereco: mockEndereco2, estadoCivil: 'Solteiro(a)', sexo: 'Masculino' };
-export const marciaOliveira: IPessoaFisica = { tipo: 'fisica', nome: 'Marcia Oliveira', cpf: '888.888.888-88', dataNascimento: '1993-07-22', docIdentidadeTipo: 'CNH', docIdentidadeNum: '09876543210', profissao: 'Arquiteta', nacionalidade: 'Brasileira', naturalidadeCidade: 'Goiânia', naturalidadeUF: 'GO', endereco: mockEndereco2, estadoCivil: 'União Estável', sexo: 'Feminino' };
 export const lucasMendes: IPessoaFisica = { tipo: 'fisica', nome: 'Lucas Mendes', cpf: '999.999.999-99', dataNascimento: '1995-02-18', docIdentidadeTipo: 'RG', docIdentidadeNum: '112233 SSP/SP', profissao: 'Designer', nacionalidade: 'Brasileira', naturalidadeCidade: 'São Paulo', naturalidadeUF: 'SP', endereco: mockEndereco4, estadoCivil: 'Solteiro(a)', sexo: 'Masculino' };
+export const helenaSouza: IPessoaFisica = { tipo: 'fisica', nome: 'Helena Souza', cpf: '121.212.121-21', dataNascimento: '1988-06-25', docIdentidadeTipo: 'RG', docIdentidadeNum: '778899 SSP/GO', profissao: 'Médica', nacionalidade: 'Brasileira', naturalidadeCidade: 'Goiânia', naturalidadeUF: 'GO', endereco: mockEndereco1, estadoCivil: 'Casado(a)', sexo: 'Feminino' };
+export const robertoAlmeida: IPessoaFisica = { tipo: 'fisica', nome: 'Roberto Almeida', cpf: '321.654.987-00', dataNascimento: '1975-03-10', docIdentidadeTipo: 'RG', docIdentidadeNum: '987654 SSP/RJ', profissao: 'Contador', nacionalidade: 'Brasileira', naturalidadeCidade: 'Rio de Janeiro', naturalidadeUF: 'RJ', endereco: mockEndereco3, estadoCivil: 'Viúvo(a)', sexo: 'Masculino' };
+export const sandraLima: IPessoaFisica = { tipo: 'fisica', nome: 'Sandra Lima', cpf: '112.223.334-45', dataNascimento: '1992-11-30', docIdentidadeTipo: 'CNH', docIdentidadeNum: '12312312312', profissao: 'Jornalista', nacionalidade: 'Brasileira', naturalidadeCidade: 'Salvador', naturalidadeUF: 'BA', endereco: mockEndereco2, estadoCivil: 'Solteiro(a)', sexo: 'Feminino' };
 
-export const ferragensXYZ: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Comercial de Ferragens XYZ Ltda', cnpj: '11.111.111/0001-11', endereco: mockEndereco1, situacao_tributaria: 'Simples Nacional', nomeFantasia: 'Ferragista XYZ', qsa: [{ nome: 'João de Deus', qualificacao: 'Sócio-Administrador' }] };
 export const bancoAlfa: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Banco Alfa S/A', cnpj: '22.222.222/0001-22', endereco: mockEndereco3, situacao_tributaria: 'Outro', nomeFantasia: 'Banco Alfa', qsa: [{ nome: 'Maria Aparecida', qualificacao: 'Diretor Presidente' }] };
 export const construtoraRocha: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Construtora Rocha e Filhos Ltda - ME', cnpj: '33.333.333/0001-33', endereco: mockEndereco2, situacao_tributaria: 'Simples Nacional', nomeFantasia: 'Construtora Rocha', qsa: [{ nome: 'Pedro Rocha', qualificacao: 'Sócio-Administrador' }] };
-export const distribuidoraJG: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Distribuidora de Bebidas JG EIRELI', cnpj: '66.666.666/0001-66', endereco: mockEndereco3, situacao_tributaria: 'MEI', nomeFantasia: 'JG Bebidas', qsa: [{ nome: 'José Garcia', qualificacao: 'Titular Proprietário' }] };
 export const imobiliariaNorte: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Imobiliária Norte Sul Ltda', cnpj: '77.777.777/0001-77', endereco: mockEndereco1, situacao_tributaria: 'Outro', nomeFantasia: 'Norte Sul Imóveis', qsa: [{ nome: 'Mariana Rios', qualificacao: 'Sócia-Administradora' }] };
+export const supermercadoBomPreco: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Supermercado Bom Preço Ltda', cnpj: '45.678.912/0001-34', endereco: mockEndereco3, situacao_tributaria: 'Simples Nacional', nomeFantasia: 'Bom Preço', qsa: [{ nome: 'Fernando Albuquerque', qualificacao: 'Sócio-Administrador' }] };
+export const consultoriaMEI: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Consultoria e Soluções Web EIRELI', cnpj: '88.888.888/0001-88', endereco: mockEndereco1, situacao_tributaria: 'MEI', nomeFantasia: 'Web Solutions', qsa: [{ nome: 'Beatriz Costa', qualificacao: 'Titular' }] };
+export const fazendaSolNascente: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Fazenda Sol Nascente Agropecuária', cnpj: '12.123.456/0001-78', endereco: mockEndereco4, situacao_tributaria: 'Outro', nomeFantasia: 'Fazenda Sol Nascente', qsa: [{ nome: 'José Ferreira', qualificacao: 'Proprietário' }] };
+export const oficinaMecanicaMEI: IPessoaJuridica = { tipo: 'juridica', razaoSocial: 'Oficina Mecânica Rápida MEI', cnpj: '99.999.999/0001-99', endereco: mockEndereco2, situacao_tributaria: 'MEI', nomeFantasia: 'Auto Rápido', qsa: [{ nome: 'Sérgio Mendes', qualificacao: 'Titular' }] };
 
 
 export const mockTitulosProtesto: ITituloProtesto[] = [
-    {
-        id: 1,
-        protocolo: '2025-00001',
-        isTituloAntigo: false,
-        status: 'Protestado',
-        dataPrazoFinal: new Date('2025-08-15'),
-        apresentante: bancoAlfa,
-        devedores: [carlosPereira],
-        especieTitulo: 'Duplicata Mercantil',
-        numeroTitulo: 'DM-101',
-        valor: 1500.00,
-        tipoPagamento: 'COMUM',
-        dataEmissao: new Date('2025-08-01'),
-        dataVencimento: new Date('2025-08-08'),
-        banco: 341,
-        apontamento: {
-            dataApontamento: new Date('2025-08-10'),
-            selosApontamento: [{ codigo: 3080, numeroselo: 'SELO-AP-ABC123' }]
-        },
-        intimacao: {
-            data: new Date('2025-08-11'),
-            meio: 'Postal',
-            detalhes: 'AR123456789BR',
-            selosIntimacao: [{ codigo: 3093, numeroselo: 'SELO-INT-DEF456' }]
-        },
-        protesto: {
-            dataLavratura: new Date('2025-08-16'),
-            motivo: 'Falta de Pagamento',
-            livro: '10-B',
-            folha: '125',
-            selosProtesto: [{ codigo: 3088, numeroselo: 'SELO-PROT-GHI789' }]
-        },
-        historico: [
-            { data: '2025-08-16T10:00:00Z', evento: 'Protesto lavrado no Livro 10-B, Folha 125.', usuario: 'escrevente.1' },
-            { data: '2025-08-11T14:30:00Z', evento: 'Intimação via AR enviada ao devedor.', usuario: 'escrevente.1' },
-            { data: '2025-08-10T09:15:00Z', evento: 'Título apontado e protocolado no sistema.', usuario: 'oficial.master' }
-        ]
-    },
-    {
-        id: 2,
-        protocolo: '2025-00002',
-        isTituloAntigo: false,
-        status: 'Cancelado',
-        apresentante: construtoraRocha,
-        devedores: [anaJuliaMarques],
-        especieTitulo: 'Cheque',
-        numeroTitulo: '000123',
-        valor: 550.75,
-        tipoPagamento: 'COMUM',
-        valorPago: 585.50,
-        dataEmissao: new Date('2025-08-20'),
-        dataVencimento: new Date('2025-08-20'),
-        banco: 104,
-        apontamento: {
-            dataApontamento: new Date('2025-08-22')
-        },
-        intimacao: {
-            data: new Date('2025-08-23'),
-            meio: 'Pessoal',
-            detalhes: 'Recebido por Ana Julia Marques',
-        },
-        protesto: {
-            dataLavratura: new Date('2025-08-27'),
-            motivo: 'Falta de Pagamento',
-            livro: '10-B',
-            folha: '128',
-        },
-        cancelamento: {
-            data: new Date('2025-09-01'),
-            motivo: 'Anuência do Credor',
-            selosCancelamento: { codigo: 3094, numeroselo: 'SELO-CANC-JKL012' }
-        },
-        historico: [
-            { data: '2025-09-01T11:05:00Z', evento: 'Protesto cancelado mediante apresentação de carta de anuência.', usuario: 'escrevente.2' },
-            { data: '2025-08-27T09:00:00Z', evento: 'Protesto lavrado por falta de pagamento.', usuario: 'oficial.master' },
-            { data: '2025-08-23T10:15:00Z', evento: 'Intimação pessoal realizada com sucesso.', usuario: 'mensageiro.1' },
-            { data: '2025-08-22T15:00:00Z', evento: 'Título apontado no sistema.', usuario: 'escrevente.2' }
-        ]
-    },
-    {
-        id: 3,
-        protocolo: '2025-00003',
-        isTituloAntigo: false,
-        status: 'Aguardando Qualificação',
-        apresentante: imobiliariaNorte,
-        devedores: [
-            ricardoMartins,
-            anaJuliaMarques,
-            lucasMendes
-        ],
-        especieTitulo: 'Contrato de Locação',
-        numeroTitulo: 'LOC-606',
-        valor: 3500.00,
-        tipoPagamento: 'COMUM',
-        dataEmissao: new Date('2025-08-01'),
-        dataVencimento: new Date('2025-09-05'),
-        apontamento: {
-            dataApontamento: new Date()
-        },
-        historico: [
-            { data: new Date().toISOString(), evento: 'Rascunho do título criado no sistema.', usuario: 'usuario.atual' }
-        ]
-    },
-    {
-        id: 4,
-        protocolo: '2025-00004',
-        isTituloAntigo: false,
-        status: 'Pago',
-        apresentante: bancoAlfa,
-        devedores: [construtoraRocha],
-        especieTitulo: 'Cédula de Crédito Bancário',
-        numeroTitulo: 'CCB-202',
-        valor: 25000.00,
-        tipoPagamento: 'DIFERIDO',
-        dataEmissao: new Date('2025-07-10'),
-        dataVencimento: new Date('2025-08-10'),
-        banco: 237,
-        apontamento: {
-            dataApontamento: new Date('2025-08-12')
-        },
-        intimacao: {
-            data: new Date('2025-08-13'),
-            meio: 'Edital',
-            detalhes: 'Publicado no jornal local, ed. 1024',
-        },
-        liquidacaoOuDesistencia: {
-            data: new Date('2025-08-15'),
-            tipo: 'LIQUIDACAO',
-            seloLiquidacaoDesistencia: { codigo: 3107, numeroselo: 'SELO-LIQ-MNO345'}
-        },
-        historico: [
-            { data: '2025-08-15T16:20:00Z', evento: 'Título liquidado pelo devedor no tabelionato.', usuario: 'caixa.1' },
-            { data: '2025-08-13T08:00:00Z', evento: 'Edital de intimação publicado.', usuario: 'escrevente.1' },
-            { data: '2025-08-12T10:30:00Z', evento: 'Título apontado com pagamento diferido por ordem judicial.', usuario: 'escrevente.1' }
-        ]
-    }
+    // 1. Título Padrão, Protestado
+    { id: 1, protocolo: '2025-00001', isTituloAntigo: false, status: 'Protestado', apresentante: bancoAlfa, devedores: [carlosPereira], especieTitulo: 'Duplicata Mercantil', numeroTitulo: 'DM-101', valor: 1500.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-01'), dataVencimento: new Date('2025-08-08'), banco: 341, apontamento: { dataApontamento: new Date('2025-08-10') }, intimacao: { data: new Date('2025-08-11'), meio: 'Postal', detalhes: 'AR123456789BR' }, protesto: { dataLavratura: new Date('2025-08-16'), motivo: 'Falta de Pagamento', livro: '10-B', folha: '125' }, historico: [{ data: '2025-08-16T10:00:00Z', evento: 'Protesto lavrado.', usuario: 'escrevente.1' }, { data: '2025-08-10T09:15:00Z', evento: 'Título apontado.', usuario: 'oficial.master' }] },
+    // 2. Título Protestado e depois Cancelado
+    { id: 2, protocolo: '2025-00002', isTituloAntigo: false, status: 'Cancelado', apresentante: construtoraRocha, devedores: [anaJuliaMarques], especieTitulo: 'Cheque', numeroTitulo: '000123', valor: 550.75, tipoPagamento: 'COMUM', valorPago: 585.50, dataEmissao: new Date('2025-08-20'), dataVencimento: new Date('2025-08-20'), banco: 104, apontamento: { dataApontamento: new Date('2025-08-22') }, intimacao: { data: new Date('2025-08-23'), meio: 'Pessoal', detalhes: 'Recebido por Ana Julia Marques' }, protesto: { dataLavratura: new Date('2025-08-27'), motivo: 'Falta de Pagamento', livro: '10-B', folha: '128' }, cancelamento: { data: new Date('2025-09-01'), motivo: 'Anuência do Credor', selosCancelamento: { codigo: 3094, numeroselo: 'SELO-CANC-JKL012' } }, historico: [{ data: '2025-09-01T11:05:00Z', evento: 'Protesto cancelado.', usuario: 'escrevente.2' }, { data: '2025-08-27T09:00:00Z', evento: 'Protesto lavrado.', usuario: 'oficial.master' }] },
+    // 3. Título Novo, apenas Apontado
+    { id: 3, protocolo: '2025-00003', isTituloAntigo: false, status: 'Aguardando Qualificação', apresentante: imobiliariaNorte, devedores: [ricardoMartins, anaJuliaMarques, lucasMendes], especieTitulo: 'Contrato de Locação', numeroTitulo: 'LOC-606', valor: 3500.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-01'), dataVencimento: new Date('2025-09-05'), apontamento: { dataApontamento: new Date() }, historico: [{ data: new Date().toISOString(), evento: 'Rascunho criado no sistema.', usuario: 'usuario.atual' }] },
+    // 4. Título Liquidado (Pago) dentro do prazo
+    { id: 4, protocolo: '2025-00004', isTituloAntigo: false, status: 'Pago', apresentante: bancoAlfa, devedores: [construtoraRocha], especieTitulo: 'Cédula de Crédito Bancário', numeroTitulo: 'CCB-202', valor: 25000.00, tipoPagamento: 'DIFERIDO', dataEmissao: new Date('2025-07-10'), dataVencimento: new Date('2025-08-10'), banco: 237, apontamento: { dataApontamento: new Date('2025-08-12') }, intimacao: { data: new Date('2025-08-13'), meio: 'Edital', detalhes: 'Publicado no jornal local, ed. 1024' }, liquidacaoOuDesistencia: { data: new Date('2025-08-15'), tipo: 'LIQUIDACAO', seloLiquidacaoDesistencia: { codigo: 3142, numeroselo: 'SELO-LIQ-MNO345'} }, historico: [{ data: '2025-08-15T16:20:00Z', evento: 'Título liquidado pelo devedor.', usuario: 'caixa.1' }] },
+    // 5. Título Antigo, transcrito para o sistema
+    { id: 5, protocolo: '2020-OLD-001', status: 'Protestado', isTituloAntigo: true, apresentante: helenaSouza, devedores: [supermercadoBomPreco], especieTitulo: 'Nota Promissória', numeroTitulo: 'NP-ANTIGA-01', valor: 750.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2020-01-15'), dataVencimento: new Date('2020-02-15'), apontamento: { dataApontamento: new Date('2020-03-01') }, intimacao: { data: new Date('2020-03-02'), meio: 'Pessoal', detalhes: 'Entregue ao gerente Sr. Albuquerque' }, protesto: { dataLavratura: new Date('2020-03-06'), motivo: 'Falta de Pagamento', livro: '5-A', folha: '33' }, historico: [{ data: '2025-09-08T14:00:00Z', evento: 'Registro antigo transcrito.', usuario: 'oficial.master' }] },
+    // 6. Título com Devedor MEI, Protestado e Cancelado por Ordem Judicial
+    { id: 6, protocolo: '2025-00006', isTituloAntigo: false, status: 'Cancelado', apresentante: construtoraRocha, devedores: [consultoriaMEI], especieTitulo: 'Duplicata de Serviço', numeroTitulo: 'DS-987', valor: 1200.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-06-10'), dataVencimento: new Date('2025-07-10'), apontamento: { dataApontamento: new Date('2025-07-15') }, intimacao: { data: new Date('2025-07-16'), meio: 'Postal', detalhes: 'AR987654321BR' }, protesto: { dataLavratura: new Date('2025-07-21'), motivo: 'Falta de Pagamento', livro: '10-B', folha: '190' }, cancelamento: { data: new Date('2025-09-05'), motivo: 'Ordem Judicial', selosCancelamento: { codigo: 3160, numeroselo: 'SELO-CANC-JUD456' } }, historico: [{ data: '2025-09-05T10:00:00Z', evento: 'Cancelado por ordem judicial.', usuario: 'escrevente.1' }] },
+    // 7. Título com Pagamento Posterior, intimado e aguardando prazo
+    { id: 7, protocolo: '2025-00007', isTituloAntigo: false, status: 'Prazo Aberto', apresentante: imobiliariaNorte, devedores: [robertoAlmeida], especieTitulo: 'CDA', numeroTitulo: 'CDA-GOV-007', valor: 8530.00, tipoPagamento: 'POSTERIOR', dataEmissao: new Date('2025-01-01'), dataVencimento: new Date('2025-06-30'), apontamento: { dataApontamento: new Date('2025-09-05') }, intimacao: { data: new Date('2025-09-08'), meio: 'Postal', detalhes: 'AR112233445BR' }, dataPrazoFinal: new Date('2025-09-11'), historico: [{ data: '2025-09-08T09:00:00Z', evento: 'Intimação enviada.', usuario: 'escrevente.2' }, { data: '2025-09-05T16:00:00Z', evento: 'Título apontado (Pgto Posterior).', usuario: 'escrevente.2' }] },
+    // 8. Título Retirado pelo Apresentante (Desistência)
+    { id: 8, protocolo: '2025-00008', isTituloAntigo: false, status: 'Retirado', apresentante: helenaSouza, devedores: [lucasMendes], especieTitulo: 'Nota Promissória', numeroTitulo: 'NP-404', valor: 400.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-15'), dataVencimento: new Date('2025-08-30'), apontamento: { dataApontamento: new Date('2025-09-01') }, intimacao: { data: new Date('2025-09-02'), meio: 'Pessoal', detalhes: 'Entregue em mãos' }, liquidacaoOuDesistencia: { data: new Date('2025-09-04'), tipo: 'DESISTENCIA', seloLiquidacaoDesistencia: { codigo: 3100, numeroselo: 'SELO-DES-PQR567'} }, historico: [{ data: '2025-09-04T12:00:00Z', evento: 'Apresentante solicitou a retirada do título.', usuario: 'escrevente.1' }] },
+    // 9. Título Antigo que foi Cancelado
+    { id: 9, protocolo: '2019-OLD-002', status: 'Cancelado', isTituloAntigo: true, apresentante: fazendaSolNascente, devedores: [supermercadoBomPreco], especieTitulo: 'Cheque', numeroTitulo: '000555', valor: 9500.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2019-05-20'), dataVencimento: new Date('2019-06-20'), banco: 1, apontamento: { dataApontamento: new Date('2019-07-01') }, protesto: { dataLavratura: new Date('2019-07-05'), motivo: 'Falta de Pagamento', livro: '3-A', folha: '12' }, cancelamento: { data: new Date('2021-02-10'), motivo: 'Anuência do Credor', selosCancelamento: { codigo: 3094, numeroselo: 'SELO-CANC-OLD789' } }, historico: [{ data: '2025-09-09T10:00:00Z', evento: 'Registro antigo (cancelado) transcrito para o sistema.', usuario: 'oficial.master' }] },
+    // 10. Título Apenas Apontado e Intimado
+    { id: 10, protocolo: '2025-00009', isTituloAntigo: false, status: 'Prazo Aberto', apresentante: bancoAlfa, devedores: [consultoriaMEI], especieTitulo: 'Duplicata Mercantil', numeroTitulo: 'DM-XYZ', valor: 3300.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-25'), dataVencimento: new Date('2025-09-05'), banco: 745, apontamento: { dataApontamento: new Date('2025-09-06') }, intimacao: { data: new Date('2025-09-08'), meio: 'Edital', detalhes: 'Edital Afixado no Tabelionato' }, dataPrazoFinal: new Date('2025-09-11'), historico: [{ data: '2025-09-08T09:00:00Z', evento: 'Intimação por edital realizada.', usuario: 'escrevente.1' }, { data: '2025-09-06T11:20:00Z', evento: 'Título apontado.', usuario: 'escrevente.1' }] },
+    { id: 11, protocolo: '2025-00010', isTituloAntigo: false, status: 'Aguardando Qualificação', apresentante: imobiliariaNorte, devedores: [sandraLima], especieTitulo: 'Aluguel', numeroTitulo: 'AL-111', valor: 1800.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-10'), dataVencimento: new Date('2025-09-10'), apontamento: { dataApontamento: new Date() }, historico: [{ data: new Date().toISOString(), evento: 'Título apenas apontado, aguardando análise.', usuario: 'recepcao.1' }] },
+    { id: 12, protocolo: '2025-00011', isTituloAntigo: false, status: 'Recusado', apresentante: helenaSouza, devedores: [robertoAlmeida], especieTitulo: 'Cheque', numeroTitulo: '000789', valor: 250.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-08-01'), dataVencimento: new Date('2025-08-01'), banco: 33, apontamento: { dataApontamento: new Date('2025-09-09') }, motivoRecusa: 'Falta de endosso', historico: [{ data: new Date().toISOString(), evento: 'Título devolvido por irregularidade: Falta de endosso.', usuario: 'qualificador.1' }] },
+    { id: 13, protocolo: '2025-00012', isTituloAntigo: false, status: 'Prazo Aberto', apresentante: construtoraRocha, devedores: [oficinaMecanicaMEI], especieTitulo: 'Duplicata de Serviço', numeroTitulo: 'DS-222', valor: 890.50, tipoPagamento: 'POSTERIOR', dataEmissao: new Date('2025-08-15'), dataVencimento: new Date('2025-09-01'), apontamento: { dataApontamento: new Date('2025-09-08') }, intimacao: { data: new Date('2025-09-09'), meio: 'Pessoal', detalhes: 'Entregue ao proprietário' }, dataPrazoFinal: new Date('2025-09-12'), historico: [{ data: '2025-09-09T11:00:00Z', evento: 'Intimação realizada (Devedor MEI, Pgto Posterior).', usuario: 'mensageiro.2' }] },
+    { id: 14, protocolo: '2025-00013', isTituloAntigo: false, status: 'Liquidado', apresentante: fazendaSolNascente, devedores: [carlosPereira], especieTitulo: 'Cédula de Produto Rural', numeroTitulo: 'CPR-001', valor: 50000.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-04-01'), dataVencimento: new Date('2025-09-01'), apontamento: { dataApontamento: new Date('2025-09-02') }, intimacao: { data: new Date('2025-09-03'), meio: 'Postal', detalhes: 'AR556677889BR' }, liquidacaoOuDesistencia: { data: new Date('2025-09-05'), tipo: 'LIQUIDACAO', seloLiquidacaoDesistencia: { codigo: 3105, numeroselo: 'SELO-LIQ-ABC987'} }, historico: [{ data: '2025-09-05T10:20:00Z', evento: 'Título liquidado.', usuario: 'caixa.1' }] },
+    { id: 15, protocolo: '2025-00014', isTituloAntigo: false, status: 'Protestado', apresentante: bancoAlfa, devedores: [oficinaMecanicaMEI], especieTitulo: 'Confissão de Dívida', numeroTitulo: 'CD-333', valor: 4200.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-07-20'), dataVencimento: new Date('2025-08-20'), apontamento: { dataApontamento: new Date('2025-08-25') }, intimacao: { data: new Date('2025-08-26'), meio: 'Edital', detalhes: 'Publicado no Diário Oficial' }, protesto: { dataLavratura: new Date('2025-08-29'), motivo: 'Falta de Pagamento', livro: '10-B', folha: '210' }, historico: [{ data: '2025-08-29T09:00:00Z', evento: 'Protesto lavrado (Devedor MEI).', usuario: 'escrevente.1' }] },
+    { id: 16, protocolo: '2021-OLD-003', status: 'Cancelado', isTituloAntigo: true, apresentante: ricardoMartins, devedores: [anaJuliaMarques], especieTitulo: 'Aluguel', numeroTitulo: 'AL-CONTR-01', valor: 1250.00, tipoPagamento: 'COMUM', dataEmissao: new Date('2021-01-10'), dataVencimento: new Date('2021-02-10'), apontamento: { dataApontamento: new Date('2021-02-15') }, protesto: { dataLavratura: new Date('2021-02-19'), motivo: 'Falta de Pagamento', livro: '6-A', folha: '99' }, cancelamento: { data: new Date('2021-05-20'), motivo: 'Anuência do Credor', selosCancelamento: { codigo: 3094, numeroselo: 'SELO-CANC-OLD111' } }, historico: [{ data: '2025-09-09T15:00:00Z', evento: 'Registro antigo (cancelado) transcrito.', usuario: 'oficial.master' }] },
+    { id: 17, protocolo: '2025-00015', isTituloAntigo: false, status: 'Retirado', apresentante: supermercadoBomPreco, devedores: [sandraLima], especieTitulo: 'Cheque', numeroTitulo: '000991', valor: 190.40, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-09-01'), dataVencimento: new Date('2025-09-01'), banco: 1, apontamento: { dataApontamento: new Date('2025-09-05') }, intimacao: { data: new Date('2025-09-08'), meio: 'Postal', detalhes: 'AR777888999BR' }, liquidacaoOuDesistencia: { data: new Date('2025-09-09'), tipo: 'DESISTENCIA', seloLiquidacaoDesistencia: { codigo: 3099, numeroselo: 'SELO-DES-XYZ123' } }, historico: [{ data: '2025-09-09T08:30:00Z', evento: 'Apresentante solicitou desistência do protesto.', usuario: 'atendente.1' }] },
+    { id: 18, protocolo: '2025-00016', isTituloAntigo: false, status: 'Aguardando Intimação', apresentante: bancoAlfa, devedores: [robertoAlmeida], especieTitulo: 'Duplicata Mercantil', numeroTitulo: 'DM-456', valor: 5200.00, tipoPagamento: 'COMUM', cedente: construtoraRocha, dataEmissao: new Date('2025-08-18'), dataVencimento: new Date('2025-09-02'), banco: 341, apontamento: { dataApontamento: new Date('2025-09-09') }, historico: [{ data: new Date().toISOString(), evento: 'Título qualificado, aguardando expedição da intimação.', usuario: 'qualificador.1' }] },
+    { id: 19, protocolo: '2025-00017', isTituloAntigo: false, status: 'Protestado', apresentante: imobiliariaNorte, devedores: [oficinaMecanicaMEI], especieTitulo: 'Aluguel', numeroTitulo: 'AL-333', valor: 2100.00, tipoPagamento: 'DIFERIDO', dataEmissao: new Date('2025-06-05'), dataVencimento: new Date('2025-07-05'), apontamento: { dataApontamento: new Date('2025-07-10') }, intimacao: { data: new Date('2025-07-11'), meio: 'Pessoal', detalhes: 'Entregue' }, protesto: { dataLavratura: new Date('2025-07-15'), motivo: 'Falta de Pagamento', livro: '10-B', folha: '250' }, historico: [{ data: '2025-07-15T09:00:00Z', evento: 'Protesto lavrado (Devedor MEI, Pgto Diferido).', usuario: 'escrevente.2' }] },
+    { id: 20, protocolo: '2025-00018', isTituloAntigo: false, status: 'Prazo Aberto', apresentante: supermercadoBomPreco, devedores: [helenaSouza], especieTitulo: 'Cheque', numeroTitulo: '001010', valor: 123.45, tipoPagamento: 'COMUM', dataEmissao: new Date('2025-09-01'), dataVencimento: new Date('2025-09-01'), banco: 237, apontamento: { dataApontamento: new Date('2025-09-08') }, intimacao: { data: new Date('2025-09-09'), meio: 'Postal', detalhes: 'AR223344556BR' }, dataPrazoFinal: new Date('2025-09-12'), historico: [{ data: '2025-09-09T14:00:00Z', evento: 'Intimação enviada.', usuario: 'expedicao.1' }] }
+
 ];
 
 export const statusOptions: StatusTitulo[] = [
     'Aguardando Qualificação', 'Recusado', 'Aguardando Intimação', 'Prazo Aberto',
-    'Pago', 'Retirado', 'Sustado Judicialmente', 'Protestado', 'Cancelado'
+    'Pago', 'Retirado', 'Sustado Judicialmente', 'Protestado', 'Cancelado', 'Liquidado'
 ];
 
 export const especieOptions = [...new Set(mockTitulosProtesto.map(t => t.especieTitulo))];

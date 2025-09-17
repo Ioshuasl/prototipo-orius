@@ -1,18 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Landmark, UploadCloud, FileText, Loader2, CheckCircle, XCircle, ChevronLeft, X, ShieldCheck, Eye } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, CheckCircle, XCircle, ChevronLeft, X, ShieldCheck, Eye } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { type ITituloProtesto, type TPessoaTipo, type IEndereco, type IPessoaFisica, type IPessoaJuridica, type IBank } from '../types'; // Ajuste o caminho se necessário
 import tabelaEmolumentos from '../../../../tabela-emolumentos.json';
 import { mockEndereco1 } from '../lib/Constants';
+import ConfirmacaoSeloModal from '../../Components/ConfirmacaoSeloModal';
 
 type TStep = 'selection' | 'preview' | 'importing' | 'summary';
 
-interface IEmolumento {
-    descricao_selo: string;
-    id_selo: number;
-    sistema: string;
-}
 // Estrutura para os dados analisados do arquivo
 interface IParsedData {
     tituloData: Partial<ITituloProtesto>;
@@ -336,53 +332,13 @@ export default function ImportacaoTitulosPage() {
             </main>
 
             {/* MODAL DE CONFIRMAÇÃO DE SELO */}
-            {isSeloConfirmModalOpen && (
-                <div className="fixed inset-0 z-50 flex justify-center items-center p-4 animate-fade-in-fast bg-gray-900/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-                        <div className="flex justify-between items-center p-4 border-b border-gray-200">
-                            <div className="flex items-center gap-3">
-                                <ShieldCheck className="h-6 w-6 text-blue-600" />
-                                <h2 className="text-xl font-bold text-gray-800">Confirmação de Geração de Selos</h2>
-                            </div>
-                            <button onClick={() => setIsSeloConfirmModalOpen(false)} className="p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700"><X className="h-6 w-6" /></button>
-                        </div>
-                        <div className="p-6 overflow-auto">
-                            <p className="text-gray-600 text-center mb-4">
-                                Os seguintes selos serão gerados para os <strong className="font-semibold text-gray-800">{parsedData.length} títulos</strong> importados. Por favor, confirme se as atribuições estão corretas.
-                            </p>
-                            <div className="border rounded-lg overflow-hidden">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="px-4 py-2 text-left font-semibold text-gray-600">Devedor</th>
-                                            <th className="px-4 py-2 text-left font-semibold text-gray-600">ID Selo</th>
-                                            <th className="px-4 py-2 text-left font-semibold text-gray-600">Descrição do Selo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y">
-                                        {parsedData.map((item, index) => {
-                                            const devedor = item.tituloData.devedores?.[0];
-                                            const devedorNome = devedor ? (devedor.tipo === 'fisica' ? devedor.nome : devedor.razaoSocial) : 'N/A';
-                                            const seloInfo = tabelaEmolumentos.find(s => s.id_selo === item.seloId);
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="px-4 py-2 font-medium text-gray-800">{devedorNome}</td>
-                                                    <td className="px-4 py-2 font-mono text-blue-700">{item.seloId}</td>
-                                                    <td className="px-4 py-2 text-gray-600">{seloInfo ? seloInfo.descricao_selo : 'Descrição não encontrada'}</td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div className="p-4 bg-gray-50 border-t flex justify-end gap-3">
-                             <button onClick={() => setIsSeloConfirmModalOpen(false)} className="font-semibold text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100">Cancelar</button>
-                            <button onClick={handleFinalImport} className="font-bold text-white bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700">Confirmar e Importar</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ConfirmacaoSeloModal 
+                isOpen={isSeloConfirmModalOpen}
+                onClose={() => setIsSeloConfirmModalOpen(false)}
+                onConfirm={handleFinalImport}
+                parsedData={parsedData}
+                emolumentos={tabelaEmolumentos}
+            />
 
             {/* MODAL DE DETALHES DO TÍTULO */}
             {isDetailsModalOpen && selectedTitleForPreview && (

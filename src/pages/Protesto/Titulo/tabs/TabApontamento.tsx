@@ -1,13 +1,14 @@
 import React from 'react';
 import { type ITituloProtesto } from '../../types';
-import { Flag } from 'lucide-react';
+import { Flag, Mail } from 'lucide-react';
 
 interface TabApontamentoProps {
     titulo: ITituloProtesto;
-    setTitulo: React.Dispatch<React.SetStateAction<ITituloProtesto>>; // <-- Prop adicionada
+    setTitulo: React.Dispatch<React.SetStateAction<ITituloProtesto>>;
+    onIntimar: () => void;
 }
 
-const TabApontamento: React.FC<TabApontamentoProps> = ({ titulo, setTitulo }) => {
+const TabApontamento: React.FC<TabApontamentoProps> = ({ titulo, setTitulo, onIntimar }) => {
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
 
@@ -49,6 +50,17 @@ const TabApontamento: React.FC<TabApontamentoProps> = ({ titulo, setTitulo }) =>
                     />
                 </div>
             </div>
+            {titulo.status === 'Aguardando Qualificação' && (
+                <footer className="mt-6 pt-4 border-t border-gray-200 flex justify-end">
+                    <button 
+                        onClick={onIntimar}
+                        className="flex items-center gap-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        <Mail size={18} />
+                        Intimar Título
+                    </button>
+                </footer>
+            )}
         </div>
     );
 };

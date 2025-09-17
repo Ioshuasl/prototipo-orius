@@ -54,6 +54,7 @@ export default function TesteAtoCompletoPage() {
         };
         const calculo = calcularAtoCompletoProtesto(tituloParaTeste);
         if (calculo) {
+            console.log(calculo)
             setResultado(calculo);
         } else {
             setErro("Não foi possível calcular o valor completo do ato. Verifique as regras e o console.");
@@ -77,6 +78,7 @@ export default function TesteAtoCompletoPage() {
         const atoParaSimular = acaoSimulada === 'liquidacao' ? 'LIQUIDACAO_DESISTENCIA' : 'CANCELAMENTO_AVERBACAO';
         const calculoSimulado = calcularCustoAtoUnico(tituloParaTeste, atoParaSimular);
         setResultadoSimulacao(calculoSimulado);
+        console.log(calculoSimulado)
 
     }, [acaoSimulada, devedor, valorTitulo, tipoPagamento]);
 

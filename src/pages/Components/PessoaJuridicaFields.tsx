@@ -41,6 +41,7 @@ const PessoaJuridicaFields: React.FC<PessoaJuridicaFieldsProps> = ({
                             mask="00.000.000/0000-00"
                             name={`${basePath}.cnpj`}
                             value={dadosPessoaJuridica.cnpj || ''}
+                            // O onAccept está chamando a função de forma correta
                             onAccept={(value) => handleInputChange({ target: { name: `${basePath}.cnpj`, value } } as any)}
                             className={commonInputClass}
                             placeholder="00.000.000/0000-00"

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, ChevronUp, Landmark, Wallet, Briefcase, CalendarDays, AlertTriangle, FileText, Ban, Scale, HandCoins, BookCheck, Upload } from 'lucide-react';
+import { PlusCircle, Search, ChevronLeft, ChevronRight, FilterX, Loader2, ListX, SlidersHorizontal, Book, ChevronUp, Landmark, Wallet, Briefcase, CalendarDays, AlertTriangle, FileText, Ban, Scale, HandCoins, BookCheck, Upload } from 'lucide-react';
 import { type ITituloProtesto, type StatusTitulo } from '../types';
 import { mockTitulosProtesto, statusOptions, especieOptions } from '../lib/Constants';
 import BancoSelect from '../Components/BancoSelect';
 
 
 export default function GerenciamentoTitulosPage() {
-    const initialFilters = { searchTerm: '', status: 'Todos', especieTitulo: 'Todos', startDate: '', endDate: '', banco: 'Todos' };
+    const initialFilters = {
+        searchTerm: '', status: 'Todos', especieTitulo: 'Todos',
+        startDate: '', endDate: '', banco: 'Todos', isTituloAntigo: 'Todos'
+    };
     const [filters, setFilters] = useState(initialFilters);
     const [filteredRecords, setFilteredRecords] = useState<ITituloProtesto[]>(mockTitulosProtesto);
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,35 +23,31 @@ export default function GerenciamentoTitulosPage() {
         setIsLoading(true);
         const filterTimeout = setTimeout(() => {
             const results = mockTitulosProtesto.filter(record => {
+                const searchTerm = filters.searchTerm.toLowerCase();
                 const searchTermMatch = filters.searchTerm ?
-                    record.protocolo.includes(filters.searchTerm) ||
-                    record.devedores.some(d =>
-                        (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                        (d.tipo === 'fisica' ? d.cpf : d.cnpj).includes(filters.searchTerm)
-                    ) : true;
+                    record.protocolo.toLowerCase().includes(searchTerm) ||
+                    record.numeroTitulo.toLowerCase().includes(searchTerm) ||
+                    record.devedores.some(d => (d.tipo === 'fisica' ? d.nome : d.razaoSocial).toLowerCase().includes(searchTerm))
+                    : true;
 
                 const statusMatch = filters.status !== 'Todos' ? record.status === filters.status : true;
                 const especieMatch = filters.especieTitulo !== 'Todos' ? record.especieTitulo === filters.especieTitulo : true;
+                const bancoMatch = filters.banco !== 'Todos' ? record.banco === parseInt(filters.banco, 10) : true;
+                const startDateMatch = filters.startDate ? record.apontamento && new Date(record.apontamento.dataApontamento) >= new Date(filters.startDate) : true;
+                const endDateMatch = filters.endDate ? record.apontamento && new Date(record.apontamento.dataApontamento) <= new Date(filters.endDate + 'T23:59:59.999') : true;
 
-                const startDateMatch = filters.startDate
-                    ? record.apontamento && record.apontamento.dataApontamento >= new Date(filters.startDate)
-                    : true;
-                const endDateMatch = filters.endDate
-                    ? record.apontamento && record.apontamento.dataApontamento <= new Date(filters.endDate + 'T23:59:59.999')
-                    : true;
+                const isTituloAntigoMatch = filters.isTituloAntigo === 'Todos' ? true :
+                    filters.isTituloAntigo === 'Antigos' ? record.isTituloAntigo === true :
+                        !record.isTituloAntigo;
 
-                return searchTermMatch && statusMatch && especieMatch && startDateMatch && endDateMatch;
+                return searchTermMatch && statusMatch && especieMatch && bancoMatch && startDateMatch && endDateMatch && isTituloAntigoMatch;
             });
 
-            const sortedResults = results.sort((a, b) =>
-                (b.apontamento?.dataApontamento?.getTime() ?? 0) - (a.apontamento?.dataApontamento?.getTime() ?? 0)
-            );
+            const sortedResults = results.sort((a, b) => (b.apontamento?.dataApontamento?.getTime() ?? 0) - (a.apontamento?.dataApontamento?.getTime() ?? 0));
             setFilteredRecords(sortedResults);
-
             setCurrentPage(1);
             setIsLoading(false);
         }, 300);
-
         return () => clearTimeout(filterTimeout);
     }, [filters]);
 
@@ -71,6 +70,7 @@ export default function GerenciamentoTitulosPage() {
             'Sustado Judicialmente': 'bg-orange-100 text-orange-800 border-orange-200',
             'Protestado': 'bg-red-100 text-red-800 border-red-200',
             'Cancelado': 'bg-pink-100 text-pink-800 border-pink-200',
+            'Liquidado': 'bg-pink-100 text-pink-800 border-pink-200',
         };
         return <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${styles[status]}`}>{status}</span>;
     };
@@ -101,6 +101,14 @@ export default function GerenciamentoTitulosPage() {
                             </div>
                             <StatusBadge status={record.status} />
                         </div>
+                        {record.isTituloAntigo && (
+                            <div className="mt-2">
+                                <span className="inline-flex items-center gap-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">
+                                    <Book size={12} />
+                                    Livro Antigo
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="p-4 grid grid-cols-2 gap-4 text-sm flex-grow">
@@ -171,9 +179,9 @@ export default function GerenciamentoTitulosPage() {
                                 <div className="overflow-hidden">
                                     <div className="p-5 space-y-4 border-t border-gray-200">
 
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-3 gap-4">
                                             <div>
-                                                <label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Busca Geral (Protocolo, Nº Título, Devedor, Documento)</label>
+                                                <label htmlFor="searchTerm" className="block text-sm font-medium text-gray-600 mb-1">Protocolo, Nº Título, Devedor</label>
                                                 <div className="relative">
                                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                     <input
@@ -193,6 +201,14 @@ export default function GerenciamentoTitulosPage() {
                                                 >
                                                     <option value="Todos">Todos</option>
                                                     {statusOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-600 mb-1">Tipo de Título</label>
+                                                <select name="isTituloAntigo" value={filters.isTituloAntigo} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 w-full">
+                                                    <option value="Todos">Todos</option>
+                                                    <option value="Novos">Novos</option>
+                                                    <option value="Antigos">Antigos</option>
                                                 </select>
                                             </div>
                                         </div>

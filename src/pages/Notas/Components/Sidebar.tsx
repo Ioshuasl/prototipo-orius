@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon } from 'lucide-react';
+import { Book, Settings, BarChart2, type LucideIcon, ChevronsLeft, ChevronsRight, Home, ChevronLeft, FileText, FilePlus2, BookOpen, PrinterIcon, StampIcon, FolderSyncIcon, Users, SlidersHorizontal } from 'lucide-react';
 import logo from '../../../assets/logo-orius-sidebar.png'
 
 type UserRole = 'admin' | 'oficial' | 'escrevente';
@@ -31,14 +31,22 @@ export const menuConfig: MenuItemConfig[] = [
         path:'/home'
     },
     {
+        title: 'Dashboard',
+        icon: BarChart2,
+        path: 'dashboard',
+        roles: ['admin', 'oficial']
+    },
+    {
+        title: 'Pessoas e Assinaturas',
+        icon: Users,
+        path: 'pessoas'
+    },
+    {
         title: 'Configurações',
         icon: Settings,
         roles: ['admin'],
         subItems: [
             { label: 'Cartório', path: 'config/cartorio' },
-            { label: 'Certidão', path: 'config/certidao' },
-            { label: 'Averbação', path: 'config/averbacao' },
-            { label: 'Pessoas Cadastradas', path: 'config/pessoas'},
             { label: 'Usuários', path: 'config/users'},
             { label: 'Cargo e Permissões', path: 'config/roles-permissions'},
             { label: 'Cabeçalhos e Rodapés', path: 'config/templates-cabecalho-rodape'},
@@ -46,6 +54,11 @@ export const menuConfig: MenuItemConfig[] = [
             { label: 'Emolumentos', path: 'config/emolumentos'},
             { label: 'Integrações', path: 'config/integracoes'}
         ]
+    },
+    {
+        title: 'Parâmetros do Sistema',
+        icon: SlidersHorizontal,
+        path: 'settings'
     }
 ];
 

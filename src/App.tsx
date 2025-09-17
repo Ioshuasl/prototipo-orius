@@ -72,6 +72,9 @@ import ImportacaoTitulosPage from './pages/Protesto/Titulo/Importacao-Titulos';
 import TesteCalculoCustasPage from './pages/Protesto/Titulo/testeCalculo';
 import TesteAtoCompletoPage from './pages/Protesto/Titulo/Teste-Ato-Completo';
 import DetalhesTituloProtestoPage from './pages/Protesto/Titulo/TituloPage';
+import GerenciamentoPessoasPageNotas from './pages/Notas/PessoaCadastradas/Gerenciamento-Pessoas';
+import CadastroPessoaPageNotas from './pages/Notas/PessoaCadastradas/Cadastro-Pessoa';
+import ParametrosNotas from './pages/Notas/Parametros/ParametrosNotas';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -215,6 +218,40 @@ function App() {
         {/* Rotas dos sistemas Tabelionato de notas */}
         <Route path="/tabelionato-notas" element={<NotasLayout />} >
           <Route path='dashboard' element={<NotasDashboard />} />
+          <Route path="pessoas" element={<GerenciamentoPessoasPageNotas />} />
+          <Route path="pessoas/cadastrar" element={<CadastroPessoaPageNotas />} />
+          <Route path="pessoas/:id" element={<CadastroPessoaPageNotas />} />
+
+          {/* Rotas de Configuração */}
+          <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
+
+          <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
+          <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
+          <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
+
+          <Route path="config/averbacao" element={<GerenciamentoAverbacoes />} />
+          <Route path="config/averbacao/cadastrar" element={<CadastroAverbacaoPage />} />
+          <Route path="config/averbacao/:id" element={<CadastroAverbacaoPage />} />
+
+          <Route path="config/users" element={<GerenciamentoUsuarios />} />
+          <Route path="config/users/cadastrar" element={<CadastroUsuarioPage />} />
+          <Route path="config/users/:id" element={<CadastroUsuarioPage />} />
+
+          <Route path="config/roles-permissions" element={<GerenciamentoCargos />} />
+          <Route path="config/roles-permissions/cadastrar" element={<CadastroCargoPage />} />
+          <Route path="config/roles-permissions/:id" element={<CadastroCargoPage />} />
+
+          <Route path="config/templates-cabecalho-rodape" element={<GerenciamentoTemplates />} />
+          <Route path="config/templates-cabecalho-rodape/cadastrar" element={<CadastroTemplatePage />} />
+          <Route path="config/templates-cabecalho-rodape/:id" element={<CadastroTemplatePage />} />
+
+          <Route path="config/recibo" element={<GerenciamentoRecibos />} />
+          <Route path="config/recibo/cadastrar" element={<CadastroReciboPage />} />
+          <Route path="config/recibo/:id" element={<CadastroReciboPage />} />
+
+          <Route path="config/emolumentos" element={<TabelaEmolumentosPage />} />
+
+          <Route path="settings" element={<ParametrosNotas />} />
         </Route>
 
         {/* Rotas dos sistemas Protesto */}

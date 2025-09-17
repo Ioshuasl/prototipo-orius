@@ -1,14 +1,15 @@
 import React from 'react';
 import { type ITituloProtesto } from '../../types';
-import { Gavel } from 'lucide-react';
+import { Gavel, BadgeX } from 'lucide-react';
 import { livrosDeProtestoSimulados } from '../../lib/Constants';
 
 interface TabProtestoProps {
     titulo: ITituloProtesto;
     setTitulo: React.Dispatch<React.SetStateAction<ITituloProtesto>>;
+    onCancelar: () => void;
 }
 
-const TabProtesto: React.FC<TabProtestoProps> = ({ titulo, setTitulo }) => {
+const TabProtesto: React.FC<TabProtestoProps> = ({ titulo, setTitulo, onCancelar }) => {
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
     const isReadOnly = !titulo.isTituloAntigo && titulo.status === 'Protestado';
@@ -87,6 +88,17 @@ const TabProtesto: React.FC<TabProtestoProps> = ({ titulo, setTitulo }) => {
                     />
                 </div>
             </div>
+            {titulo.status === 'Protestado' && (
+                <footer className="mt-6 pt-4 border-t border-gray-200 flex justify-end">
+                    <button 
+                        onClick={onCancelar}
+                        className="flex items-center gap-2 bg-orange-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                    >
+                        <BadgeX size={18} />
+                        Cancelar Protesto
+                    </button>
+                </footer>
+            )}
         </div>
     );
 };

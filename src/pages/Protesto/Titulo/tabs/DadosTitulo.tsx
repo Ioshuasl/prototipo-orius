@@ -3,6 +3,7 @@ import { type ITituloProtesto } from '../../types';
 import { type IResultadoCalculoCompleto, type CondicaoPagamento } from '../../../Functions/calculoCustas';
 import BancoSelect from '../../Components/BancoSelect';
 import { Calculator, ChevronUp, AlertTriangle } from 'lucide-react';
+import BlocoResultado from '../../../Components/BlocoResultado';
 
 // Props que este componente receberá do pai
 interface TabDadosTituloProps {
@@ -11,7 +12,6 @@ interface TabDadosTituloProps {
     calculoCustas: IResultadoCalculoCompleto | null;
     isCostVisible: boolean;
     setIsCostVisible: React.Dispatch<React.SetStateAction<boolean>>;
-    BlocoResultado: React.FC<{ titulo: string; dados: any }>;
 }
 
 const TabDadosTitulo: React.FC<TabDadosTituloProps> = ({
@@ -20,7 +20,6 @@ const TabDadosTitulo: React.FC<TabDadosTituloProps> = ({
     calculoCustas,
     isCostVisible,
     setIsCostVisible,
-    BlocoResultado
 }) => {
     const commonInputClass = "mt-1 w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-[#dd6825]/50 focus:border-[#dd6825]";
     const commonLabelClass = "block text-sm font-medium text-gray-700";
@@ -72,19 +71,7 @@ const TabDadosTitulo: React.FC<TabDadosTituloProps> = ({
                     <div className={`grid transition-all duration-500 ease-in-out ${isCostVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                         <div className="overflow-hidden">
                              <div className="pt-4">
-                                {calculoCustas ? (
-                                    <div className="space-y-4 animate-fade-in">
-                                        <p className="font-semibold bg-blue-50 text-blue-700 text-center px-2 py-1 rounded-full text-sm">{calculoCustas.regraPrincipal}</p>
-                                        <BlocoResultado titulo="Custas Iniciais" dados={calculoCustas.cobrancaInicial} />
-                                        {calculoCustas.cobrancaFinal && (
-                                            <div className="border-t-2 border-dashed pt-4 mt-4">
-                                                <BlocoResultado titulo="Custas Finais (se liquidado)" dados={calculoCustas.cobrancaFinal} />
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <p className="text-gray-500 text-center py-4">Aguardando dados para calcular...</p>
-                                )}
+                                <BlocoResultado calculo={calculoCustas} />
                              </div>
                         </div>
                     </div>

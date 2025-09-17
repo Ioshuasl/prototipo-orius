@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { FileText, Users, User, UserCheck, Save, XCircle, Flag, Mail, Gavel, BadgeX, HandCoins, History, ChevronLeft } from 'lucide-react';
-import { type IEndereco, type IPessoaFisica, type ITituloProtesto, type TPessoaTipo, type StatusTitulo } from '../types';
-import { calcularAtoCompletoProtesto, type IResultadoCalculoCompleto } from '../../Functions/calculoCustas';
+import { type IEndereco, type IPessoaFisica, type ITituloProtesto, type TPessoaTipo, type StatusTitulo, type Historico } from '../types';
+import { calcularAtoCompletoProtesto, calcularCustoCancelamento, calcularCustoLiquidacao, type IResultadoCalculoCompleto } from '../../Functions/calculoCustas';
 import { mockTitulosProtesto } from '../lib/Constants';
 import HistoricoModal from '../../Components/HistoricoModal';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import TabDadosTitulo from './tabs/DadosTitulo';
 import TabApontamento from './tabs/TabApontamento';
 import TabApresentante from './tabs/TabApresentante';
@@ -14,18 +14,42 @@ import TabIntimacao from './tabs/TabIntimacao';
 import TabLiquidacao from './tabs/TabLiquidacao';
 import TabProtesto from './tabs/TabProtesto';
 import TabCancelamento from './tabs/TabCancelamento';
+import { toast } from 'react-toastify';
+import ConfirmacaoSeloModal, {type IParsedData} from '../../Components/ConfirmacaoSeloModal';
+import tabelaEmolumentos from '../../../../tabela-emolumentos.json'
+
+
+// --- NOVO TYPE PARA O ESTADO DO MODAL ---
+type TModalAction = 'intimar' | 'liquidar' | 'protestar' | 'cancelar';
+
+interface IConfirmationModalState {
+    isOpen: boolean;
+    action: TModalAction | null;
+    data: IParsedData[];
+    title: string;
+}
+
+const initialModalState: IConfirmationModalState = {
+    isOpen: false,
+    action: null,
+    data: [],
+    title: ''
+};
 
 const initialEnderecoState: IEndereco = { cep: '', tipoLogradouro: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '' };
 const initialPersonState: IPessoaFisica = { tipo: 'fisica', nome: '', cpf: '', endereco: initialEnderecoState, dataNascimento: '1990-01-01', docIdentidadeNum: '123', docIdentidadeTipo: 'RG', nacionalidade: 'Brasileira', naturalidadeCidade: 'Goiânia', naturalidadeUF: 'GO', profissao: '' };
 
 
 export default function DetalhesTituloProtestoPage() {
-    const [titulo, setTitulo] = useState<ITituloProtesto>(mockTitulosProtesto[0]);
+    const { tituloId } = useParams();
+    const navigate = useNavigate();
+    const [titulo, setTitulo] = useState<ITituloProtesto>(mockTitulosProtesto[6]);
     const [activeTab, setActiveTab] = useState('dadosTitulo');
     const [calculoCustas, setCalculoCustas] = useState<IResultadoCalculoCompleto | null>(null);
     const [isCostVisible, setIsCostVisible] = useState(true);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-    const navigate = useNavigate(); // Adicione esta linha
+    const [confirmationModal, setConfirmationModal] = useState<IConfirmationModalState>(initialModalState);
+
 
     const visibleTabs = useMemo(() => {
         const baseTabs = [
@@ -56,17 +80,39 @@ export default function DetalhesTituloProtestoPage() {
     }, [titulo]);
 
     useEffect(() => {
+        if (tituloId) {
+            // Em uma aplicação real, aqui você faria uma chamada à API:
+            // fetch(`/api/titulos/${tituloId}`).then(...)
+
+            // Como estamos usando dados simulados, vamos encontrá-lo na nossa constante:
+            const idNumerico = parseInt(tituloId, 10);
+            const tituloEncontrado = mockTitulosProtesto.find(t => t.id === idNumerico);
+
+            if (tituloEncontrado) {
+                setTitulo(tituloEncontrado);
+            } else {
+                // Se não encontrar o título, redireciona de volta para a lista
+                alert("Título não encontrado!");
+                navigate('/protesto/titulos');
+            }
+        }
+    }, [tituloId, navigate]);
+
+    useEffect(() => {
+        if (titulo && titulo.valor > 0 && titulo.devedores.length > 0) {
+            const resultado = calcularAtoCompletoProtesto(titulo);
+
+            setCalculoCustas(resultado);
+        }
+    }, [titulo]);
+
+    useEffect(() => {
         if (titulo.valor > 0 && titulo.devedores.length > 0) {
             const resultado = calcularAtoCompletoProtesto(titulo);
+
             setCalculoCustas(resultado);
         }
     }, [titulo.valor, titulo.tipoPagamento, titulo.devedores]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-        setTitulo(prev => ({ ...prev, [name]: finalValue }));
-    };
 
     const handleDevedorChange = (index: number, novosDados: Partial<TPessoaTipo>) => {
         setTitulo(prev => {
@@ -77,61 +123,16 @@ export default function DetalhesTituloProtestoPage() {
     };
 
     const handleAddDevedor = () => {
-        console.log('clicando no botão de adicionar devedor')
         setTitulo(prev => ({ ...prev, devedores: [...prev.devedores, { tipo: 'fisica', nome: '', cpf: '', endereco: {} } as IPessoaFisica] }));
     };
 
     const handleRemoveDevedor = (indexToRemove: number) => {
-        console.log('clicando no botão de remover devedor')
         if (titulo.devedores.length <= 1) {
             alert("É necessário manter pelo menos um devedor.");
             return;
         }
         setTitulo(prev => ({ ...prev, devedores: prev.devedores.filter((_, index) => index !== indexToRemove) }));
     };
-
-    const BlocoResultado = ({ titulo, dados }: { titulo: string; dados: IResultadoCalculoCompleto['cobrancaInicial'] }) => (
-        <div className="space-y-4">
-            <h2 className="text-xl font-bold text-blue-800">{titulo}</h2>
-            {Object.entries(dados.detalhes).map(([ato, detalhe]) => detalhe && (
-                <div key={ato} className="bg-gray-50 p-3 rounded-lg border">
-                    <h3 className="font-bold text-gray-700 capitalize mb-2">{ato}</h3>
-                    <div className="grid grid-cols-4 gap-4 text-sm">
-                        <div>
-                            <p className="text-sm text-gray-500">ID Selo</p>
-                            <p className="font-mono font-semibold text-base">{detalhe.selo.id_selo}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500">Emolumentos</p>
-                            <p className="font-semibold text-base">R$ {detalhe.valorEmolumento.toFixed(2)}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500">Taxas</p>
-                            <p className="font-semibold text-base">R$ {detalhe.valorTaxaJudiciaria.toFixed(2)}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500">Subtotal</p>
-                            <p className="font-bold text-lg">R$ {detalhe.valorTotal.toFixed(2)}</p>
-                        </div>
-                    </div>
-                </div>
-            ))}
-            <div className="bg-blue-100 p-4 rounded-lg border border-blue-300 grid grid-cols-3 gap-4 text-center">
-                <div>
-                    <p className="text-sm text-blue-800">Total Emolumentos</p>
-                    <p className="text-2xl font-bold text-blue-900">R$ {dados.resumo.totalEmolumentos.toFixed(2)}</p>
-                </div>
-                <div>
-                    <p className="text-sm text-blue-800">Total Taxas</p>
-                    <p className="text-2xl font-bold text-blue-900">R$ {dados.resumo.totalTaxas.toFixed(2)}</p>
-                </div>
-                <div className="border-l-2 border-blue-300">
-                    <p className="text-sm font-semibold text-blue-800">VALOR TOTAL</p>
-                    <p className="text-3xl font-bold text-blue-900">R$ {dados.resumo.valorTotalAto.toFixed(2)}</p>
-                </div>
-            </div>
-        </div>
-    );
 
     const StatusBadge = ({ status }: { status: StatusTitulo }) => {
         const styles: Record<StatusTitulo, string> = {
@@ -144,9 +145,283 @@ export default function DetalhesTituloProtestoPage() {
             'Sustado Judicialmente': 'bg-orange-100 text-orange-800 border-orange-200',
             'Protestado': 'bg-red-100 text-red-800 border-red-200',
             'Cancelado': 'bg-pink-100 text-pink-800 border-pink-200',
+            'Liquidado': 'bg-pink-100 text-pink-800 border-pink-200',
         };
         return <span className={`px-3 py-1 text-sm font-bold rounded-full border ${styles[status] || 'bg-gray-100'}`}>{status}</span>;
     };
+
+    const criarRegistroHistorico = (evento: string): Historico => ({
+        data: new Date().toISOString(), // Converte o objeto Date para uma string no formato ISO 8601
+        evento: evento, // A chave agora é 'evento' para corresponder à interface
+        usuario: 'Usuário do Sistema', // Em um sistema real, viria do contexto de autenticação
+    });
+
+    const handleIntimar = () => {
+        const seloInfo = calculoCustas?.cobrancaInicial?.detalhes?.intimacao?.selo;
+        if (!seloInfo) {
+            toast.error("Selo de intimação não encontrado no cálculo.");
+            return;
+        }
+        setConfirmationModal({
+            isOpen: true,
+            action: 'intimar',
+            title: 'Confirmar Intimação',
+            data: [{
+                label: `Intimação para ${titulo.devedores[0]}`,
+                seloId: seloInfo.id_selo,
+                tituloData: titulo
+            }]
+        });
+    };
+
+    const handleLiquidar = () => {
+        const calculoLiquidacao = calcularCustoLiquidacao(titulo);
+
+        if (!calculoLiquidacao) {
+            toast.error("Não foi possível calcular o custo do cancelamento.");
+            return;
+        }
+
+        // --- LÓGICA ADAPTADA PARA MÚLTIPLOS SELOS ---
+        const selosParaConfirmar: IParsedData[] = [];
+
+        if ('liquidacao' in calculoLiquidacao) {
+            if (calculoLiquidacao.apontamento) {
+                selosParaConfirmar.push({ label: 'Apontamento', seloId: calculoLiquidacao.apontamento.selo.id_selo, tituloData: titulo });
+            }
+            if (calculoLiquidacao.intimacao) {
+                selosParaConfirmar.push({ label: 'Intimação', seloId: calculoLiquidacao.intimacao.selo.id_selo, tituloData: titulo });
+            }
+            if (calculoLiquidacao.liquidacao) {
+                selosParaConfirmar.push({ label: 'Liquidação', seloId: calculoLiquidacao.liquidacao.selo.id_selo, tituloData: titulo });
+            }
+        } else {
+            // Caso simples: Pagamento Comum
+            selosParaConfirmar.push({
+                label: `Liquidação`,
+                seloId: calculoLiquidacao.selo.id_selo,
+                tituloData: titulo
+            });
+        }
+
+        if (selosParaConfirmar.length === 0) {
+            toast.error("Nenhum selo foi encontrado para a operação de liquidação.");
+            return;
+        }
+
+        setConfirmationModal({
+            isOpen: true,
+            action: 'liquidar',
+            title: 'Confirmar Liquidação e Geração de Selos',
+            data: selosParaConfirmar // Passa a lista de todos os selos para o modal
+        });
+    };
+
+    const handleProtestar = () => {
+        const seloInfo = calculoCustas?.cobrancaInicial?.detalhes?.protesto?.selo;
+        if (!seloInfo) {
+            toast.error("Selo de protesto não encontrado no cálculo.");
+            return;
+        }
+        setConfirmationModal({
+            isOpen: true,
+            action: 'protestar',
+            title: 'Confirmar Protesto de Título',
+            data: [{
+                label: `Protesto`,
+                seloId: seloInfo.id_selo,
+                tituloData: titulo
+            }]
+        });
+    };
+    
+    const handleCancelar = () => {
+        const calculoCancelamento = calcularCustoCancelamento(titulo);
+
+        if (!calculoCancelamento) {
+            toast.error("Não foi possível calcular o custo do cancelamento.");
+            return;
+        }
+
+        // --- LÓGICA ADAPTADA PARA MÚLTIPLOS SELOS ---
+        const selosParaConfirmar: IParsedData[] = [];
+
+        if ('cancelamento' in calculoCancelamento) {
+            if (calculoCancelamento.apontamento) {
+                selosParaConfirmar.push({ label: 'Apontamento', seloId: calculoCancelamento.apontamento.selo.id_selo, tituloData: titulo });
+            }
+            if (calculoCancelamento.intimacao) {
+                selosParaConfirmar.push({ label: 'Intimação', seloId: calculoCancelamento.intimacao.selo.id_selo, tituloData: titulo });
+            }
+            if (calculoCancelamento.protesto) {
+                selosParaConfirmar.push({ label: 'Protesto', seloId: calculoCancelamento.protesto.selo.id_selo, tituloData: titulo });
+            }
+            if (calculoCancelamento.cancelamento) {
+                selosParaConfirmar.push({ label: 'Cancelamento', seloId: calculoCancelamento.cancelamento.selo.id_selo, tituloData: titulo });
+            }
+        } else {
+            // Caso simples: Pagamento Comum
+            selosParaConfirmar.push({
+                label: `Cancelamento`,
+                seloId: calculoCancelamento.selo.id_selo,
+                tituloData: titulo
+            });
+        }
+
+        if (selosParaConfirmar.length === 0) {
+            toast.error("Nenhum selo foi encontrado para a operação de cancelamento.");
+            return;
+        }
+
+        setConfirmationModal({
+            isOpen: true,
+            action: 'cancelar',
+            title: 'Confirmar Cancelamento e Geração de Selos',
+            data: selosParaConfirmar // Passa a lista de todos os selos para o modal
+        });
+    };
+
+    const executeConfirmedAction = () => {
+        const { action } = confirmationModal;
+
+        switch (action) {
+            case 'intimar': {
+                const seloInfo = calculoCustas!.cobrancaInicial.detalhes.intimacao!.selo;
+                setTitulo(prev => ({ ...prev, status: 'Aguardando Intimação', intimacao: { data: new Date(), meio: 'Pessoal', detalhes: '', selosIntimacao: [{ numeroselo: `GERADO-${seloInfo.id_selo}`, codigo: seloInfo.id_selo }] }, historico: [...(prev.historico || []), criarRegistroHistorico('Título enviado para intimação.')] }));
+                setActiveTab('intimacao');
+                toast.success("Título enviado para intimação!");
+                break;
+            }
+            case 'liquidar': {
+                const calculoLiquidacao = calcularCustoLiquidacao(titulo);
+
+                if (!calculoLiquidacao) {
+                    toast.error("Falha ao re-calcular o custo do cancelamento.");
+                    setConfirmationModal(initialModalState);
+                    return;
+                }
+
+                if ('liquidacao' in calculoLiquidacao) {
+                    // Caso complexo: Atualiza o título com TODOS os selos devidos
+                    const seloApontamento = calculoLiquidacao.apontamento?.selo;
+                    const seloIntimacao = calculoLiquidacao.intimacao?.selo;
+                    const seloCancelamento = calculoLiquidacao.liquidacao?.selo;
+
+                    if (!seloCancelamento) { // Checagem mínima
+                         toast.error("Selo de cancelamento não encontrado.");
+                         setConfirmationModal(initialModalState);
+                         return;
+                    }
+
+                    setTitulo(prev => ({
+                        ...prev,
+                        status: 'Liquidado',
+                        apontamento: seloApontamento ? { ...prev.apontamento!, selosApontamento: [...(prev.apontamento?.selosApontamento || []), { numeroselo: `PAGO-${seloApontamento.id_selo}`, codigo: seloApontamento.id_selo }] } : prev.apontamento,
+                        intimacao: seloIntimacao ? { ...prev.intimacao!, selosIntimacao: [...(prev.intimacao?.selosIntimacao || []), { numeroselo: `PAGO-${seloIntimacao.id_selo}`, codigo: seloIntimacao.id_selo }] } : prev.intimacao,
+                        liquidacaoOuDesistencia: {
+                            data: new Date(),
+                            tipo: 'LIQUIDACAO',
+                            seloLiquidacaoDesistencia: { numeroselo: `GERADO-${seloCancelamento.id_selo}`, codigo: seloCancelamento.id_selo }
+                        },
+                        historico: [...(prev.historico || []), criarRegistroHistorico('Protesto cancelado com quitação de custas posteriores.')]
+                    }));
+
+                } else {
+                    // Caso simples: Lógica original para pagamento comum
+                    const seloInfo = calculoLiquidacao.selo;
+                    setTitulo(prev => ({
+                        ...prev,
+                        status: 'Liquidado',
+                        cancelamento: {
+                            data: new Date(),
+                            motivo: 'Anuência do Credor',
+                            selosCancelamento: { numeroselo: `GERADO-${seloInfo.id_selo}`, codigo: seloInfo.id_selo }
+                        },
+                        historico: [...(prev.historico || []), criarRegistroHistorico('Titulo Liquidado.')]
+                    }));
+                }
+
+                setActiveTab('liquidacao');
+                toast.info("Titulo Liquidado com sucesso!");
+                break;
+            }
+            case 'protestar': {
+                const seloInfo = calculoCustas!.cobrancaInicial.detalhes.protesto!.selo;
+                setTitulo(prev => ({ ...prev, status: 'Protestado', protesto: { dataLavratura: new Date(), motivo: 'Falta de Pagamento', livro: 'Livro de Protesto - Nº 1', folha: '123', selosProtesto: [{ numeroselo: `GERADO-${seloInfo.id_selo}`, codigo: seloInfo.id_selo }] }, historico: [...(prev.historico || []), criarRegistroHistorico('Título protestado por falta de pagamento.')] }));
+                setActiveTab('protesto');
+                toast.warn("Título protestado!");
+                break;
+            }
+            case 'cancelar': {
+                const calculoCancelamento = calcularCustoCancelamento(titulo);
+                if (!calculoCancelamento) {
+                    toast.error("Falha ao re-calcular o custo do cancelamento.");
+                    setConfirmationModal(initialModalState);
+                    return;
+                }
+
+                // --- LÓGICA DE EXECUÇÃO ADAPTADA PARA MÚLTIPLOS SELOS ---
+                if ('cancelamento' in calculoCancelamento) {
+                    // Caso complexo: Atualiza o título com TODOS os selos devidos
+                    const seloApontamento = calculoCancelamento.apontamento?.selo;
+                    const seloIntimacao = calculoCancelamento.intimacao?.selo;
+                    const seloProtesto = calculoCancelamento.protesto?.selo;
+                    const seloCancelamento = calculoCancelamento.cancelamento?.selo;
+
+                    if (!seloCancelamento) { // Checagem mínima
+                         toast.error("Selo de cancelamento não encontrado.");
+                         setConfirmationModal(initialModalState);
+                         return;
+                    }
+
+                    setTitulo(prev => ({
+                        ...prev,
+                        status: 'Cancelado',
+                        // Adiciona os selos de pagamento posterior aos seus respectivos atos
+                        apontamento: seloApontamento ? { ...prev.apontamento!, selosApontamento: [...(prev.apontamento?.selosApontamento || []), { numeroselo: `PAGO-${seloApontamento.id_selo}`, codigo: seloApontamento.id_selo }] } : prev.apontamento,
+                        intimacao: seloIntimacao ? { ...prev.intimacao!, selosIntimacao: [...(prev.intimacao?.selosIntimacao || []), { numeroselo: `PAGO-${seloIntimacao.id_selo}`, codigo: seloIntimacao.id_selo }] } : prev.intimacao,
+                        protesto: seloProtesto ? { ...prev.protesto!, selosProtesto: [...(prev.protesto?.selosProtesto || []), { numeroselo: `PAGO-${seloProtesto.id_selo}`, codigo: seloProtesto.id_selo }] } : prev.protesto,
+                        // Cria a seção de cancelamento com seu selo
+                        cancelamento: {
+                            data: new Date(),
+                            motivo: 'Anuência do Credor',
+                            selosCancelamento: { numeroselo: `GERADO-${seloCancelamento.id_selo}`, codigo: seloCancelamento.id_selo }
+                        },
+                        historico: [...(prev.historico || []), criarRegistroHistorico('Protesto cancelado com quitação de custas posteriores.')]
+                    }));
+
+                } else {
+                    // Caso simples: Lógica original para pagamento comum
+                    const seloInfo = calculoCancelamento.selo;
+                    setTitulo(prev => ({
+                        ...prev,
+                        status: 'Cancelado',
+                        cancelamento: {
+                            data: new Date(),
+                            motivo: 'Anuência do Credor',
+                            selosCancelamento: { numeroselo: `GERADO-${seloInfo.id_selo}`, codigo: seloInfo.id_selo }
+                        },
+                        historico: [...(prev.historico || []), criarRegistroHistorico('Protesto do título foi cancelado.')]
+                    }));
+                }
+
+                setActiveTab('cancelamento');
+                toast.info("Protesto cancelado com sucesso!");
+                break;
+            }
+        }
+        
+        // Fecha o modal após a ação
+        setConfirmationModal(initialModalState);
+    };
+
+    if (!titulo) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>Carregando dados do título...</p>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -190,14 +465,14 @@ export default function DetalhesTituloProtestoPage() {
                         </div>
 
                         <div className="bg-white p-6 rounded-xl shadow-sm border">
-                            {activeTab === 'dadosTitulo' && <TabDadosTitulo titulo={titulo} setTitulo={setTitulo} calculoCustas={calculoCustas} isCostVisible={isCostVisible} setIsCostVisible={setIsCostVisible} BlocoResultado={BlocoResultado} />}
+                            {activeTab === 'dadosTitulo' && <TabDadosTitulo titulo={titulo} setTitulo={setTitulo} calculoCustas={calculoCustas} isCostVisible={isCostVisible} setIsCostVisible={setIsCostVisible}/>}
                             {activeTab === 'apresentante' && <TabApresentante setTitulo={setTitulo} titulo={titulo} />}
-                            {activeTab === 'devedores' && ( <TabDevedores titulo={titulo} onAddDevedor={handleAddDevedor} onRemoveDevedor={handleRemoveDevedor} onDevedorChange={handleDevedorChange} />)}
+                            {activeTab === 'devedores' && (<TabDevedores titulo={titulo} onAddDevedor={handleAddDevedor} onRemoveDevedor={handleRemoveDevedor} onDevedorChange={handleDevedorChange} />)}
                             {activeTab === 'cedente' && titulo.cedente && <TabCedente titulo={titulo} setTitulo={setTitulo} />}
-                            {activeTab === 'apontamento' && <TabApontamento titulo={titulo} setTitulo={setTitulo} />}
-                            {activeTab === 'intimacao' && <TabIntimacao titulo={titulo} setTitulo={setTitulo} />}
+                            {activeTab === 'apontamento' && <TabApontamento titulo={titulo} setTitulo={setTitulo} onIntimar={handleIntimar} />}
+                            {activeTab === 'intimacao' && <TabIntimacao titulo={titulo} setTitulo={setTitulo} onLiquidar={handleLiquidar} onProtestar={handleProtestar} />}
                             {activeTab === 'liquidacao' && <TabLiquidacao titulo={titulo} setTitulo={setTitulo} />}
-                            {activeTab === 'protesto' && <TabProtesto titulo={titulo} setTitulo={setTitulo} />}
+                            {activeTab === 'protesto' && <TabProtesto titulo={titulo} setTitulo={setTitulo} onCancelar={handleCancelar} />}
                             {activeTab === 'cancelamento' && <TabCancelamento titulo={titulo} setTitulo={setTitulo} />}
                         </div>
                     </div>
@@ -212,6 +487,15 @@ export default function DetalhesTituloProtestoPage() {
                     <Save size={18} /> Salvar Alterações
                 </button>
             </footer>
+
+            <ConfirmacaoSeloModal
+                isOpen={confirmationModal.isOpen}
+                onClose={() => setConfirmationModal(initialModalState)}
+                onConfirm={executeConfirmedAction}
+                parsedData={confirmationModal.data}
+                emolumentos={tabelaEmolumentos}
+                title={confirmationModal.title}
+            />
 
             <HistoricoModal
                 isOpen={isHistoryModalOpen}
