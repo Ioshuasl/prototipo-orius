@@ -75,6 +75,11 @@ import DetalhesTituloProtestoPage from './pages/Protesto/Titulo/TituloPage';
 import GerenciamentoPessoasPageNotas from './pages/Notas/PessoaCadastradas/Gerenciamento-Pessoas';
 import CadastroPessoaPageNotas from './pages/Notas/PessoaCadastradas/Cadastro-Pessoa';
 import ParametrosNotas from './pages/Notas/Parametros/ParametrosNotas';
+import GerenciamentoBalcao from './pages/Notas/Config/Balcao/GerenciamentoBalcao';
+import CadastroBalcaoPage from './pages/Notas/Config/Balcao/CadastroBalcaoPage';
+import GerenciamentoBalcaoServicos from './pages/Notas/Balcao/GerenciamentoBalcaoServicos';
+import TelaEmissaoServico from './pages/Notas/Balcao/EmitirNovoServicoBalcao';
+import BalcaoServiceEmissionScreen from './pages/Notas/Balcao/EmitirNovoServicoBalcao';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -218,6 +223,11 @@ function App() {
         {/* Rotas dos sistemas Tabelionato de notas */}
         <Route path="/tabelionato-notas" element={<NotasLayout />} >
           <Route path='dashboard' element={<NotasDashboard />} />
+
+          <Route path="balcao" element={<GerenciamentoBalcaoServicos />} />
+          <Route path="balcao/cadastrar" element={<BalcaoServiceEmissionScreen />} />
+          <Route path="balcao/:id" element={<CadastroPessoaPageNotas />} />
+
           <Route path="pessoas" element={<GerenciamentoPessoasPageNotas />} />
           <Route path="pessoas/cadastrar" element={<CadastroPessoaPageNotas />} />
           <Route path="pessoas/:id" element={<CadastroPessoaPageNotas />} />
@@ -225,9 +235,9 @@ function App() {
           {/* Rotas de Configuração */}
           <Route path="config/cartorio" element={<ConfiguracaoCartorio />} />
 
-          <Route path="config/certidao" element={<GerenciamentoCertidoes />} />
-          <Route path="config/certidao/cadastrar" element={<CadastroCertidaoPage />} />
-          <Route path="config/certidao/:id" element={<CadastroCertidaoPage />} />
+          <Route path="config/balcao" element={<GerenciamentoBalcao />} />
+          <Route path="config/balcao/cadastrar" element={<CadastroBalcaoPage />} />
+          <Route path="config/balcao/:id" element={<CadastroBalcaoPage />} />
 
           <Route path="config/averbacao" element={<GerenciamentoAverbacoes />} />
           <Route path="config/averbacao/cadastrar" element={<CadastroAverbacaoPage />} />

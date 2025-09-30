@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Server, Landmark, FileText, Check, Cloud, HardDrive, CalendarClock, Power, Clock, KeyRound } from 'lucide-react';
+import { Server, Landmark, FileText, Cloud, HardDrive, CalendarClock, Check, KeyRound } from 'lucide-react';
 
 // --- Interfaces de Tipagem para o Estado ---
 interface ServerConfig {
@@ -16,35 +16,22 @@ interface RatesConfig {
 
 interface CorregedoriaConfig {
     login: string;
-    password: '';
+    password: string;
     autoRedimensionamento: boolean;
     redimensionamentoTime: string;
     autoSealSend: boolean;
     sealFrequency: '2h' | '8h' | '24h' | '3d' | '5d';
 }
 
-interface CrcConfig {
-    habilitado: true,
-    modo: 'automatico' | 'manual',
-    horario: string,
-    usuario: string,
-    senha: string
-}
-
-interface SircConfig {
-    habilitado: true,
-    modo: 'automatico' | 'manual',
-    horario: string,
-    codigoServentia: string,
-    senha: string
+interface CensecConfig {
+    apiKey: string;
 }
 
 interface SystemConfig {
     server: ServerConfig;
     rates: RatesConfig;
     corregedoria: CorregedoriaConfig;
-    crc: CrcConfig;
-    sirc: SircConfig
+    censec: CensecConfig;
 }
 
 // Valores iniciais para os parâmetros
@@ -67,27 +54,15 @@ const initialConfig: SystemConfig = {
         autoSealSend: false,
         sealFrequency: '24h',
     },
-    crc: {
-        habilitado: true,
-        modo: 'automatico',
-        horario: '22:00',
-        usuario: 'cartorio_cidade_go',
-        senha: '••••••••••'
+    censec: {
+        apiKey: '',
     },
-    sirc: {
-        habilitado: true,
-        modo: 'manual',
-        horario: '23:00',
-        codigoServentia: 'SIRC12345',
-        senha: '••••••••••'
-    }
 };
 
 const SettingsCard = ({ title, icon: Icon, children }: { title: string, icon: React.ElementType, children: React.ReactNode }) => (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm mt-6">
         <header className="p-4 border-b border-gray-200 flex items-center gap-3">
             <Icon className="h-5 w-5 text-gray-500" />
-            {/* ALTERADO: Cor do título do card */}
             <h3 className="text-lg font-bold text-[#4a4e51]">{title}</h3>
         </header>
         <div className="p-6 space-y-6">
@@ -105,7 +80,7 @@ const FormField = ({ label, description, children }: { label: string, descriptio
 );
 
 export default function ParametrosNotas() {
-    const [activeTab, setActiveTab] = useState<'server' | 'rates' | 'corregedoria' | 'crc' | 'sirc'>('server');
+    const [activeTab, setActiveTab] = useState<'server' | 'rates' | 'corregedoria' | 'censec'>('server');
     const [config, setConfig] = useState<SystemConfig>(initialConfig);
 
     const handleServerChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -143,34 +118,18 @@ export default function ParametrosNotas() {
         }));
     };
 
-    const handleCrcChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        const checked = (e.target as HTMLInputElement).checked;
-
+    const handleCensecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
         setConfig(prev => ({
             ...prev,
-            crc: {
-                ...prev.crc,
-                [name]: type === 'checkbox' ? checked : value,
-            },
-        }));
-    };
-
-    const handleSircChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        const checked = (e.target as HTMLInputElement).checked;
-
-        setConfig(prev => ({
-            ...prev,
-            sirc: {
-                ...prev.sirc,
-                [name]: type === 'checkbox' ? checked : value,
+            censec: {
+                ...prev.censec,
+                apiKey: value,
             },
         }));
     };
 
     const handleSave = () => {
-        // Lógica para enviar as configurações para o backend
         console.log('Configurações a serem salvas:', config);
         alert('Configurações salvas com sucesso!');
     };
@@ -207,13 +166,11 @@ export default function ParametrosNotas() {
                             >
                                 <Landmark size={18} /> Corregedoria/SEE
                             </button>
-                            <button onClick={() => setActiveTab('crc')} 
-                            className={`${activeTab === 'crc' ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2`}>
-                                CRC Nacional
-                            </button>
-                            <button onClick={() => setActiveTab('sirc')} 
-                            className={`${activeTab === 'sirc' ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2`}>
-                                SIRC / INSS
+                            <button
+                                onClick={() => setActiveTab('censec')}
+                                className={`${activeTab === 'censec' ? 'border-[#dd6825] text-[#dd6825]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2`}
+                            >
+                                <KeyRound size={18} /> CENSEC
                             </button>
                         </nav>
                     </div>
@@ -360,7 +317,6 @@ export default function ParametrosNotas() {
                                         />
                                     </div>
 
-                                    {/* Redimensionamento automático */}
                                     <div className="flex items-center gap-2 pt-2">
                                         <input
                                             id="auto-redimensionamento"
@@ -388,7 +344,6 @@ export default function ParametrosNotas() {
                                         </div>
                                     )}
 
-                                    {/* Envio automático de selo */}
                                     <div className="flex items-center gap-2 pt-2">
                                         <input
                                             id="auto-seal-send"
@@ -424,68 +379,18 @@ export default function ParametrosNotas() {
                             </div>
                         )}
 
-                        {activeTab === 'crc' && (
-                            <div className="animate-fade-in">
-                                <SettingsCard title="Modo de Operação" icon={Power}>
-                                    <FormField label="Habilitar Integração com a CRC">
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={config.crc.habilitado} onChange={handleCrcChange} className="sr-only peer" />
-                                            {/* ALTERADO: Cores do toggle switch */}
-                                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#dd6825]/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#dd6825]"></div>
-                                        </label>
-                                    </FormField>
-                                    <FormField label="Modo de Envio Padrão">
-                                        <div className="flex gap-4 mt-2">
-                                            {/* ALTERADO: Cores do radio button */}
-                                            <label><input type="radio" name="crc_modo" value="automatico" checked={config.crc.modo === 'automatico'} onChange={handleCrcChange} className="mr-2 text-[#dd6825] focus:ring-[#dd6825]" /> Automático</label>
-                                            <label><input type="radio" name="crc_modo" value="manual" checked={config.crc.modo === 'manual'} onChange={handleCrcChange} className="mr-2 text-[#dd6825] focus:ring-[#dd6825]" /> Manual</label>
-                                        </div>
-                                    </FormField>
-                                </SettingsCard>
-
-                                <SettingsCard title="Parâmetros de Envio Automático" icon={Clock}>
-                                    <FormField label="Horário para Envio Diário" description="O sistema tentará enviar os atos pendentes neste horário.">
-                                        <input type="time" value={config.crc.horario} onChange={handleCrcChange} className={`${commonInputClass} md:w-1/3`} />
-                                    </FormField>
-                                </SettingsCard>
-
-                                <SettingsCard title="Credenciais de Acesso (Web Service)" icon={KeyRound}>
-                                    <FormField label="Usuário" description="Login fornecido pela CRC Nacional.">
-                                        <input type="text" value={config.crc.usuario} onChange={handleCrcChange} className={commonInputClass} />
-                                    </FormField>
-                                    <FormField label="Senha" description="Senha de acesso ao web service.">
-                                        <input type="password" value={config.crc.senha} onChange={handleCrcChange} className={commonInputClass} />
-                                    </FormField>
-                                </SettingsCard>
-                            </div>
-                        )}
-
-                        {activeTab === 'sirc' && (
-                            <div className="animate-fade-in">
-                                <SettingsCard title="Modo de Operação" icon={Power}>
-                                    <FormField label="Habilitar Integração com o SIRC">
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={config.sirc.habilitado} onChange={handleSircChange} className="sr-only peer" />
-                                            {/* ALTERADO: Cores do toggle switch */}
-                                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#dd6825]/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#dd6825]"></div>
-                                        </label>
-                                    </FormField>
-                                    <FormField label="Modo de Envio Padrão">
-                                        <div className="flex gap-4 mt-2">
-                                            {/* ALTERADO: Cores do radio button */}
-                                            <label><input type="radio" name="sirc_modo" value="automatico" checked={config.sirc.modo === 'automatico'} onChange={handleSircChange} className="mr-2 text-[#dd6825] focus:ring-[#dd6825]" /> Automático</label>
-                                            <label><input type="radio" name="sirc_modo" value="manual" checked={config.sirc.modo === 'manual'} onChange={handleSircChange} className="mr-2 text-[#dd6825] focus:ring-[#dd6825]" /> Manual</label>
-                                        </div>
-                                    </FormField>
-                                </SettingsCard>
-                                <SettingsCard title="Credenciais de Acesso (SIRC)" icon={KeyRound}>
-                                    <FormField label="Código da Serventia no SIRC" description="Código único fornecido pelo INSS/SIRC.">
-                                        <input type="text" value={config.sirc.codigoServentia} onChange={handleSircChange} className={commonInputClass} />
-                                    </FormField>
-                                    <FormField label="Senha" description="Senha de acesso para o envio de arquivos.">
-                                        <input type="password" value={config.sirc.senha} onChange={handleSircChange} className={commonInputClass} />
-                                    </FormField>
-                                </SettingsCard>
+                        {activeTab === 'censec' && (
+                            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-300">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Configurações CENSEC</h2>
+                                <FormField label="API Key" description="Chave de autenticação fornecida pela CENSEC.">
+                                    <input
+                                        type="text"
+                                        value={config.censec.apiKey}
+                                        onChange={handleCensecChange}
+                                        className={commonInputClass}
+                                        placeholder="Insira sua API Key"
+                                    />
+                                </FormField>
                             </div>
                         )}
                     </div>

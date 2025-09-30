@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AddressFields from '../../../Components/AddressFields';
+import AddressFields from '../../Components/AddressFields';
 import { type IConfiguracaoCartorio, type IEndereco } from '../../types';
 import { IMaskInput } from 'react-imask';
 import { toast, ToastContainer } from 'react-toastify';

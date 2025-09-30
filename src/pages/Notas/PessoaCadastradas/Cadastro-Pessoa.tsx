@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {
-    Save, Loader2, ArrowLeft, Trash2, Pen, UserPlus
-} from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Trash2, Pen, UserPlus } from 'lucide-react';
 import SignatureCanvas from 'react-signature-canvas'
 import SeletorDePessoa from '../../Components/SeletorDePessoa';
 import { type TPessoaTipo, type IPessoaFisica, type IPessoaJuridica, type IEndereco, type ISocio } from '../../Types';
@@ -102,7 +100,7 @@ const CadastroPessoaPageNotas: React.FC = () => {
                     setDadosPessoa(pessoaExistente);
                 } else {
                     toast.error("Pessoa não encontrada.");
-                    navigate('/pessoas');
+                    navigate(-1);
                 }
                 setIsLoading(false);
             }, 1000);
@@ -363,7 +361,7 @@ const CadastroPessoaPageNotas: React.FC = () => {
                 return (
                     <SeletorDePessoa
                         dados={dadosPessoa}
-                        pathPrefix={[]}
+                        pathPrefix={["dadosPessoa"]}
                         handleInputChange={handleInputChange}
                         handleAddressUpdate={handleAddressUpdate}
                         handleCpfSearch={handleCpfSearch}

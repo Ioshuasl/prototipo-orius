@@ -6,11 +6,13 @@ import { useAuth, type User } from '../../contexts/AuthContext';
 import logo from '../../assets/logo-orius-branco-sidebar.png'
 
 const MOCK_USERS: (User & { email: string, senha_plana: string })[] = [
-  { id: 1, name: 'Admin Geral', email: 'admin@cartorio.com', role: 'Administrador', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'admin123', },
-  { id: 2, name: 'João da Silva', email: 'joao.civil@cartorio.com', role: 'Escrevente de Registro Civil', permissions: ['registro-civil', 'caixa'], senha_plana: 'joao123', },
-  { id: 3, name: 'Maria Oliveira', email: 'maria.notas@cartorio.com', role: 'Tabeliã', permissions: ['tabelionato-notas'], senha_plana: 'maria123', },
-  { id: 4, name: 'Luciano Oliveira', email: 'luciano.civil@cartorio.com', role: 'Tabeliã', permissions: ['registro-civil'], senha_plana: 'luciano123', },
-  { id: 5, name: 'Suporte Técnico', email: 'suporte@cartorio.com', role: 'Suporte Técnico', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'suporte123', },
+  { id: 1, name: 'Ioshua Lopes', email: 'ioshua@oriustecnologia.com.br', role: 'Administrador', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'master@orius', },
+  { id: 2, name: 'Keven', email: 'keven@oriustecnologia.com.br', role: 'Administrador', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'master@orius', },
+  { id: 3, name: 'Admin Geral', email: 'admin@cartorio.com', role: 'Administrador', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'admin123', },
+  { id: 4, name: 'João da Silva', email: 'joao.civil@cartorio.com', role: 'Escrevente de Registro Civil', permissions: ['registro-civil', 'caixa'], senha_plana: 'joao123', },
+  { id: 5, name: 'Maria Oliveira', email: 'maria.notas@cartorio.com', role: 'Tabeliã', permissions: ['tabelionato-notas'], senha_plana: 'maria123', },
+  { id: 6, name: 'Luciano Oliveira', email: 'luciano.civil@cartorio.com', role: 'Tabeliã', permissions: ['registro-civil'], senha_plana: 'luciano123', },
+  { id: 7, name: 'Suporte Técnico', email: 'suporte@cartorio.com', role: 'Suporte Técnico', permissions: ['registro-imoveis', 'registro-civil', 'tabelionato-notas', 'protesto-titulos', 'registro-titulos-docs', 'caixa'], senha_plana: 'suporte123', },
 ];
 
 
@@ -59,15 +61,15 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <title>Login | Orius Tecnologia</title>
       <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-xl border border-gray-200">
-        
+
         <div className="text-center">
-          <img src={logo} alt="Logo Orius Tecnologia" className="mx-auto h-24 w-auto mb-4"/>
+          <img src={logo} alt="Logo Orius Tecnologia" className="mx-auto h-24 w-auto mb-4" />
           <h1 className="text-3xl font-bold text-[#4a4e51]">Acesso ao Sistema</h1>
           <p className="mt-2 text-gray-500">Faça login para continuar</p>
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          
+
           <div className="relative">
             <label htmlFor="email" className="sr-only">E-mail</label>
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -130,7 +132,7 @@ export default function Login() {
             </button>
           </div>
         </form>
-        
+
         <p className="mt-6 text-center text-xs text-gray-500">
           &copy; {new Date().getFullYear()} Orius Tecnologia. Todos os direitos reservados.
         </p>

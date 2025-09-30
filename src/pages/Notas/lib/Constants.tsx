@@ -1,4 +1,6 @@
 import { type IPessoaFisica, type IPessoaJuridica, type TPessoaTipo, type IPermissao, type ICargo, type IUsuario, type ILogAtividade, type ITemplate } from "../../Types";
+import type { IBalcaoTemplate, ITipoServicoBalcao, ReciboTemplate } from "../Types";
+import { recibo_averbacao, recibo_simples } from "../../Caixa/Config/Recibo/template";
 
 export const ufs = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
 export const regimesDeBens = ['Comunhão Parcial de Bens', 'Comunhão Universal de Bens', 'Separação Total de Bens', 'Separação Obrigatória de Bens', 'Participação Final nos Aquestos', 'Não se aplica'];
@@ -334,74 +336,74 @@ export const mockLogsDatabase: ILogAtividade[] = [
     { id: 4, userId: 101, dataHora: '2025-07-29 18:00:00', acao: 'ATUALIZAÇÃO DE CARGO', detalhes: 'Editou as permissões do cargo "Escrevente Auxiliar".' },
 
     // NOVOS DADOS ADICIONADOS CONFORME SOLICITADO
-    { 
-        id: 5, 
+    {
+        id: 5,
         userId: 102, // Bruno Chefe
-        dataHora: '2025-08-01 09:15:00', 
-        acao: 'LAVROU_ATO', 
-        detalhes: 'Lavrou o ato de Casamento, protocolo 2024-C-67890.' 
+        dataHora: '2025-08-01 09:15:00',
+        acao: 'LAVROU_ATO',
+        detalhes: 'Lavrou o ato de Casamento, protocolo 2024-C-67890.'
     },
-    { 
-        id: 6, 
+    {
+        id: 6,
         userId: 102, // Bruno Chefe
-        dataHora: '2025-08-01 09:45:30', 
-        acao: 'ALTEROU_ATO', 
-        detalhes: 'Alterou dados (anotações) no registro de Óbito, protocolo 2025-O-54321.' 
+        dataHora: '2025-08-01 09:45:30',
+        acao: 'ALTEROU_ATO',
+        detalhes: 'Alterou dados (anotações) no registro de Óbito, protocolo 2025-O-54321.'
     },
-    { 
-        id: 7, 
+    {
+        id: 7,
         userId: 103, // Carla Auxiliar
-        dataHora: '2025-08-01 10:30:00', 
-        acao: 'EMITIU_CERTIDAO', 
-        detalhes: 'Emitiu certidão de 2ª via de Nascimento para o protocolo 2025-N-12345.' 
+        dataHora: '2025-08-01 10:30:00',
+        acao: 'EMITIU_CERTIDAO',
+        detalhes: 'Emitiu certidão de 2ª via de Nascimento para o protocolo 2025-N-12345.'
     },
-    { 
-        id: 8, 
+    {
+        id: 8,
         userId: 102, // Bruno Chefe
-        dataHora: '2025-08-01 11:05:10', 
-        acao: 'IMPRIMIU_LIVRO_PROTOCOLO', 
-        detalhes: 'Imprimiu o Livro de Protocolo com filtros: Data de 2025-07-15 a 2025-07-21.' 
+        dataHora: '2025-08-01 11:05:10',
+        acao: 'IMPRIMIU_LIVRO_PROTOCOLO',
+        detalhes: 'Imprimiu o Livro de Protocolo com filtros: Data de 2025-07-15 a 2025-07-21.'
     },
-    { 
-        id: 9, 
+    {
+        id: 9,
         userId: 103, // Carla Auxiliar
-        dataHora: '2025-08-01 14:22:00', 
-        acao: 'EMITIU_SELO_AVULSO', 
-        detalhes: 'Finalizou a solicitação de selo avulso, protocolo SA-2025-00103 (Apostilamento de Haia).' 
+        dataHora: '2025-08-01 14:22:00',
+        acao: 'EMITIU_SELO_AVULSO',
+        detalhes: 'Finalizou a solicitação de selo avulso, protocolo SA-2025-00103 (Apostilamento de Haia).'
     },
-    { 
-        id: 10, 
+    {
+        id: 10,
         userId: 101, // Alice Admin
-        dataHora: '2025-08-01 15:00:00', 
-        acao: 'ALTEROU_TEMPLATE_CABECALHO', 
-        detalhes: 'Modificou o template de cabeçalho "Cabeçalho Padrão com Brasão" (ID: 1).' 
+        dataHora: '2025-08-01 15:00:00',
+        acao: 'ALTEROU_TEMPLATE_CABECALHO',
+        detalhes: 'Modificou o template de cabeçalho "Cabeçalho Padrão com Brasão" (ID: 1).'
     },
-    { 
-        id: 11, 
+    {
+        id: 11,
         userId: 101, // Alice Admin
-        dataHora: '2025-08-01 15:10:25', 
-        acao: 'ALTEROU_TEMPLATE_RODAPE', 
-        detalhes: 'Modificou o template de rodapé "Rodapé Padrão com Endereço" (ID: 3).' 
+        dataHora: '2025-08-01 15:10:25',
+        acao: 'ALTEROU_TEMPLATE_RODAPE',
+        detalhes: 'Modificou o template de rodapé "Rodapé Padrão com Endereço" (ID: 3).'
     },
-    { 
-        id: 12, 
+    {
+        id: 12,
         userId: 101, // Alice Admin
-        dataHora: '2025-08-01 16:00:00', 
-        acao: 'ALTEROU_CONFIG_AVERBACAO', 
-        detalhes: 'Modificou o modelo de averbação "Divórcio Consensual (Padrão)" (ID: AVRB-CAS-001).' 
+        dataHora: '2025-08-01 16:00:00',
+        acao: 'ALTEROU_CONFIG_AVERBACAO',
+        detalhes: 'Modificou o modelo de averbação "Divórcio Consensual (Padrão)" (ID: AVRB-CAS-001).'
     },
-    { 
-        id: 13, 
+    {
+        id: 13,
         userId: 101, // Alice Admin
-        dataHora: '2025-08-01 16:30:00', 
-        acao: 'ALTEROU_CONFIG_CERTIDAO', 
-        detalhes: 'Modificou o modelo de certidão "Certidão de Casamento - Segunda Via" (ID: CERT-CAS-001).' 
+        dataHora: '2025-08-01 16:30:00',
+        acao: 'ALTEROU_CONFIG_CERTIDAO',
+        detalhes: 'Modificou o modelo de certidão "Certidão de Casamento - Segunda Via" (ID: CERT-CAS-001).'
     },
-    { 
-        id: 14, 
+    {
+        id: 14,
         userId: 101, // Alice Admin
-        dataHora: '2025-08-01 17:00:00', 
-        acao: 'ALTEROU_DADOS_SERVENTIA', 
+        dataHora: '2025-08-01 17:00:00',
+        acao: 'ALTEROU_DADOS_SERVENTIA',
         detalhes: 'Alterou os dados da serventia (CNS, Endereço e CEP).'
     }
 ];
@@ -439,4 +441,127 @@ export const mockHeaderFooterTemplates: ITemplate[] = [
         isPadrao: false,
         dataModificacao: '2025-06-15',
     }
+];
+
+export const mockTipoServicoBalcao: ITipoServicoBalcao[] = [
+
+    { id: 1, nome: "Reconhecimento" },
+    { id: 2, nome: "Abono" },
+    { id: 3, nome: "Geral" },
+    { id: 4, nome: "Autenticação" }
+
+]
+
+export const mockBalcaoTemplates: IBalcaoTemplate[] = [
+    {
+        id: "BALCAO-REC-001",
+        tipoServicoBalcaoId: 1, // Reconhecimento
+        titulo: "Padrão: Reconhecimento por Semelhança",
+        descricao: "Modelo de etiqueta para reconhecimento de firma por semelhança.",
+        id_selo: 2430, // Ex: Reconhecimento de Firma
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        conteudo: "<p>Reconheço como verdadeira a firma de: <strong>{{ NOME_FIRMA }}</strong>.</p><p>Assina a rogo de: {{ NOME_ROGATARIO }}</p>",
+        margins: { top: '0.5', right: '0.5', bottom: '0.5', left: '0.5' },
+        layout: { largura_mm: 70, altura_mm: 50 }, // Tamanho de Etiqueta
+        ativo: true,
+        exigeFichaFirma: "Não",
+        exigeTestemunhas: false, 
+        documentosExigidos: null
+    },
+    {
+        id: "BALCAO-REC-002",
+        tipoServicoBalcaoId: 1, // Reconhecimento
+        titulo: "Padrão: Reconhecimento Autêntico",
+        descricao: "Modelo de etiqueta para reconhecimento de firma por autenticidade, com CPF.",
+        id_selo: 2430,
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        // Conteúdo pode usar o novo placeholder LISTA_TESTEMUNHAS
+        conteudo: "<p>Reconheço a firma de <strong>{{ NOME_FIRMA }}</strong>, sendo esta autêntica, identificada por: {{ CPF_RG }}</p><p>Acompanhado das testemunhas: {{ LISTA_TESTEMUNHAS }}</p>",
+        margins: { top: '0.5', right: '0.5', bottom: '0.5', left: '0.5' },
+        layout: { largura_mm: 70, altura_mm: 50 },
+        ativo: true,
+        exigeFichaFirma: 'Sim', // Reconhecimento de firma sempre exige ficha de firma
+        exigeTestemunhas: true, 
+        documentosExigidos: [
+            {
+                nome: "Documento de Identidade (Original)",
+                obrigatorio: true,
+                detalhes: "Para conferência da assinatura e autenticidade da identidade."
+            },
+            {
+                nome: "Comprovante de Residência",
+                obrigatorio: false,
+                detalhes: "Opcional, mas solicitado para atualização cadastral."
+            },
+        ]
+    },
+    {
+        id: "BALCAO-AUT-001",
+        tipoServicoBalcaoId: 4, // Autenticação
+        titulo: "Padrão: Autenticação de Cópia",
+        descricao: "Modelo de carimbo para autenticação de cópia reprográfica.",
+        id_selo: 2433, // Ex: Autenticação de Cópia
+        cabecalhoPadraoId: null,
+        rodapePadraoId: null,
+        conteudo: "<p>Confere com o original. Certifico e dou fé. Data: {{ DATA }}</p>",
+        margins: { top: '0.5', right: '0.5', bottom: '0.5', left: '0.5' },
+        layout: { largura_mm: 210, altura_mm: 50 }, // Carimbo grande ou termo no verso
+        ativo: true,
+        exigeFichaFirma: "Não",
+        exigeTestemunhas: false, 
+        documentosExigidos: null
+    },
+];
+
+export const mockReciboTemplates: ReciboTemplate[] = [
+    {
+        id: 'REC-1',
+        titulo: 'Recibo de Serviço Padrão',
+        descricao: 'Recibo genérico para qualquer tipo de serviço realizado pelo cartório.',
+        tipoRecibo: 'Segunda Via',
+        id_selo: null,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: 'ROD-1',
+        conteudo: recibo_simples,
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 297 } // Tamanho A4
+    },
+    {
+        id: 'REC-2',
+        titulo: 'Recibo para Averbação de Divórcio',
+        descricao: 'Recibo específico para os emolumentos cobrados na averbação de divórcio.',
+        tipoRecibo: 'Averbação',
+        id_selo: 2050,
+        cabecalhoPadraoId: 'CAB-1',
+        rodapePadraoId: null,
+        conteudo: recibo_averbacao,
+        margins: { top: '2.0', right: '2.0', bottom: '2.0', left: '2.0' },
+        layout: { largura_mm: 210, altura_mm: 148 } // Tamanho A5
+    }
+];
+
+export const mockTaxasAdicionais = [
+    {
+        id: 'FUNREJUS',
+        nome: 'Fundo de Reaparelhamento da Justiça',
+        percentual: 0.2, // 20% sobre o emolumento
+        valorFixo: 0.0,
+        tipo: 'PERCENTUAL', // Tipo para indicar como calcular
+    },
+    {
+        id: 'FUNDEP',
+        nome: 'Fundo Especial de Defesa Social',
+        percentual: 0.0,
+        valorFixo: 5.50, // Exemplo de taxa fixa
+        tipo: 'FIXO',
+    },
+    {
+        id: 'CFC',
+        nome: 'Custo de Fiscalização do Cartório',
+        percentual: 0.05, // 5% sobre o emolumento
+        valorFixo: 0.0,
+        tipo: 'PERCENTUAL',
+    },
 ];

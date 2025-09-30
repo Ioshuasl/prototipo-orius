@@ -14,10 +14,37 @@ interface MainEditorProps {
     size: {
         width: number;
         height: number;
-    }
+    };
+    // NOVO: Propriedade para controlar o perfil da barra de ferramentas
+    isMinimal?: boolean; 
 }
 
-const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, margins, size }) => {
+const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, margins, size, isMinimal = false }) => {
+
+    // --- 1. DEFINIÇÃO DOS PERFIS ---
+
+    const fullPlugins = [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'fullscreen', 'insertdatetime',
+        'media', 'table', 'code', 'codesample', 'help', 'wordcount', 'autosave', 
+        'quickbars', 'pagebreak', 'nonbreaking'
+    ];
+    
+    // Plugins minimalistas para etiquetas/carimbos
+    const minimalPlugins = [
+        'autolink', 'lists', 'table', 'wordcount'
+    ];
+
+    // Toolbar completa (sua versão original, ligeiramente organizada)
+    const fullToolbar = 'undo redo styles removeformat | formatselect fontfamily fontsize forecolor | link quickimage bold italic underline align | bullist numlist outdent indent | removeformat preview fullscreen searchreplace help code codesample quicktable pagebreak nonbreaking charmap customTemplates';
+
+    // Toolbar minimalista (para etiquetas/carimbos)
+    const minimalToolbar = 'undo redo | bold italic underline | alignleft aligncenter alignright | fontfamily fontsize | customTemplates';
+
+
+    // --- 2. SELEÇÃO COM BASE NO isMinimal ---
+    const selectedPlugins = isMinimal ? minimalPlugins : fullPlugins;
+    const selectedToolbar = isMinimal ? minimalToolbar : fullToolbar;
 
 
     return (
@@ -32,15 +59,17 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                 menubar: false,
                 browser_spellcheck: true,
                 contextmenu: false,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'fullscreen', 'insertdatetime',
-                    'media', 'table', 'code', 'codesample', 'help', 'wordcount', 'autosave', 'quickbars',
-                    'quickbars link', 'quickbars image editimage', 'pagebreak', 'nonbreaking', 'advlist', 'autolink'
-                ],
-                autosave_ask_before_unload: true,
-                toolbar: 'undo redo styles removeformat  formatselect fontfamily fontsize forecolor link quickimage bold italic underline align bullist numlist outdent indent removeformat preview fullscreen searchreplace help code codesample quicktable pagebreak nonbreaking charmap customTemplates',
-                formats: {
+                
+                plugins: selectedPlugins,
+                toolbar: selectedToolbar,
+                
+                autosave_ask_before_unload: !isMinimal, // Desliga autosave em modo minimalista
+                quickbars_selection_toolbar: isMinimal ? false : 'bold italic underline | fontfamily | fontsize | quicklink blockquote',
+                quickbars_insert_toolbar: isMinimal ? false : 'bold italic underline fontfamily fontsize quicklink quickimage quicktable hr',
+                quickbars_image_toolbar: isMinimal ? false : 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
+
+
+                formats: { /* ... (Mantido) */
                     linhatopo: {
                         selector: 'div',
                         classes: 'borda-superior',
@@ -51,7 +80,7 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                     }
                 },
 
-                style_formats: [
+                style_formats: [ /* ... (Mantido) */
                     {
                         title: 'Estilos de Borda', items: [
                             { title: 'Linha Superior', format: 'linhatopo' },
@@ -60,6 +89,8 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                     }
                 ],
                 setup: (editor: any) => {
+                    // Os templates customizados podem ser diferentes, mas manteremos o bloco de código
+                    // original aqui para referência. Você deve adaptá-los para Balcão ou Certidão.
                     const customTemplates = [
                         {
                             title: 'Qualificação das Partes (Casamento)',
@@ -78,13 +109,12 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                         }
                     ];
                     editor.ui.registry.addMenuButton('customTemplates', {
-                        text: 'Modelos', // O texto que aparecerá no botão
+                        text: 'Modelos',
                         fetch: (callback: any) => {
                             const items = customTemplates.map(template => ({
                                 type: 'menuitem',
                                 text: template.title,
                                 onAction: () => {
-                                    // 3. Ação que acontece ao clicar no item do menu: insere o conteúdo
                                     editor.insertContent(template.content);
                                 }
                             }));
@@ -92,16 +122,14 @@ const MainEditor: React.FC<MainEditorProps> = ({ initialValue, onEditorChange, m
                         }
                     });
                 },
-                quickbars_selection_toolbar: 'bold italic underline | fontfamily | fontsize | quicklink blockquote | quicklink',
-                quickbars_insert_toolbar: 'bold italic underline fontfamily fontsize quicklink blockquote quicklink quickimage quicktable hr',
-                quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
+                
                 fontsize_formats: '4pt 5pt 6pt 7pt 8pt 9pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt',
-                font_family_formats: ` Times New Roman=Times New Roman, Times, serif; Arial=Arial, Helvetica, sans-serif; Calibri=Calibri, sans-serif; Courier New=Courier New, Courier, monospace; Georgia=Georgia, serif; Verdana=Verdana, Geneva, sans-serif;`,
+                font_family_formats: `Times New Roman=Times New Roman, Times, serif; Arial=Arial, Helvetica, sans-serif; Calibri=Calibri, sans-serif; Courier New=Courier New, Courier, monospace; Georgia=Georgia, serif; Verdana=Verdana, Geneva, sans-serif;`,
                 fullscreen_native: true,
                 content_style: `
                   body {
-                    font-family: 'Times New Roman', Times, serif;
-                    font-size: 12pt;
+                    font-family: ${isMinimal ? `'Arial', sans-serif` : `'Times New Roman', Times, serif`};
+                    font-size: ${isMinimal ? `8pt` : `12pt`};
                     background: #fff;
                     margin: ${margins.top}cm ${margins.right}cm ${margins.bottom}cm ${margins.left}cm;
                   }

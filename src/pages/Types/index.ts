@@ -97,3 +97,14 @@ export interface ITemplate {
     isPadrao: boolean; // Indica se este é o template default para seu tipo
     dataModificacao: string;
 }
+
+export interface IPessoaSimples {
+    nome: string;
+    cpf: string;
+    docIdentidadeTipo?: 'RG' | 'CNH' | 'Passaporte' | string;
+    docIdentidadeNum?: string;
+    profissao?: string;
+    nacionalidade?: 'Brasileira' | 'Estrangeira' | string;
+    estadoCivil?: 'Solteiro(a)' | 'Casado(a)' | 'Divorciado(a)' | 'Viúvo(a)' | 'União Estável';
+    endereco?: Partial<IEndereco>;
+}

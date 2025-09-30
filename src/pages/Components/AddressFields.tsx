@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
 import { toast } from 'react-toastify';
 import { ufs, tiposLogradouro } from '../lib/Constants';
-import { type IEndereco } from '../types/index';
+import { type IEndereco } from '../Types';
 
 interface AddressFieldsProps {
     addressData: IEndereco;

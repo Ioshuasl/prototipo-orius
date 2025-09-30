@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Baby, UploadCloud, Users, FileText, Save, XCircle, BookKey, Award, PlusCircle, Trash2, Paperclip, Sparkles, History, HelpCircle } from 'lucide-react';
 import PersonFields from '../../../Components/PersonFields';
-import AddressFields from '../../Components/AddressFields';
+import AddressFields from '../../../Components/AddressFields';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
 import { livrosDisponiveis, mockPessoDatabase } from '../../lib/Constants';
